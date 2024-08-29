@@ -482,3 +482,62 @@ export const forumAnalytics = [
     created: "14 Jun 2024",
   },
 ];
+
+export const reportData = [
+  {
+    name: "Dwight_Price",
+    assignee: "Dwightprice@gmail.com",
+    role: "Sub-Admin",
+    number: "3 Investors",
+  },
+  {
+    name: "Dwight_Price",
+    assignee: "Dwightprice@gmail.com",
+    role: "Sub-Admin",
+    number: "3 Investors",
+  },
+  {
+    name: "Dwight_Price",
+    assignee: "Dwightprice@gmail.com",
+    role: "Sub-Admin",
+    number: "3 Investors",
+  },
+];
+
+export const adminData = [
+  {
+    name: "Dwight_Price",
+    email: "Dwightprice@gmail.com",
+    role: "Sub-Admin",
+    date: "22 Jun 2024",
+  },
+  {
+    name: "Dwight_Price",
+    email: "Dwightprice@gmail.com",
+    role: "Sub-Admin",
+    date: "22 Jun 2024",
+  },
+  {
+    name: "Dwight_Price",
+    email: "Dwightprice@gmail.com",
+    role: "Sub-Admin",
+    date: "22 Jun 2024",
+  },
+];
+
+export const campaignData = [
+  {
+    name: "ChrisCole",
+    amountPaid: "$50,000 ",
+    totalAmount: " of $100,000",
+    reason: "Video Project",
+    duration: "24 days",
+  },
+  {
+    name: "ChrisCole",
+    amountPaid: "$50,000  ",
+    totalAmount: "of $100,000",
+    reason: "Video Project",
+    duration: "24 days",
+  },
+];

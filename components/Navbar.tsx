@@ -4,7 +4,7 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <div className="py-2 sticky  top-0 flex items-center justify-between border-b">
+    <div className="py-2 sticky  top-0 flex items-center justify-between border-b z-30">
       <div>
         <Image
           src={"/DreamPlanetLogoName.png"}
