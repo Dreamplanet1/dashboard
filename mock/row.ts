@@ -541,3 +541,22 @@ export const campaignData = [
     duration: "24 days",
   },
 ];
+
+export const accessData = [
+  {
+    name: "Mack Spinka",
+    users: "2 Users",
+    type: "Task based",
+    image:
+      "https://s3-alpha-sig.figma.com/img/ca9b/8186/93a3470ebce5d867977c8a74e082ca1a?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fmd0M4meW0V58p-r2-hSqLTvPlF6zkdRjJXsSirQv9i3qlMCtMCkTBm5xsWSFF08dlsuJpqXm7wFwLQWT5rmIMiGWha2OO8~WwhlTNSRURFscCvdyYuMxuELIHrrG-JBayIVp-r7py7aNBAbf~NKndO~IPQOJh~TavdlhmrBZdDWHfZ2W~WIu6la4E16WSCUXgQpvOLv6dtHTnWbI6YBOVRpoqIPufyDaDnLsHTWp-KdnVFMYCDeZWVCfpGf1Xn32RLHvJhI9R-bfIUa-~gozZdTcm2wtstOvizayn0DCzm40lsDIYvnDYTF73rvcL5Sp~DjQv4vgFjyzL5vdQm87A__",
+  },
+  {
+    name: "Ashley Johnston",
+    users: "4 Users",
+    type: "Full Control",
+    image:
+      "https://s3-alpha-sig.figma.com/img/831d/3f57/9b857258aae287a09c5c1f26d7b392cc?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=gr9wP9VazKQalrd9tgRXYJ8sDZ4L6-eAvOwbj-6to4f9I3B6ZB4SLFZbmMacaIo4Jp08uIGnwynbOXUjNCWFT0KPJf4aSxuIYCNBB~dOYd3spJxqBYpv-6imWzx75z7FA~XhK-vY6XJ4nwon-BvcShA272dfHx5B0zLQJErIkiQqaM~ZXqSKJYEPij4qlHZb1UdCKPwTmkqCulyQ9CdhlOy4vnvoidtZNiTQ~RQORkUn72YjFBKfaflbfeBLpU9Gkyerdun6EgPEFJ7kwypWDlyXdPerJHAN-bzJq2L5l2J3rxqK0akDSfzNZNLs~GGEUIb~oq2rFdJw0LhmTL7vHw__",
+  },
+];
+
+

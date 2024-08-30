@@ -1,96 +1,136 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import {
+  PlusIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  SearchIcon,
+  XIcon,
+  EllipsisVertical,
+} from "lucide-react";
+import { UserTable } from "@/components/UserTable";
+import { reportData } from "@/mock/row";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ColumnDef } from "@tanstack/react-table";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 
-import Dropzone from "@/components/Dropzone";
-import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState } from "react";
+const rows = [
+  {
+    name: "Billy Gleason",
+    title: "Raba-bag challenge",
+    date: "22 Jun, 2024",
+    days: "34d",
+    modified: "1st Aug 2023",
+  },
+  {
+    name: "Billy Gleason",
+    title: "Raba-bag challenge",
+    date: "22 Jun, 2024",
+    days: "34d",
+    modified: "1st Aug 2023",
+  },
+];
 
-interface FileWithPreview extends File {
-  preview: string;
-}
-
-const Broadcast = () => {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
-  console.log(files);
-  const removeFile = (fileName: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
-  };
-  return (
-    <div className="flex justify-between items-start">
-      <div className="flex w-3/6 flex-col space-y-10">
+export const columns: ColumnDef<any>[] = [
+  {
+    accessorKey: "name",
+    header: "Creator",
+    cell: ({ row }) => (
+      <div className="flex items-center space-x-1">
+        <Avatar>
+          <AvatarImage
+            className="object-contain"
+            src="https://github.com/shadcn.png"
+            alt="@shadcn"
+          />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
         <div>
-          <h2 className="font-medium text-2xl">Create Broadcast</h2>
+          <p>{row.getValue("name")}</p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "title",
+    header: "Broadcast Title",
+    cell: ({ row }) => (
+      <p className="text-[14px] text-[#373737]">{row.getValue("title")}</p>
+    ),
+  },
+
+  {
+    accessorKey: "date",
+    header: "Created date",
+    cell: ({ row }) => (
+      <p className="text-[14px] text-[#373737]">{row.getValue("date")}</p>
+    ),
+  },
+  {
+    accessorKey: "days",
+    header: "Days running",
+    cell: ({ row }) => (
+      <p className="text-[14px] text-[#373737]">{row.getValue("days")}</p>
+    ),
+  },
+  {
+    accessorKey: "modified",
+    header: "Modified date",
+    cell: ({ row }) => (
+      <p className="text-[14px] text-[#373737]">{row.getValue("modified")}</p>
+    ),
+  },
+
+  {
+    accessorKey: "options",
+    header: "",
+    cell: ({ row }) => {
+      return <EllipsisVertical className="h-4 w-4" />;
+    },
+  },
+];
+
+const BroadCastTable = () => {
+  const router = useRouter();
+  return (
+    <div className="flex flex-col space-y-7">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-medium text-2xl">Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">
             Lorem ipsum dolor sit amet consectetur.
           </p>
         </div>
         <div>
-          <p className="text-[#10002E] font-medium mb-1">Description</p>
-          <Textarea
-            className="focus-visible:ring-transparent"
-            placeholder="Enter Description"
-          />
-        </div>
-        <div>
-          <p className="text-[#10002E] font-medium mb-1">Media</p>
-          <Dropzone
-            files={files}
-            setFiles={setFiles}
-            className="w-full border border-dashed cursor-pointer h-32 rounded-md flex justify-center items-center"
-          />
-          <div className="mt-4">
-            <ul className="space-y-2">
-              {files.map((file, index) => (
-                <div
-                  key={index}
-                  className="border flex items-center p-4  justify-between "
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="border p-2 rounded-md">
-                      <Image
-                        src={"/icons/picturefileImage.svg"}
-                        height={13}
-                        width={17}
-                        alt="fileImage"
-                      />
-                    </div>
-
-                    <div>
-                      <p className="text-[#111810] font-bold">{file.name}</p>
-                      <p className="">{file.size}</p>
-                    </div>
-                  </div>
-                  <div className="space-x-2">
-                    <button className="hover:scale-105 transition-all text-sm font-medium cursor-pointer active:scale-95">
-                      <Link href={file.preview} download={true} target="_blank">
-                        Preview
-                      </Link>
-                    </button>
-
-                    <button
-                      onClick={() => removeFile(file.name)}
-                      className="text-sm text-[#BF3100] font-medium cursor-pointer hover:scale-105 active:scale-95 transition-all"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </ul>
-          </div>
+          <Button
+            onClick={() => {
+              router.push("/createBroadcast");
+            }}
+            className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95"
+          >
+            <span>
+              <PlusIcon size={20} />
+            </span>
+            New Broadcast
+          </Button>
         </div>
       </div>
-      <div className="flex items-center space-x-4">
-        <button className="rounded-sm font-bold border py-2 px-4 text-sm hover:scale-105 active:scale-95 transition-all">
-          Delete Post
-        </button>
-        <button className="text-white rounded-sm font-bold py-2 px-4 text-sm bg-[#F75803] hover:scale-105 active:scale-95 transition-all">
-          Upload Post
-        </button>
+      <div>
+        <UserTable columns={columns} data={rows} />
       </div>
     </div>
   );
 };
 
-export default Broadcast;
+export default BroadCastTable;

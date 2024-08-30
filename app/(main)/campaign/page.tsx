@@ -475,7 +475,7 @@ const Campaign = () => {
           <DialogHeader>
             <DialogTitle>Chrisbel</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-4 py-2">
             <div className="flex items-center justify-between">
               <Avatar>
                 <AvatarImage
@@ -485,9 +485,72 @@ const Campaign = () => {
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <Button className="bg-[#F75803] hover:bg-[#F75803] text-white rounded-3xl">
+              <Button className="bg-[#F75803] hover:bg-[#F75803] text-white rounded-3xl hover:scale-105 active:scale-95 transition-all">
                 <PlusIcon size={15} /> <p className="text-14px">Join Forum</p>
               </Button>
+            </div>
+            <div className="border-b py-2">
+              <p className="font-semibold">Chrisbel Otu</p>
+              <p className="text-[14px] text-[#A4A4A4]">Fan</p>
+              <p className="text-[14px]">
+                Discovering new tunes is my passion! 🎶.💫 Also, I sell musical
+                equipment—join my forum for all things music!
+              </p>
+            </div>
+            <div>
+              <p className="text-[#A4A4A4] text-[14px] mb-2">My forum</p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Avatar>
+                    <AvatarImage
+                      className="object-cover"
+                      src="https://s3-alpha-sig.figma.com/img/92ef/bb4d/d3cdf215882d1ea824e192e5d759849c?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=G2Qc1~tTvteQ1HYetrN2qN1-gshG1A8t~1gCMxNOyXUSoowKUgs0sQs2OQfV46IZa4G8P1eyyegluErwU6K9YcEA56SX-E10pP9CWt9h~EJDGISE39OxaaZD0U3cH6w9v7oNd71ZP0fh~0879EYlOl~sRJpx~n~raRrDJWcGspeRhGpe2St70RbtQ4hU8r7l1QWlEmh-9WX9Ac0cZFUUeqCTNgQ5Dhk26J8gxAhgHNOh7ZXy3qQoYlhiju9FgHRsBNYZcrO2KMy~waH9j-SViWPIPW4DyaShSCWau4td2OdOUbjtX1OjnymYI~hQEn6SOixUZilUbvoAJGonBRJptg__"
+                      alt="@shadcn"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold">Chris quality sounds</p>
+                    <p className="text-[14px] text-[#808080]">589k members</p>
+                  </div>
+                </div>
+                <div>
+                  <PlusIcon
+                    color="#F75803"
+                    size={18}
+                    className="hover:scale-110 active:scale-95 transition-all cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[#A4A4A4] text-[14px] mb-2">
+                Other forums they engage with
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Avatar>
+                    <AvatarImage
+                      className="object-cover"
+                      src="https://s3-alpha-sig.figma.com/img/2432/050e/ed50c86e382b5738589ccdcca698436b?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=FBi~2K9PmPLSsvVf-rIyH5enfvD4Kc0hofkMylJAxUKQbOz46XYUxxhxQ2gwyuhFebyts2~9ZeJQHJjjtiTzHGLwMPDidgNoxzdzgFcuWjVy7lJsuXGEHj5cC2eUjrVUlHZ1urpxghQR0bI79HHU7oIVzJ6gYEbbbPUBL8uUmtmSvNyfb1VdljAw~ME6CtmnlIapRk~-lpIy~IrWeybgv~zL07sYUSkW2FV-m5jDLhPywvBi83mMzrR7bIr5phJc23dnuubhNPBE9B6C5M3NRhm5wxwVkDqygX5EW7puJyunUVWppeKpqPIG0tu0sDD6iUPEZ1dZpjhXqc1ove5Xgw__"
+                      alt="@shadcn"
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold">Chris quality sounds</p>
+                    <p className="text-[14px] text-[#808080]">5m members</p>
+                  </div>
+                </div>
+                <div>
+                  <PlusIcon
+                    color="#F75803"
+                    size={18}
+                    className="hover:scale-110 active:scale-95 transition-all cursor-pointer"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </DialogContent>

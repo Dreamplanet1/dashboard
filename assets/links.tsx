@@ -9,6 +9,8 @@ import {
   PerformanceIcon,
   ReportIcon,
   CampaignIcon,
+  AccessControlIcon,
+  ChangePasswordIcon,
 } from "@/components/icons";
 
 export const NavLinks = [
@@ -117,5 +119,31 @@ export const NavLinks = [
     icon: <ForumIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
     href: "/forum",
     accordion: false,
+  },
+  {
+    name: "Change Password",
+    icon: <ChangePasswordIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
+    href: "/changepassword",
+    accordion: false,
+  },
+  {
+    name: "Access Control",
+    icon: <AccessControlIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
+    href: "/accesscontrol",
+    accordion: true,
+    sublink: [
+      {
+        title: "Access Mangagement",
+        href: "/accesscontrol/management",
+      },
+      {
+        title: "Foul Words",
+        href: "/accesscontrol/foulwords",
+      },
+      {
+        title: "Foul Post",
+        href: "/accesscontrol/foulpost",
+      },
+    ],
   },
 ];
