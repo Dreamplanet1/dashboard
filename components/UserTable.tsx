@@ -26,7 +26,7 @@ import { SearchIcon } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  placeholder: string;
+  placeholder?: string;
   top?: boolean;
   bottom?: boolean;
 }
