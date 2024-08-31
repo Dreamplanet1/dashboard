@@ -137,7 +137,12 @@ const foulwords = () => {
         </div>
       </div>
       <div>
-        <UserTable data={foul} columns={columns} />
+        <UserTable
+          bottom={true}
+          placeholder="Search for foul words"
+          data={foul}
+          columns={columns}
+        />
       </div>
       <Dialog open={isOpen} onOpenChange={closeDialog}>
         <DialogContent className="sm:max-w-[384px]">

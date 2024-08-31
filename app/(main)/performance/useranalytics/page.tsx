@@ -55,13 +55,28 @@ const UserAnalytics = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="creators">
-            <UserTable data={userAnalytics} columns={columns} />
+            <UserTable
+              bottom={true}
+              placeholder="Search for Admin Name"
+              data={userAnalytics}
+              columns={columns}
+            />
           </TabsContent>
           <TabsContent value="fans">
-            <UserTable data={userAnalytics} columns={columns} />
+            <UserTable
+              bottom={true}
+              placeholder="Search for Admin Name"
+              data={userAnalytics}
+              columns={columns}
+            />
           </TabsContent>
           <TabsContent value="investor">
-            {/* <UserTable data={data} columns={columns} /> */}
+            <UserTable
+              bottom={true}
+              placeholder="Search for Admin Name"
+              data={userAnalytics}
+              columns={columns}
+            />
             Investor
           </TabsContent>
         </Tabs>

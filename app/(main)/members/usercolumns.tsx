@@ -17,24 +17,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-export type User = {
-  name: string;
-  country: any;
-  subscription: string;
-  date: string;
-  status: string;
-  profile?: string;
-  role?: string;
-  members: string;
-  portfolio: string;
-  email: string;
-  phone: string;
-  interested: string;
-  campaigns: string;
-  investors: string;
-  Verfication: string;
-};
-
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "name",

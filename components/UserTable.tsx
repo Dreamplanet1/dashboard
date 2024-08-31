@@ -26,13 +26,17 @@ import { SearchIcon } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  
+  placeholder: string;
+  top?: boolean;
+  bottom?: boolean;
 }
 
 export function UserTable<TData, TValue>({
   columns,
   data,
-  
+  placeholder,
+  top,
+  bottom,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState({
@@ -65,20 +69,42 @@ export function UserTable<TData, TValue>({
 
   return (
     <div className="flex flex-col space-y-3">
-      <div className="flex justify-between items-center">
-        <div></div>
-        <div className="flex w-1/4 items-center border px-2 rounded-md ">
-          <SearchIcon color="#A4A4A4" />
-          <Input
-            placeholder="Search username, full name."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
-          />
+      {top && (
+        <div className="flex justify-between items-center">
+          <div></div>
+          <div className="flex w-1/4 items-center border px-2 rounded-md ">
+            <SearchIcon color="#A4A4A4" />
+            <Input
+              placeholder={placeholder}
+              value={
+                (table.getColumn("name")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("name")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
+            />
+          </div>
         </div>
-      </div>
+      )}
+      {bottom && (
+        <div className="my-2">
+          <div className="flex w-1/4 items-center border px-2 rounded-md ">
+            <SearchIcon color="#A4A4A4" />
+            <Input
+              placeholder={placeholder}
+              value={
+                (table.getColumn("name")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("name")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="rounded-md border-0">
         <Table className="border-none">
           <TableHeader>

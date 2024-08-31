@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-
 import Link from "next/link";
 
 import { usePathname } from "next/navigation";
@@ -18,7 +17,7 @@ const Sidebar = () => {
   const path = usePathname();
 
   return (
-    <div className="flex flex-col w-5/6  items-center justify-between">
+    <div className="flex flex-col   items-center justify-between">
       <div className="flex flex-col w-full grow border-b">
         {NavLinks.map((item: any) => {
           const isActive =

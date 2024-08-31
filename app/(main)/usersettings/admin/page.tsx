@@ -43,8 +43,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronUp } from "lucide-react"; // Arrow Icons
 import Image from "next/image";
 
-
-
 const features = [
   "Broadcast",
   "Members",
@@ -332,10 +330,20 @@ const AdminSetting = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="accepted">
-              <UserTable data={adminData} columns={columns} />
+              <UserTable
+                bottom={true}
+                placeholder="Search for Admin Name"
+                data={adminData}
+                columns={columns}
+              />
             </TabsContent>
             <TabsContent value="pending">
-              <UserTable data={adminData} columns={moveColumns} />
+              <UserTable
+                bottom={true}
+                placeholder="Search for Admin Name"
+                data={adminData}
+                columns={moveColumns}
+              />
             </TabsContent>
           </Tabs>
         </div>

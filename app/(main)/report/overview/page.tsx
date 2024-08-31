@@ -280,7 +280,12 @@ const ReportOverview = () => {
         </div>
       </div>
       <div>
-        <UserTable columns={columns} data={reportData} />
+        <UserTable
+          bottom={true}
+          placeholder="Search for Admin Name"
+          columns={columns}
+          data={reportData}
+        />
       </div>
     </div>
   );

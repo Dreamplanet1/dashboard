@@ -21,7 +21,7 @@ export const NavLinks = [
     accordion: false,
   },
   {
-    name: "Members",
+    name: "Users",
     icon: <MemberIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
     href: "/members",
     accordion: false,

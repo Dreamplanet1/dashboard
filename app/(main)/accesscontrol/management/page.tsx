@@ -61,7 +61,12 @@ const management = () => {
         </p>
       </div>
       <div>
-        <UserTable data={accessData} columns={columns} />
+        <UserTable
+          bottom={true}
+          placeholder="Search for Broadcast title"
+          data={accessData}
+          columns={columns}
+        />
       </div>
     </div>
   );

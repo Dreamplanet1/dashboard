@@ -127,7 +127,12 @@ const BroadCastTable = () => {
         </div>
       </div>
       <div>
-        <UserTable columns={columns} data={rows} />
+        <UserTable
+          bottom={true}
+          placeholder="Search for Broadcast title"
+          columns={columns}
+          data={rows}
+        />
       </div>
     </div>
   );
