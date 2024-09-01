@@ -11,6 +11,7 @@ import {
   CampaignIcon,
   AccessControlIcon,
   ChangePasswordIcon,
+  ChallengeIcon,
 } from "@/components/icons";
 
 export const NavLinks = [
@@ -28,7 +29,7 @@ export const NavLinks = [
   },
   {
     name: "Challenge",
-    icon: <MemberIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
+    icon: <ChallengeIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
     href: "/challenge",
     accordion: false,
   },

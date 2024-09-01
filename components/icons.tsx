@@ -287,3 +287,27 @@ export function ChangePasswordIcon({
     </svg>
   );
 }
+
+export function ChallengeIcon({
+  className,
+  pathColor,
+}: {
+  className: string;
+  pathColor: string;
+}) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="20"
+      fill="none"
+      viewBox="0 0 14 20"
+      className={className}
+    >
+      <path
+        fill={pathColor}
+        d="M13.859 9.232a.625.625 0 00-.391-.442L8.968 7.1l1.145-5.729a.625.625 0 00-1.07-.546L.293 10.2a.625.625 0 00.234 1.015l4.503 1.689-1.143 5.722a.625.625 0 001.07.547l8.75-9.375a.624.624 0 00.152-.567zm-8.314 7.487l.817-4.093a.625.625 0 00-.39-.707l-4.128-1.551 6.61-7.083-.817 4.092a.625.625 0 00.391.708l4.125 1.547-6.608 7.087z"
+      ></path>
+    </svg>
+  );
+}
