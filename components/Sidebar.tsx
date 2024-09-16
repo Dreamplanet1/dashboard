@@ -35,7 +35,7 @@ const Sidebar = () => {
                 <AccordionItem className="border-none py-0 " value="item-1">
                   <AccordionTrigger
                     className={cn(
-                      "flex hover:no-underline items-center py-2 px-2 mx-1 w-full rounded-sm",
+                      "flex hover:no-underline items-center py-2 px-2 mx-1 w-full rounded-sm font-normal",
                       isActive
                         ? "bg-[#FFEEE6] text-[#F75803]"
                         : "bg-none text-[#808080]"

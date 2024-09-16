@@ -47,7 +47,7 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "role",
     header: "Assignee's Role",
     cell: ({ row }) => (
-      <div className="flex items-center space-x-1 border  text-xs font-semibold w-max rounded-xl py-1 px-2">
+      <div className="flex items-center space-x-1 border  text-xs font-medium w-max rounded-xl py-1 px-2">
         <span className="h-1 w-1 rounded-full bg-[#BF3100]"></span>
         <p>{row.getValue("role")}</p>
       </div>

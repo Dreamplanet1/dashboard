@@ -36,19 +36,19 @@ const changePassword = () => {
   }, [isOpen, setisOpen]);
   return (
     <div>
-      <div className="flex w-3/6 flex-col space-y-10">
+      <div className="flex w-3/6 flex-col space-y-[32px]">
         <div>
-          <h2 className="font-medium text-2xl">Change Password</h2>
+          <h2 className="text-2xl">Change Password</h2>
           <p className="text-[14px] text-[#A8A8A8]">
             Its a good idea to use a password you are not using elsewhere
           </p>
         </div>
-        <div className="space-y-4">
-          <div className="w-full">
+        <div className="space-y-[40px]">
+          <div className="w-full space-y-2">
             <Label htmlFor="currentPassword">Current Password</Label>
-            <div className="border rounded-md flex items-center justify-between">
+            <div className="border rounded-md flex items-center justify-between border-[#C8C8C8]">
               <Input
-                className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
+                className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                 type="password"
                 placeholder="Enter Password"
               />
@@ -61,11 +61,11 @@ const changePassword = () => {
               />
             </div>
           </div>
-          <div className="w-full">
+          <div className="w-full space-y-2">
             <Label htmlFor="newPassword">New Password</Label>
-            <div className="border rounded-md flex items-center justify-between">
+            <div className="border border-[#C8C8C8] rounded-md flex items-center justify-between">
               <Input
-                className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
+                className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                 type="password"
                 placeholder="Enter Password"
               />
@@ -78,11 +78,11 @@ const changePassword = () => {
               />
             </div>
           </div>
-          <div className="w-full">
-            <Label htmlFor="retypr">Re-type New Password</Label>
-            <div className="border rounded-md flex items-center justify-between">
+          <div className="w-full space-y-2">
+            <Label htmlFor="retype">Re-type New Password</Label>
+            <div className="border rounded-md flex items-center justify-between border-[#C8C8C8]">
               <Input
-                className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
+                className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                 type="password"
                 placeholder="Enter Password"
               />
@@ -95,20 +95,17 @@ const changePassword = () => {
               />
             </div>
           </div>
-        </div>
-
-        <div className="flex justify-end  space-x-2">
-          <Button className=" text-[14px] text-black bg-transparent hover:bg-transparent transition-all hover:scale-105 active:scale-95 border">
-            Cancel
-          </Button>
-          <Button
-            className=" text-[14px] text-white bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95"
-            onClick={() => {
-              setisOpen(true);
-            }}
-          >
-            Set New Password
-          </Button>
+          <div className="flex justify-end  space-x-2">
+            <Button className=" btnPlainInactive">Cancel</Button>
+            <Button
+              className="btnColoredInactive"
+              onClick={() => {
+                setisOpen(true);
+              }}
+            >
+              Set New Password
+            </Button>
+          </div>
         </div>
       </div>
       <Dialog open={isOpen} onOpenChange={closeDialog}>

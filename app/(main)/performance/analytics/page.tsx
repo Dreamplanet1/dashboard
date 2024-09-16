@@ -60,7 +60,7 @@ const ForumAnalytics = () => {
       header: "Status",
       cell: ({ row }) =>
         row.getValue("status") === "Activated" ? (
-          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-semibold w-max rounded-xl py-1 px-2">
+          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
                 src={"/icons/ActivateIcon.svg"}
@@ -72,7 +72,7 @@ const ForumAnalytics = () => {
             <p>{row.getValue("status")}</p>
           </div>
         ) : (
-          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-semibold w-max rounded-xl py-1 px-2">
+          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
                 src={"/icons/DeactivateIcon.svg"}
@@ -163,7 +163,7 @@ const ForumAnalytics = () => {
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl"> Forum Analytics</h2>
+        <h2 className="text-2xl"> Forum Analytics</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>
@@ -176,28 +176,28 @@ const ForumAnalytics = () => {
               Total no. of forum in app
             </p>
           </p>
-          <p className="text-[32px] font-medium">10</p>
+          <p className="text-[32px] font-Recoleta font-medium">10</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#111810] "></div>
             <p className="text-[#373737] text-[14px]">Engagements on forums</p>
           </p>
-          <p className="text-[32px] font-medium">20m</p>
+          <p className="text-[32px] font-Recoleta font-medium">20m</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#2BAC47] "></div>
             <p className="text-[#373737] text-[14px]">Active forums</p>
           </p>
-          <p className="text-[32px] font-medium">28</p>
+          <p className="text-[32px] font-Recoleta font-medium">28</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#BF3100] "></div>
             <p className="text-[#373737] text-[14px]">Inactive forums</p>
           </p>
-          <p className="text-[32px] font-medium">12</p>
+          <p className="text-[32px] font-Recoleta font-medium">12</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -206,7 +206,7 @@ const ForumAnalytics = () => {
               Total no. of likes on forum
             </p>
           </p>
-          <p className="text-[32px] font-medium">324k.3</p>
+          <p className="text-[32px] font-Recoleta font-medium">324k.3</p>
         </div>
       </div>
       <div>
@@ -223,7 +223,8 @@ const ForumAnalytics = () => {
           <SheetHeader>
             <SheetTitle className="flex justify-between mb-[40px]">
               <p className="text-[#111810] font-medium text-[20px]">
-                Forum Members <span className="text-[#808080]">(34,912)</span>
+                Forum Members{" "}
+                <span className="font-Recoleta text-[#808080]">(34,912)</span>
               </p>
               <Image
                 src="/DASHBOARDASSETS/ICONS/CANCEL WITH FILL.svg"

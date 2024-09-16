@@ -152,7 +152,7 @@ const AdminSetting = () => {
       accessorKey: "role",
       header: "Role",
       cell: ({ row }) => (
-        <div className="flex items-center space-x-1 border  text-xs font-semibold w-max rounded-xl py-1 px-2">
+        <div className="flex items-center space-x-1 border  text-xs font-medium w-max rounded-xl py-1 px-2">
           <span className="h-1 w-1 rounded-full bg-[#BF3100]"></span>
           <p>{row.getValue("role")}</p>
         </div>
@@ -258,7 +258,7 @@ const AdminSetting = () => {
       accessorKey: "role",
       header: "Role",
       cell: ({ row }) => (
-        <div className="flex items-center space-x-1 border  text-xs font-semibold w-max rounded-xl py-1 px-2">
+        <div className="flex items-center space-x-1 border  text-xs font-medium w-max rounded-xl py-1 px-2">
           <span className="h-1 w-1 rounded-full bg-[#BF3100]"></span>
           <p>{row.getValue("role")}</p>
         </div>
@@ -332,12 +332,12 @@ const AdminSetting = () => {
       <section className="col-span-6 flex flex-col space-y-7">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-medium text-2xl">Admin Setting</h2>
+            <h2 className="text-2xl">Admin Setting</h2>
             <p className="text-sm text-[#A8A8A8]">
               Lorem ipsum dolor sit amet consectetur.
             </p>
           </div>
-          <Button className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95">
+          <Button className="btnColored">
             <PlusIcon size={20} />
             Add Role
           </Button>
@@ -346,13 +346,13 @@ const AdminSetting = () => {
           <Tabs defaultValue="accepted">
             <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
               <TabsTrigger
-                className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="accepted"
               >
                 Accepted Request
               </TabsTrigger>
               <TabsTrigger
-                className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="pending"
               >
                 Pending Request
@@ -379,13 +379,18 @@ const AdminSetting = () => {
       </section>
       <section className="col-span-2 border">
         <h2 className="p-[20px] pb-[12px] border-b font-medium">
-          Admin Roles <span className="text-[#808080]">(3)</span>
+          Admin Roles{" "}
+          <span className="text-[#808080] font-Recoleta font-medium">(3)</span>
         </h2>
         <Accordion type="single" collapsible>
           <AccordionItem className="px-[20px] pb-[16px]" value="item-1">
             <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">
-                Sub Admin<span className="text-[#F75803]"> (3)</span>
+              <p className="text-[#373737] font-normal ">
+                Sub Admin
+                <span className="font-Recoleta font-medium text-[#F75803]">
+                  {" "}
+                  (3)
+                </span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -435,8 +440,12 @@ const AdminSetting = () => {
           </AccordionItem>
           <AccordionItem className="px-[20px] pb-[16px]" value="item-2">
             <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">
-                Human Resources<span className="text-[#F75803]"> (3)</span>
+              <p className="text-[#373737] font-normal">
+                Human Resources
+                <span className="text-[#F75803] font-Recoleta font-medium">
+                  {" "}
+                  (3)
+                </span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -486,8 +495,12 @@ const AdminSetting = () => {
           </AccordionItem>
           <AccordionItem className="px-[20px] pb-[16px]" value="item-3">
             <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">
-                Account<span className="text-[#F75803]"> (3)</span>
+              <p className="text-[#373737] font-normal">
+                Account
+                <span className="text-[#F75803] font-Recoleta font-medium">
+                  {" "}
+                  (3)
+                </span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -538,7 +551,7 @@ const AdminSetting = () => {
 
           <AccordionItem className="px-[20px] pb-[16px]" value="item-4">
             <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">Others</p>
+              <p className="text-[#373737] font-normal">Others</p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
                 alt="right arrow"

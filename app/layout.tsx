@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { AeonikFont, RecoletaFont } from "@/utils/customFonts";
 import localFont from "next/font/local";
 
 const inter = Poppins({ weight: "400", subsets: ["latin"] });
@@ -18,7 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={myFont.className}>{children}</body>
+      <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }

@@ -10,6 +10,10 @@ const config = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      Aeonik: ["var(--font-Aeonik)"],
+      Recoleta: ["var(--font-Recoleta)"],
+    },
     container: {
       center: true,
       padding: "2rem",

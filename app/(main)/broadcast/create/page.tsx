@@ -45,7 +45,7 @@ const Broadcast = () => {
     <div className="flex justify-between items-start">
       <div className="flex w-3/6 flex-col space-y-10">
         <div>
-          <h2 className="font-medium text-2xl">Create Broadcast</h2>
+          <h2 className=" text-2xl">Create Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">
             Lorem ipsum dolor sit amet consectetur.
           </p>
@@ -87,20 +87,20 @@ const Broadcast = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <button className="hover:scale-105 transition-all text-sm font-medium cursor-pointer active:scale-95">
+                    <Button className="hover:scale-105 transition-all bg-transparent text-black hover:bg-transparent text-sm font-medium cursor-pointer active:scale-95">
                       <Link href={file.preview} download={true} target="_blank">
                         Preview
                       </Link>
-                    </button>
+                    </Button>
                     <div className="bg-[#C8C8C8] rounded-full w-[4px] h-[4px]"></div>
-                    <button
+                    <Button
                       onClick={() => {
                         setisDeleteOpen(true);
                       }}
-                      className="text-sm text-[#BF3100] font-medium cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                      className="text-sm text-[#BF3100] font-medium bg-transparent hover:bg-transparent cursor-pointer hover:scale-105 active:scale-95 transition-all"
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -109,17 +109,15 @@ const Broadcast = () => {
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        <button
+        <Button
           onClick={() => {
             setisDeleteOpen(true);
           }}
-          className="rounded-sm font-medium border py-2 px-4 text-[14px] hover:scale-105 active:scale-95 transition-all shadow-md"
+          className="btnPlain"
         >
           Delete Post
-        </button>
-        <button className="text-white rounded-sm font-medium py-2 px-4 text-[14px] bg-[#F75803] hover:scale-105 active:scale-95 transition-all shadow-md">
-          Upload Post
-        </button>
+        </Button>
+        <Button className="btnColored">Upload Post</Button>
       </div>
 
       <Dialog open={isDeleteOpen} onOpenChange={closeDeleteDialog}>

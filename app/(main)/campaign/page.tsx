@@ -116,10 +116,11 @@ const Campaign = () => {
       accessorKey: "amountPaid",
       header: "Amount",
       cell: ({ row }) => (
-        <p className="text-[14px]">
+        <p className="text-[14px] space-x-1 flex text-[#373737]">
           <span className="text-[14px] text-[#2BAC47]">
             {row.getValue("amountPaid")}
           </span>
+          <p>of $100,000</p>
         </p>
       ),
     },
@@ -203,7 +204,7 @@ const Campaign = () => {
     <div className="grid grid-cols-8 space-x-4">
       <section className="col-span-6 flex flex-col space-y-7">
         <div>
-          <h2 className="font-medium text-2xl">Campaign</h2>
+          <h2 className="text-2xl">Campaign</h2>
           <p className="text-sm text-[#A8A8A8]">
             Lorem ipsum dolor sit amet consectetur.
           </p>
@@ -213,31 +214,31 @@ const Campaign = () => {
           <Tabs defaultValue="active">
             <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
               <TabsTrigger
-                className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="active"
               >
                 Active (3)
               </TabsTrigger>
               <TabsTrigger
-                className="rounded-none my-0 text-[#A4A4A4]  px-0  py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0  py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="processing"
               >
                 Processing
               </TabsTrigger>
               <TabsTrigger
-                className="rounded-none my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="stopped"
               >
                 Stopped
               </TabsTrigger>
               <TabsTrigger
-                className="rounded-none my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="performed"
               >
                 Most Performed
               </TabsTrigger>
               <TabsTrigger
-                className="rounded-none my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="completed"
               >
                 Completed
@@ -286,15 +287,17 @@ const Campaign = () => {
           </Tabs>
         </div>
       </section>
-      <section className="col-span-2 border">
+      <section className="col-span-2 border-2 border-[#F1F1F1]">
         <h2 className="p-[20px] pb-[12px] border-b font-medium">
-          Campaign Purpose <span className="text-[#808080]">(12)</span>
+          Campaign Purpose{" "}
+          <span className="text-[#808080] font-Recoleta">(12)</span>
         </h2>
         <Accordion type="single" collapsible>
           <AccordionItem className="px-[20px] pb-[16px]" value="item-1">
             <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
               <p className="text-[#373737]">
-                Artist/Musician<span className="text-[#F75803]"> (3)</span>
+                Artist/Musician
+                <span className="font-Recoleta text-[#F75803] "> (3)</span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -345,7 +348,8 @@ const Campaign = () => {
           <AccordionItem className="px-[20px] pb-[16px]" value="item-2">
             <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
               <p className="text-[#373737]">
-                Artist/Musician<span className="text-[#F75803]"> (3)</span>
+                Artist/Musician
+                <span className="text-[#F75803] font-Recoleta"> (3)</span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -396,7 +400,8 @@ const Campaign = () => {
           <AccordionItem className="px-[20px] pb-[16px]" value="item-3">
             <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
               <p className="text-[#373737]">
-                Artist/Musician<span className="text-[#F75803]"> (3)</span>
+                Artist/Musician
+                <span className="text-[#F75803] font-Recoleta"> (3)</span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -448,7 +453,8 @@ const Campaign = () => {
           <AccordionItem className="px-[20px] pb-[16px]" value="item-4">
             <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
               <p className="text-[#373737]">
-                Artist/Musician<span className="text-[#F75803]"> (3)</span>
+                Artist/Musician
+                <span className="text-[#F75803] font-Recoleta"> (3)</span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -585,7 +591,7 @@ const Campaign = () => {
                   </div>
                   <div className="flex w-full justify-between items-center border-b py-2">
                     <p className="text-[#A4A4A4]">Starter</p>
-                    <p className="text-[#F75803]">{profile.starter}</p>
+                    <p className="text-[#F75803] ">{profile.starter}</p>
                   </div>
                 </div>
                 <Button className="w-full bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95 text-white py-2 text-[14px]">

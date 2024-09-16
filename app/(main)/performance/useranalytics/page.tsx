@@ -1,13 +1,73 @@
+"use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTable } from "@/components/UserTable";
 import { userAnalytics } from "@/mock/row";
-import { columns } from "./useranalyticscolumns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
 
 const UserAnalytics = () => {
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "name",
+      header: "Creator name",
+      cell: ({ row }) => (
+        <div className="flex items-center space-x-1">
+          <Avatar>
+            <AvatarImage
+              className="object-contain"
+              src="https://github.com/shadcn.png"
+              alt="@shadcn"
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <div>
+            <p>{row.getValue("name")}</p>
+            <p className="text-[#A4A4A4]">@{row.getValue("name")}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "country",
+      header: "Country",
+    },
+    {
+      accessorKey: "subscription",
+      header: "Subscription type",
+    },
+    {
+      accessorKey: "engagement",
+      header: "Engagement",
+      cell: ({ row }) => (
+        <p className="flex items-center text-[#2BAC47] ">
+          <span className="mr-2">
+            <Image
+              src={"/icons/engagementIcon.svg"}
+              height={10}
+              width={10}
+              alt="engagementIcon"
+            />
+          </span>
+          {row.getValue("engagement")}
+        </p>
+      ),
+    },
+    {
+      accessorKey: "analytics",
+      header: "",
+      cell: ({ row }) => (
+        <p className="text-[#7E2D02] font-medium cursor-pointer">
+          View Analytics
+        </p>
+      ),
+    },
+  ];
+
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl"> User Analytics</h2>
+        <h2 className="text-2xl"> User Analytics</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>
@@ -18,7 +78,7 @@ const UserAnalytics = () => {
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
             <p className="text-[#373737] text-[14px]">Total no. of users</p>
           </p>
-          <p className="text-[32px] font-medium">10.3k</p>
+          <p className="text-[32px] font-Recoleta font-medium">10.3k</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -27,7 +87,7 @@ const UserAnalytics = () => {
               Total no. of likes in app
             </p>
           </p>
-          <p className="text-[32px] font-medium">783</p>
+          <p className="text-[32px] font-medium font-Recoleta">783</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -36,26 +96,26 @@ const UserAnalytics = () => {
               Total no. of creator engagements
             </p>
           </p>
-          <p className="text-[32px] font-medium">378m</p>
+          <p className="text-[32px] font-medium font-Recoleta">378m</p>
         </div>
       </div>
       <div>
         <Tabs defaultValue="creators" className="">
           <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="creators"
             >
               Creators
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="fans"
             >
               Fans
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="investors"
             >
               Investor

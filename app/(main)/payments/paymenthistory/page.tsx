@@ -7,7 +7,7 @@ const PaymentHistory = () => {
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl"> Payment history</h2>
+        <h2 className="text-2xl"> Payment history</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>
@@ -20,7 +20,7 @@ const PaymentHistory = () => {
               Total amount of donation
             </p>
           </p>
-          <p className="text-[32px] font-medium">$124.56m</p>
+          <p className="text-[32px] font-Recoleta font-medium">$124.56m</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -29,7 +29,7 @@ const PaymentHistory = () => {
               Total amount of wallet top-up
             </p>
           </p>
-          <p className="text-[32px] font-medium">$567.3m</p>
+          <p className="text-[32px] font-Recoleta font-medium">$567.3m</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -38,7 +38,7 @@ const PaymentHistory = () => {
               Total amount of subscription
             </p>
           </p>
-          <p className="text-[32px] font-medium">$89.278</p>
+          <p className="text-[32px] font-Recoleta font-medium">$89.278</p>
         </div>
       </div>
       <div>

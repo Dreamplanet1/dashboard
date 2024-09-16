@@ -61,7 +61,7 @@ const CreateChallenge = () => {
             <span className="ml-[8px]">Go back to overview</span>
           </p>
           <div className="mt-[13.5px]">
-            <h2 className="font-medium text-2xl">Create Challenges</h2>
+            <h2 className="text-2xl">Create Challenges</h2>
           </div>
         </div>
 
@@ -224,12 +224,8 @@ const CreateChallenge = () => {
         </form>
       </div>
       <div className="flex items-center space-x-4">
-        <button className="rounded-sm font-bold border py-2 px-4 text-sm hover:scale-105 active:scale-95 transition-all">
-          Cancel
-        </button>
-        <button className="text-white rounded-sm font-bold py-2 px-4 text-sm bg-[#F75803] hover:scale-105 active:scale-95 transition-all">
-          Upload
-        </button>
+        <Button className="btnPlain">Cancel</Button>
+        <Button className="btnColored">Upload</Button>
       </div>
     </div>
   );

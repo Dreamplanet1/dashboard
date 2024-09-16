@@ -41,7 +41,7 @@ const Forum = () => {
       header: "Status",
       cell: ({ row }) =>
         row.getValue("status") === "Activated" ? (
-          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-semibold w-max rounded-xl py-1 px-2">
+          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
                 src={"/icons/ActivateIcon.svg"}
@@ -53,7 +53,7 @@ const Forum = () => {
             <p>{row.getValue("status")}</p>
           </div>
         ) : (
-          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-semibold w-max rounded-xl py-1 px-2">
+          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
                 src={"/icons/DeactivateIcon.svg"}
@@ -84,14 +84,14 @@ const Forum = () => {
       accessorKey: "engagement",
       header: "Engagement",
       cell: ({ row }) => (
-        <p className="text-[14px] text-[#2BAC47]">
+        <p className="text-[14px] flex items-center space-x-1 text-[#2BAC47]">
           <Image
             src={"/icons/engagementIcon.svg"}
             width={14}
             height={14}
             alt="engagementIcon"
           />
-          {row.getValue("engagement")}
+          <span> {row.getValue("engagement")}</span>
         </p>
       ),
     },
@@ -117,7 +117,7 @@ const Forum = () => {
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl"> Forum</h2>
+        <h2 className=" text-2xl"> Forum</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>

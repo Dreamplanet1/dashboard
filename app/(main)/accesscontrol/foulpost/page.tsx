@@ -38,7 +38,6 @@ const FoulPost = () => {
       const closeButton = document.querySelector(
         "button.absolute.right-4.top-4"
       );
-      console.log(closeButton);
 
       if (closeButton) {
         closeButton.remove();
@@ -50,7 +49,7 @@ const FoulPost = () => {
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl">Foul Post</h2>
+        <h2 className="text-2xl">Foul Post</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>

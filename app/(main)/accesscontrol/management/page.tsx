@@ -55,7 +55,7 @@ const management = () => {
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl">Access Management</h2>
+        <h2 className="text-2xl">Access Management</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>

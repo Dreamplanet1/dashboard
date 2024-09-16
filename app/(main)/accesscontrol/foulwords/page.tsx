@@ -96,7 +96,7 @@ const foulwords = () => {
     <div className="flex flex-col space-y-7">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-medium text-2xl">Foul Words</h2>
+          <h2 className="text-2xl">Foul Words</h2>
           <p className="text-sm text-[#A8A8A8]">
             Lorem ipsum dolor sit amet consectetur.
           </p>
@@ -104,31 +104,29 @@ const foulwords = () => {
         <div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="bg-[#F75803] hover:bg-[#F75803] text-white  hover:scale-105 active:scale-95 transition-all">
+              <Button className="btnColored">
                 <PlusIcon size={15} />{" "}
                 <p className="text-14px">Add Foul Words</p>
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Add Foul Word</DialogTitle>
+                <DialogTitle className="font-medium">Add Foul Word</DialogTitle>
               </DialogHeader>
 
-              <div className="f lex flex-col gap-2 mt-7">
-                <Label htmlFor="foul" className="">
+              <div className="flex flex-col gap-2 mt-7">
+                <Label htmlFor="foul" className="font-medium">
                   Foul Word
                 </Label>
                 <Input
                   id="foul"
-                  className="focus-visible:ring-0 focus-visible:ring-offset-0"
+                  placeholder="Enter Foul Word"
+                  className="focus-visible:ring-0 focus-visible:ring-offset-0 rounded-[12px] border-[#C8C8C8] placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                 />
               </div>
 
               <DialogFooter>
-                <Button
-                  className="w-full text-white bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95"
-                  type="submit"
-                >
+                <Button className="w-full btnColoredInactive" type="submit">
                   Add Word
                 </Button>
               </DialogFooter>

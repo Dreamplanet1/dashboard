@@ -87,7 +87,7 @@ const Members = () => {
       header: "Status",
       cell: ({ row }) =>
         row.getValue("status") === "Activated" ? (
-          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-semibold w-max rounded-xl py-1 px-2">
+          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
                 src={"/icons/ActivateIcon.svg"}
@@ -99,7 +99,7 @@ const Members = () => {
             <p>{row.getValue("status")}</p>
           </div>
         ) : (
-          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-semibold w-max rounded-xl py-1 px-2">
+          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
                 src={"/icons/DeactivateIcon.svg"}
@@ -180,7 +180,7 @@ const Members = () => {
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl"> Onboarded Users</h2>
+        <h2 className=" text-2xl"> Onboarded Users</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>
@@ -189,25 +189,25 @@ const Members = () => {
         <Tabs defaultValue="all" className="space-y-7">
           <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="all"
             >
               All (12,398)
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="investor"
             >
               Investor
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="creator"
             >
               Creator
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="fan"
             >
               Fan

@@ -144,7 +144,7 @@ const Investments = () => {
   return (
     <div className="flex flex-col space-y-7">
       <div>
-        <h2 className="font-medium text-2xl">Investment</h2>
+        <h2 className="text-2xl">Investment</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>
@@ -155,27 +155,27 @@ const Investments = () => {
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#007BFF] "></div>
             <p className="text-[#373737] text-[14px]">Total Amount Invested</p>
           </p>
-          <p className="text-[32px] font-medium">$598,784.20</p>
+          <p className="text-[32px] font-Recoleta font-medium">$598,784.20</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#2BAC47] "></div>
             <p className="text-[#373737] text-[14px]">No. of Investor</p>
           </p>
-          <p className="text-[32px] font-medium">23</p>
+          <p className="text-[32px] font-Recoleta font-medium">23</p>
         </div>
       </div>
       <div>
         <Tabs defaultValue="creator" className="">
           <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="creator"
             >
               Invest(Creator)
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="dream"
             >
               Invest(Dream Planet)

@@ -157,7 +157,7 @@ const BroadCastTable = () => {
     <div className="flex flex-col space-y-7">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-medium text-2xl">Broadcast</h2>
+          <h2 className="text-2xl">Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">
             Lorem ipsum dolor sit amet consectetur.
           </p>
@@ -167,7 +167,7 @@ const BroadCastTable = () => {
             onClick={() => {
               router.push("/broadcast/create");
             }}
-            className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95"
+            className="btnColored"
           >
             <span>
               <PlusIcon size={20} />

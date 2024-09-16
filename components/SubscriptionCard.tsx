@@ -15,13 +15,13 @@ import Image from "next/image";
 
 const SubscriptionCard = () => {
   return (
-    <div className="border p-4 rounded-lg flex flex-col space-y-2 items-center">
+    <div className="border border-[#C8C8C8] p-4 rounded-lg flex flex-col space-y-2 items-center">
       <div className="bg-orange-100 flex items-center space-x-1 rounded-[32px] py-[4px] px-[8px]">
         <div className="h-1 w-1 rounded-full bg-[#7E2D02]"></div>
         <p className="text-[#7E2D02]  text-[12px]">Alien Subscription</p>
       </div>
       <div className="flex flex-col space-y-0 items-center">
-        <span className=" text-[64px] font-medium">$20</span>
+        <span className=" text-[64px] font-Recoleta ">$20</span>
         <p className="text-[14px] text-[#808080]">Lifetime</p>
       </div>
       <div>

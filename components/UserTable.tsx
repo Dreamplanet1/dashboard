@@ -119,7 +119,10 @@ export function UserTable<TData, TValue>({
         <Table className="border-none">
           <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="bg-gray-100 " key={headerGroup.id}>
+              <TableRow
+                className="bg-gray-100 font-normal"
+                key={headerGroup.id}
+              >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead

@@ -29,8 +29,8 @@ const FanDetails = () => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-lg font-medium">Mack.Spinka</p>
-            <p className="text-[#808080] flex items-center space-x-1">
+            <p className="text-[20px]">Mack.Spinka</p>
+            <div className="text-[#808080] flex items-center space-x-1">
               <Image
                 src={"/DASHBOARDASSETS/ICONS/PROFILEFAN.svg"}
                 height={16}
@@ -38,7 +38,7 @@ const FanDetails = () => {
                 alt="profileIcon"
               />
               <p>Fan</p>
-            </p>
+            </div>
           </div>
         </div>
         <div>
@@ -47,7 +47,7 @@ const FanDetails = () => {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[140px] text-black justify-end space-x-2 text-left font-normal",
+                  "w-max text-black justify-end space-x-2 text-left font-normal",
                   !date && "text-muted-foreground text-black"
                 )}
               >
@@ -72,18 +72,18 @@ const FanDetails = () => {
       </div>
       <div className="flex items-center space-x-[138px]">
         <div className="space-y-2">
-          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+          <div className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
             <p className="text-[#373737] text-[14px]">No. of forums created</p>
-          </p>
-          <p className="text-[32px] font-medium">10</p>
+          </div>
+          <p className="text-[32px] font-Recoleta font-medium">10</p>
         </div>
         <div className="border-l space-y-2 pl-2">
-          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+          <div className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#111810] "></div>
             <p className="text-[#373737] text-[14px]">No. of users in forum</p>
-          </p>
-          <p className="text-[32px] font-medium">23k</p>
+          </div>
+          <p className="text-[32px] font-Recoleta font-medium">23k</p>
         </div>
       </div>
       <section className="">
