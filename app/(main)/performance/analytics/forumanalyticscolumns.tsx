@@ -102,7 +102,7 @@ export const columns: ColumnDef<any>[] = [
               <EllipsisVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="space-y-2">
             <DropdownMenuItem
               onClick={(e) => {
                 e.preventDefault();
@@ -122,7 +122,7 @@ export const columns: ColumnDef<any>[] = [
                     <p>View Members</p>
                   </span>
                 </SheetTrigger>
-                <SheetContent>
+                <SheetContent className="sm:max-w-[519px] overflow-y-auto scrollbar-hide">
                   <SheetHeader>
                     <SheetTitle className="mb-10">
                       Forum Members{" "}
