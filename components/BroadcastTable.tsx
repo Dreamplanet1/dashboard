@@ -24,6 +24,13 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import Image from "next/image";
 
 const rows = [
   {
@@ -96,7 +103,50 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "options",
     header: "",
     cell: ({ row }) => {
-      return <EllipsisVertical className="h-4 w-4" />;
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <EllipsisVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="space-y-2" align="end">
+            <DropdownMenuItem className="flex items-center space-x-2">
+              <span>
+                <Image
+                  src={"/DASHBOARDASSETS/ICONS/INFO.svg"}
+                  alt="InfoIcon"
+                  width={16.25}
+                  height={16.25}
+                />
+              </span>
+              <p className="text-[14px]">More info</p>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center space-x-2">
+              <span>
+                <Image
+                  src={"/DASHBOARDASSETS/ICONS/EDIT.svg"}
+                  alt="EditIcon"
+                  width={16.25}
+                  height={16.25}
+                />
+              </span>
+              <p className="text-[14px]">Edit Broadcast</p>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center space-x-2">
+              <span>
+                <Image
+                  src={"/DASHBOARDASSETS/ICONS/DELETE.svg"}
+                  alt="DeleteIcon"
+                  width={16.25}
+                  height={16.25}
+                />
+              </span>
+              <p className="text-[14px]">Delete Broadcast</p>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
     },
   },
 ];
@@ -115,7 +165,7 @@ const BroadCastTable = () => {
         <div>
           <Button
             onClick={() => {
-              router.push("/createBroadcast");
+              router.push("/broadcast/create");
             }}
             className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95"
           >

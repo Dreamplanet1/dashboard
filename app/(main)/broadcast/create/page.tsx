@@ -4,7 +4,7 @@ import Dropzone from "@/components/Dropzone";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +27,20 @@ const Broadcast = () => {
   const removeFile = (fileName: string) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
   };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const closeButton = document.querySelector(
+        "button.absolute.right-4.top-4"
+      );
+      console.log(closeButton);
+
+      if (closeButton) {
+        closeButton.remove();
+      }
+    }, 0); // Delay of 0 ensures it happens after the render cycle
+
+    return () => clearTimeout(timer);
+  }, [isDeleteOpen, setisDeleteOpen]);
   return (
     <div className="flex justify-between items-start">
       <div className="flex w-3/6 flex-col space-y-10">
@@ -72,16 +86,16 @@ const Broadcast = () => {
                       <p className="">{file.size}</p>
                     </div>
                   </div>
-                  <div className="space-x-2">
+                  <div className="flex items-center space-x-2">
                     <button className="hover:scale-105 transition-all text-sm font-medium cursor-pointer active:scale-95">
                       <Link href={file.preview} download={true} target="_blank">
                         Preview
                       </Link>
                     </button>
-
+                    <div className="bg-[#C8C8C8] rounded-full w-[4px] h-[4px]"></div>
                     <button
                       onClick={() => {
-                        removeFile(file.name);
+                        setisDeleteOpen(true);
                       }}
                       className="text-sm text-[#BF3100] font-medium cursor-pointer hover:scale-105 active:scale-95 transition-all"
                     >
@@ -98,13 +112,12 @@ const Broadcast = () => {
         <button
           onClick={() => {
             setisDeleteOpen(true);
-            console.log(isDeleteOpen);
           }}
-          className="rounded-sm font-bold border py-2 px-4 text-sm hover:scale-105 active:scale-95 transition-all"
+          className="rounded-sm font-medium border py-2 px-4 text-[14px] hover:scale-105 active:scale-95 transition-all shadow-md"
         >
           Delete Post
         </button>
-        <button className="text-white rounded-sm font-bold py-2 px-4 text-sm bg-[#F75803] hover:scale-105 active:scale-95 transition-all">
+        <button className="text-white rounded-sm font-medium py-2 px-4 text-[14px] bg-[#F75803] hover:scale-105 active:scale-95 transition-all shadow-md">
           Upload Post
         </button>
       </div>

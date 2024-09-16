@@ -16,18 +16,18 @@ import Image from "next/image";
 const SubscriptionCard = () => {
   return (
     <div className="border p-4 rounded-lg flex flex-col space-y-2 items-center">
-      <div className="bg-orange-100 flex items-center space-x-1">
+      <div className="bg-orange-100 flex items-center space-x-1 rounded-[32px] py-[4px] px-[8px]">
         <div className="h-1 w-1 rounded-full bg-[#7E2D02]"></div>
-        <p className="text-[#7E2D02] text-xs">Alien Subscription</p>
+        <p className="text-[#7E2D02]  text-[12px]">Alien Subscription</p>
       </div>
       <div className="flex flex-col space-y-0 items-center">
         <span className=" text-[64px] font-medium">$20</span>
-        <p className="text-sm text-[#808080]">Lifetime</p>
+        <p className="text-[14px] text-[#808080]">Lifetime</p>
       </div>
       <div>
         <Dialog>
           <DialogTrigger asChild>
-            <button className="bg-[#F75803] mt-4 w-56 rounded-md py-2 text-sm text-white hover:scale-105 active:scale-95 transition-all">
+            <button className="bg-[#F75803] mt-4 w-[209px] rounded-md py-2 text-sm text-white hover:scale-105 active:scale-95 transition-all">
               Change Price
             </button>
           </DialogTrigger>

@@ -26,12 +26,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EllipsisVertical } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const Members = () => {
   const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const closeButton = document.querySelector(
+        "button.absolute.right-4.top-4"
+      );
+
+      if (closeButton) {
+        closeButton.remove();
+      }
+    }, 0); // Delay of 0 ensures it happens after the render cycle
+
+    return () => clearTimeout(timer);
+  }, [isSheetOpen, setIsSheetOpen]);
 
   const openSheet = () => setIsSheetOpen(true);
   const closeSheet = () => setIsSheetOpen(false);
@@ -112,7 +125,7 @@ const Members = () => {
                 <EllipsisVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="space-y-2" align="end">
               <DropdownMenuItem
                 className="flex items-center space-x-2"
                 onClick={() => {
@@ -173,28 +186,28 @@ const Members = () => {
         </p>
       </div>
       <div>
-        <Tabs defaultValue="all" className="">
-          <TabsList className="space-x-7 bg-transparent border-b rounded-none p-1 w-full justify-start pb-0">
+        <Tabs defaultValue="all" className="space-y-7">
+          <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
             <TabsTrigger
-              className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
               value="all"
             >
               All (12,398)
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
               value="investor"
             >
               Investor
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
               value="creator"
             >
               Creator
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
               value="fan"
             >
               Fan
@@ -236,12 +249,26 @@ const Members = () => {
       </div>
 
       <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
-        <SheetContent className="flex flex-col space-y-4">
+        <SheetContent className="sm:max-w-[519px] overflow-y-auto scrollbar-hide">
           <SheetHeader>
-            <SheetTitle>User Details</SheetTitle>
+            <SheetTitle className="flex justify-between">
+              <p className="text-[#111810] font-medium text-[20px]">
+                User Details
+              </p>
+              <Image
+                src="/DASHBOARDASSETS/ICONS/CANCEL WITH FILL.svg"
+                alt="cancelIcon"
+                className="cursor-pointer transition-all active:scale-95 "
+                onClick={() => {
+                  setIsSheetOpen(false);
+                }}
+                width={26}
+                height={26}
+              />
+            </SheetTitle>
           </SheetHeader>
-          <div className="flex flex-col space-y-3">
-            <div className="flex items-center space-x-2">
+          <div className="flex flex-col">
+            <div className="flex items-center space-x-[12px] mt-[40px] mb-[28px]">
               <Avatar>
                 <AvatarImage
                   className="object-contain"
@@ -251,46 +278,73 @@ const Members = () => {
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-lg font-semibold">name</p>
-                <p className="text-[#808080] text-sm">role</p>
+                <p className="text-[20px] font-medium text-[#111810]">
+                  Mack Spinka
+                </p>
+                <div className="flex items-center space-x-2">
+                  <p className="flex items-center space-x-1">
+                    <span>
+                      <Image
+                        src={"/icons/profile.svg"}
+                        height={14}
+                        width={14}
+                        alt="profileIcon"
+                      />
+                    </span>
+                    <p className="text-[#808080]">Creator</p>
+                  </p>
+                  <p className="h-1 w-1 rounded-full bg-[#C8C8C8]"></p>
+                  <p className="flex items-center space-x-1">
+                    <span>
+                      <Image
+                        src={"/icons/music.svg"}
+                        height={14}
+                        width={14}
+                        alt="musicIcon"
+                      />
+                    </span>
+                    <p className="text-[#808080]">Artist/Musician</p>
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-between border rounded-md p-3">
-              <div className="flex border-r grow  flex-col space-y-1">
-                <p className="text-[#808080] text-sm">Members in forum</p>
-                <h2 className="font-semibold text-lg">members</h2>
+            <div className="w-full flex items-center justify-between border rounded-md p-3 mb-[40px]">
+              <div className="flex flex-col space-y-1">
+                <p className="text-[#A4A4A4] text-[14px]">Members in forum</p>
+                <h2 className="font-medium text-[28px]">783</h2>
               </div>
-              <div className="flex flex-col space-y-1 grow justify-end">
-                <p className="text-[#808080] text-sm flex justify-end">
+              <div className="h-[61px] w-[1px] bg-[#E4E4E4]"></div>
+              <div className="flex flex-col space-y-1 ">
+                <p className="text-[#A4A4A4] text-[14px]  ">
                   Post in portfolio
                 </p>
-                <h2 className="font-semibold text-lg flex justify-end">
-                  portfolio
-                </h2>
+                <h2 className="font-medium text-[28px] flex ">783</h2>
               </div>
             </div>
-            <p className="font-semibold text-sm">Personal Info</p>
+            <div className="space-y-[24px] mb-[32px]">
+              <p className="font-semibold text-sm">Personal Info</p>
 
-            <div className="flex items-center justify-between border-b pb-2">
-              <p className="text-sm text-[#808080]">Full Name</p>
-              <p className="text-sm">name</p>
-            </div>
-            <div className="flex items-center justify-between border-b pb-2">
-              <p className="text-sm text-[#808080]">Email</p>
-              <p className="text-sm">email</p>
-            </div>
-            <div className="flex items-center justify-between border-b pb-2">
-              <p className="text-sm text-[#808080]">Phone Number</p>
-              <p className="text-sm">phone</p>
-            </div>
-            <div className="flex items-center justify-between border-b pb-2">
-              <p className="text-sm text-[#808080]">Country</p>
-              <p className="text-sm">country</p>
-            </div>
-            <div className="flex items-center justify-between border-b pb-2">
-              <p className="text-sm text-[#808080] line-clamp-2">Date Joined</p>
-              <p className="text-sm">date</p>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">Full Name</p>
+                <p className="">name</p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">Email</p>
+                <p className="text-[#F75803]">email</p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">Phone Number</p>
+                <p className="text-[#F75803]">phone</p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">Country</p>
+                <p className="">country </p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4] line-clamp-2">Date Joined</p>
+                <p className="">date</p>
+              </div>
             </div>
           </div>
           <SheetFooter>

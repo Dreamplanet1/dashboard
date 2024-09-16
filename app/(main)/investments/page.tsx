@@ -149,31 +149,33 @@ const Investments = () => {
           Lorem ipsum dolor sit amet consectetur.
         </p>
       </div>
-      <div className="flex items-center space-x-20">
+      <div className="flex items-center space-x-[160px]">
         <div className="space-y-2">
-          <p className=" text-sm border-l-4 border-l-[#007BFF] pl-2 py-0">
-            Total Amount Invested
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#007BFF] "></div>
+            <p className="text-[#373737] text-[14px]">Total Amount Invested</p>
           </p>
-          <p className="text-3xl font-semibold">$598,784.20</p>
+          <p className="text-[32px] font-medium">$598,784.20</p>
         </div>
         <div className="border-l space-y-2 pl-2">
-          <p className="text-sm border-l-4 border-l-[#2BAC47]  pl-2 py-0">
-            No. of Investor
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#2BAC47] "></div>
+            <p className="text-[#373737] text-[14px]">No. of Investor</p>
           </p>
-          <p className="text-3xl font-semibold">23</p>
+          <p className="text-[32px] font-medium">23</p>
         </div>
       </div>
       <div>
         <Tabs defaultValue="creator" className="">
-          <TabsList className="space-x-7 bg-transparent border-b rounded-none p-1 w-full justify-start pb-0">
+          <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
             <TabsTrigger
-              className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="creator"
             >
               Invest(Creator)
             </TabsTrigger>
             <TabsTrigger
-              className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+              className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               value="dream"
             >
               Invest(Dream Planet)

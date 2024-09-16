@@ -14,26 +14,40 @@ const PaymentHistory = () => {
       </div>
       <div className="flex items-center space-x-10">
         <div className="space-y-2">
-          <p className=" text-sm border-l-4 border-l-[#F79203] pl-2 py-0">
-            Total amount of donation
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
+            <p className="text-[#373737] text-[14px]">
+              Total amount of donation
+            </p>
           </p>
-          <p className="text-3xl font-semibold">$124.56m</p>
+          <p className="text-[32px] font-medium">$124.56m</p>
         </div>
         <div className="border-l space-y-2 pl-2">
-          <p className="text-sm border-l-4 border-l-[#BF3100]  pl-2 py-0">
-            Total amount of wallet top-up
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#BF3100] "></div>
+            <p className="text-[#373737] text-[14px]">
+              Total amount of wallet top-up
+            </p>
           </p>
-          <p className="text-3xl font-semibold">$924.26m</p>
+          <p className="text-[32px] font-medium">$567.3m</p>
         </div>
         <div className="border-l space-y-2 pl-2">
-          <p className=" text-sm border-l-4 border-l-black pl-2 py-0">
-            Total amount of subscription
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#111810] "></div>
+            <p className="text-[#373737] text-[14px]">
+              Total amount of subscription
+            </p>
           </p>
-          <p className="text-3xl font-bold">$328.34m</p>
+          <p className="text-[32px] font-medium">$89.278</p>
         </div>
       </div>
       <div>
-        <UserTable data={data} columns={columns} />
+        <UserTable
+          top={true}
+          placeholder="Search username, full name..."
+          data={data}
+          columns={columns}
+        />
       </div>
     </div>
   );

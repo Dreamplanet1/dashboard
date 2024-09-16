@@ -17,8 +17,8 @@ const Sidebar = () => {
   const path = usePathname();
 
   return (
-    <div className="flex flex-col items-center justify-between">
-      <div className="flex flex-col w-full grow border-b">
+    <div className="flex flex-col items-center justify-between space-y-10">
+      <div className="flex flex-col w-full grow  space-y-[12px]">
         {NavLinks.map((item: any) => {
           const isActive =
             (path.includes(`${item.href}`) && item.href !== "/") ||
@@ -73,7 +73,7 @@ const Sidebar = () => {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center py-2 px-2 mx-1 w-full transition-all ease-in-out duration-500 rounded-sm",
+                "flex items-center text-[16px] py-2 px-2 mx-1 w-[200px] transition-all ease-in-out duration-500 rounded-sm",
                 isActive
                   ? "bg-[#FFEEE6] text-[#F75803]"
                   : "bg-none text-[#808080]"
@@ -88,9 +88,9 @@ const Sidebar = () => {
           );
         })}
       </div>
-
-      <button className="flex items-center justify-center space-x-2 border rounded-md w-full my-2 py-2 font-bold transition-all hover:scale-105 ">
-        <span>Logout</span>
+      <hr />
+      <button className="flex items-center justify-center space-x-2 border rounded-md w-full my-2 py-2 font-medium transition-all hover:scale-105 ">
+        <span className="text-[14px]">Logout</span>
         <Image
           src={"/icons/logoutIcon.svg"}
           height={10}

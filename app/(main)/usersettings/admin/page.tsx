@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -61,7 +61,36 @@ const AdminSetting = () => {
     []
   );
 
-  // Handlers to open/close the dialog
+  useEffect(() => {
+    const hideChevronsInTrigger = () => {
+      // Select all AccordionTrigger elements
+      const triggers = document.querySelectorAll(".accordion-trigger");
+
+      triggers.forEach((trigger) => {
+        const chevrons = trigger.querySelectorAll(".lucide-chevron-down");
+        chevrons.forEach((chevron) => {
+          (chevron as HTMLElement).style.display = "none"; // Completely remove the element from layout
+        });
+      });
+    };
+
+    // Create a MutationObserver to monitor changes in the DOM
+    const observer = new MutationObserver(() => {
+      hideChevronsInTrigger();
+    });
+
+    // Observe changes in the entire document
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Initial run
+    hideChevronsInTrigger();
+
+    // Clean up the observer on unmount
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   const openDialog = () => setIsDialogOpen(true);
   const closeDialog = () => setIsDialogOpen(false);
 
@@ -148,7 +177,7 @@ const AdminSetting = () => {
                 <EllipsisVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="space-y-2">
               <DropdownMenuItem
                 className="flex items-center space-x-2"
                 onClick={openDialog}
@@ -315,15 +344,15 @@ const AdminSetting = () => {
         </div>
         <div>
           <Tabs defaultValue="accepted">
-            <TabsList className="space-x-7 bg-transparent border-b rounded-none p-1 w-full justify-start pb-0">
+            <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
               <TabsTrigger
-                className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+                className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="accepted"
               >
                 Accepted Request
               </TabsTrigger>
               <TabsTrigger
-                className="rounded-none my-0 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-semibold data-[state=active]:bg-transparent"
+                className="rounded-none my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="pending"
               >
                 Pending Request
@@ -349,12 +378,211 @@ const AdminSetting = () => {
         </div>
       </section>
       <section className="col-span-2 border">
-        <h2 className="p-2 border-b font-semibold">Admin Roles (3)</h2>
+        <h2 className="p-[20px] pb-[12px] border-b font-medium">
+          Admin Roles <span className="text-[#808080]">(3)</span>
+        </h2>
         <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Sub-Admin</AccordionTrigger>
-            <AccordionContent>
-              <p>Michael Bradley</p>
+          <AccordionItem className="px-[20px] pb-[16px]" value="item-1">
+            <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
+              <p className="text-[#373737]">
+                Sub Admin<span className="text-[#F75803]"> (3)</span>
+              </p>
+              <Image
+                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
+                alt="right arrow"
+                width={16}
+                height={16}
+              />
+            </AccordionTrigger>
+            <AccordionContent className="pt-[16px] space-y-[18px]">
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Lawrence Oyor
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Sunmisola Agbebi
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Godswill Oyor
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem className="px-[20px] pb-[16px]" value="item-2">
+            <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
+              <p className="text-[#373737]">
+                Human Resources<span className="text-[#F75803]"> (3)</span>
+              </p>
+              <Image
+                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
+                alt="right arrow"
+                width={16}
+                height={16}
+              />
+            </AccordionTrigger>
+            <AccordionContent className="pt-[16px] space-y-[18px]">
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Lawrence Oyor
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Sunmisola Agbebi
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Godswill Oyor
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem className="px-[20px] pb-[16px]" value="item-3">
+            <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
+              <p className="text-[#373737]">
+                Account<span className="text-[#F75803]"> (3)</span>
+              </p>
+              <Image
+                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
+                alt="right arrow"
+                width={16}
+                height={16}
+              />
+            </AccordionTrigger>
+            <AccordionContent className="pt-[16px] space-y-[18px]">
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Lawrence Oyor
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Sunmisola Agbebi
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Godswill Oyor
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem className="px-[20px] pb-[16px]" value="item-4">
+            <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
+              <p className="text-[#373737]">Others</p>
+              <Image
+                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
+                alt="right arrow"
+                width={16}
+                height={16}
+              />
+            </AccordionTrigger>
+            <AccordionContent className="pt-[16px] space-y-[18px]">
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Lawrence Oyor
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Sunmisola Agbebi
+              </p>
+              <p className="text-[#7E2D02] text-[14px] flex items-center">
+                <span>
+                  <Image
+                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                    width={13.01}
+                    height={12.51}
+                    alt="profile Icon"
+                    className="mr-[8px]"
+                  />
+                </span>{" "}
+                Godswill Oyor
+              </p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

@@ -1,12 +1,11 @@
-import BroadCastTable from "@/components/BroadcastTable";
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const page = () => {
-  return (
-    <div>
-      <BroadCastTable />
-    </div>
-  );
+  const router = useRouter();
+  router.push("/broadcast");
+  return <div></div>;
 };
 
 export default page;

@@ -29,8 +29,16 @@ const FanDetails = () => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-lg font-semibold">Mack.Spinka</p>
-            <p className="text-[#808080] text-sm">Creator</p>
+            <p className="text-lg font-medium">Mack.Spinka</p>
+            <p className="text-[#808080] flex items-center space-x-1">
+              <Image
+                src={"/DASHBOARDASSETS/ICONS/PROFILEFAN.svg"}
+                height={16}
+                width={16}
+                alt="profileIcon"
+              />
+              <p>Fan</p>
+            </p>
           </div>
         </div>
         <div>
@@ -62,23 +70,25 @@ const FanDetails = () => {
           </Popover>
         </div>
       </div>
-      <div className="flex items-center space-x-24">
+      <div className="flex items-center space-x-[138px]">
         <div className="space-y-2">
-          <p className=" text-sm border-l-4 border-l-[#F79203] pl-2 py-0">
-            No. of forums created
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
+            <p className="text-[#373737] text-[14px]">No. of forums created</p>
           </p>
-          <p className="text-3xl font-semibold">10</p>
+          <p className="text-[32px] font-medium">10</p>
         </div>
         <div className="border-l space-y-2 pl-2">
-          <p className="text-sm border-l-4 border-l-[#BF3100]  pl-2 py-0">
-            No. of users in forum
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#111810] "></div>
+            <p className="text-[#373737] text-[14px]">No. of users in forum</p>
           </p>
-          <p className="text-3xl font-semibold">20m</p>
+          <p className="text-[32px] font-medium">23k</p>
         </div>
       </div>
       <section className="">
         <div className="w-2/5">
-          <p className="font-semibold mb-4 pb-4 border-b">Forums Joined</p>
+          <p className="font-medium mb-4 pb-4 border-b">Forums Joined</p>
           <div className="space-y-6">
             <div className="flex border p-2 items-center rounded-md space-x-2">
               <Image
@@ -89,7 +99,7 @@ const FanDetails = () => {
                 className="rounded-md"
               />
               <div>
-                <p className="font-semibold">Ecofriendly Affairs Worldwide</p>
+                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
                 <p className="text-[#808080]">12,324 Members</p>
               </div>
             </div>
@@ -102,7 +112,7 @@ const FanDetails = () => {
                 className="rounded-md"
               />
               <div>
-                <p className="font-semibold">Ecofriendly Affairs Worldwide</p>
+                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
                 <p className="text-[#808080]">12,324 Members</p>
               </div>
             </div>
@@ -115,7 +125,7 @@ const FanDetails = () => {
                 className="rounded-md"
               />
               <div>
-                <p className="font-semibold">Ecofriendly Affairs Worldwide</p>
+                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
                 <p className="text-[#808080]">12,324 Members</p>
               </div>
             </div>

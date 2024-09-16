@@ -18,7 +18,7 @@ export const NavLinks = [
   {
     name: "Broadcast",
     icon: <BroadCastIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
-    href: "/",
+    href: "/broadcast",
     accordion: false,
   },
   {

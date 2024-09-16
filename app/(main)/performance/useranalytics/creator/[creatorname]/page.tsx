@@ -29,7 +29,7 @@ const CreatorDetails = () => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-lg font-semibold">Mack.Spinka</p>
+            <p className="text-lg font-medium">Mack.Spinka</p>
             <p className="text-[#808080] text-sm">Creator</p>
           </div>
         </div>
@@ -62,37 +62,42 @@ const CreatorDetails = () => {
           </Popover>
         </div>
       </div>
-      <div className="flex items-center space-x-24">
+      <div className="flex items-center space-x-[142.5px]">
         <div className="space-y-2">
-          <p className=" text-sm border-l-4 border-l-[#F79203] pl-2 py-0">
-            No. of Post
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
+            <p className="text-[#373737] text-[14px]">No. of Post</p>
           </p>
-          <p className="text-3xl font-semibold">10</p>
+          <p className="text-[32px] font-medium">10</p>
         </div>
         <div className="border-l space-y-2 pl-2">
-          <p className="text-sm border-l-4 border-l-[#BF3100]  pl-2 py-0">
-            Total no. of fans in forum
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#BF3100] "></div>
+            <p className="text-[#373737] text-[14px]">
+              Total no. of fans in forum
+            </p>
           </p>
-          <p className="text-3xl font-semibold">20m</p>
+          <p className="text-[32px] font-medium">20m</p>
         </div>
         <div className="border-l space-y-2 pl-2">
-          <p className=" text-sm border-l-4 border-l-black pl-2 py-0">
-            Total no. of forums joined
+          <p className="flex items-center text-sm  py-0 space-x-[4px]">
+            <div className="w-[3px] h-[12px] rounded-[32px] bg-[#111810] "></div>
+            <p className="text-[#373737] text-[14px]">
+              Total no. of forums joined
+            </p>
           </p>
-          <p className="text-3xl font-bold">12</p>
+          <p className="text-[32px] font-medium">12</p>
         </div>
       </div>
-      <section className="flex items-start space-x-7 justify-between">
-        <div>
-          <div className="border-b pb-4 mb-4 ">
-            <p className="text-[16px] text-bold font-semibold">
-              Top Engagement
-              <span className="text-[#F75803] ml-3">
-                139,895,3020 Engagement
-              </span>
-            </p>
+      <section className="grid grid-cols-8  space-x-7 ">
+        <div className="col-span-5">
+          <div className="text-[16px] flex items-center space-x-2 border-b pb-4 mb-4 ">
+            <p>Top Engagement</p>
+            <div className="bg-[#C8C8C8] w-[6px] h-[6px] rounded-full"></div>
+            <p className="text-[#F75803] ml-3">139,895,3020 Engagement</p>
           </div>
-          <div className="space-y-2">
+
+          <div className="space-y-3">
             <Image
               src={"/creatorImage.jpg"}
               height={331}
@@ -100,7 +105,7 @@ const CreatorDetails = () => {
               className="object-contain"
               alt="creatorImage"
             />
-            <p className="text-[#5B5B5B]">
+            <p className="text-[#5B5B5B] w-[592px]">
               Lorem ipsum dolor sit amet consectetur. Sed purus amet enim nunc
               quis quam dui. Nisl varius viverra quis leo dolor nisi faucibus
               adipiscing. Ultricies scelerisque nisl ullamcorper enim
@@ -123,7 +128,7 @@ const CreatorDetails = () => {
             </p>
           </div>
         </div>
-        <div className="w-full grow">
+        <div className="col-span-3">
           <p className="font-semibold mb-4 pb-4 border-b">Forums Joined</p>
           <div className="space-y-6">
             <div className="flex border p-2 items-center rounded-md space-x-2">

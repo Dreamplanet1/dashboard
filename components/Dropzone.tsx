@@ -54,12 +54,12 @@ export default function Dropzone({
             alt="fileImage"
           />
           <p className="text-[#808080]">
-            <span className="underline underline-offset-4">
+            <span className="underline underline-offset-4 text-[14px]">
               Click to upload
             </span>{" "}
             or drag and drop
           </p>
-          <p className="text-[#808080]">Jpeg, MP4,PNG or MOV. Max. 2MB.</p>
+          <p className="text-[#808080] text-[12px]">Maximum file size 2 MB.</p>
         </div>
       )}
     </div>

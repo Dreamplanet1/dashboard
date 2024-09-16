@@ -68,12 +68,17 @@ export function UserTable<TData, TValue>({
   );
 
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-3 mt-[24px]">
       {top && (
         <div className="flex justify-between items-center">
           <div></div>
-          <div className="flex w-1/4 items-center border px-2 rounded-md ">
-            <SearchIcon color="#A4A4A4" />
+          <div className="flex w-[350px] items-center border px-2 rounded-md ">
+            <Image
+              src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+              width={20}
+              height={19.88}
+              alt="searchIcon"
+            />
             <Input
               placeholder={placeholder}
               value={
@@ -82,15 +87,20 @@ export function UserTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
+              className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
             />
           </div>
         </div>
       )}
       {bottom && (
         <div className="my-2">
-          <div className="flex w-1/4 items-center border px-2 rounded-md ">
-            <SearchIcon color="#A4A4A4" />
+          <div className="flex w-[350px] items-center border px-2 rounded-md">
+            <Image
+              src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+              width={20}
+              height={19.88}
+              alt="searchIcon"
+            />
             <Input
               placeholder={placeholder}
               value={
@@ -99,7 +109,7 @@ export function UserTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
+              className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
             />
           </div>
         </div>
@@ -107,12 +117,15 @@ export function UserTable<TData, TValue>({
 
       <div className="rounded-md border-0">
         <Table className="border-none">
-          <TableHeader>
+          <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="bg-gray-100" key={headerGroup.id}>
+              <TableRow className="bg-gray-100 " key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead className="text-[#808080]" key={header.id}>
+                    <TableHead
+                      className="text-[#808080] h-[32px]"
+                      key={header.id}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -125,7 +138,7 @@ export function UserTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="mt-10">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -133,7 +146,7 @@ export function UserTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="h-[56px]" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -146,7 +159,7 @@ export function UserTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-20 text-center"
                 >
                   No results.
                 </TableCell>
@@ -157,7 +170,7 @@ export function UserTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-start space-x-2 px-4 py-4">
         <div>
-          <p className="font-semibold">
+          <p className="text-[14px]">
             {startIndex} - {endIndex} of {totalItems}
           </p>
         </div>

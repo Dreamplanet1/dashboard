@@ -12,7 +12,7 @@ const ForumAnalytics = () => {
           Lorem ipsum dolor sit amet consectetur.
         </p>
       </div>
-      <div className="flex items-center space-x-10 w-full">
+      <div className="flex items-center space-x-[75] w-full">
         <div className="space-y-2">
           <p className=" text-sm border-l-4 border-l-[#F79203] pl-2 py-0">
             Total no. of forum in app
