@@ -28,34 +28,35 @@ const page = () => {
       <section className="w-full flex items-center justify-between">
         <div
           onClick={() => {
-            router.push("/report/overview");
+            window.location.href = "/report/overview";
           }}
-          className="flex items-center cursor-pointer transition-all hover:scale-105 active:scale-95"
+          className="flex items-center cursor-pointer transition-all  active:scale-95 text-[14px]"
         >
-          <ArrowLeft className="mr-2" />
+          <ArrowLeft width={20} height={20} className="mr-2" />
           <p>Return to dashboard</p>
         </div>
-        <Button className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95 w-20">
-          Submit
-        </Button>
+        <Button className="btnColored">Submit</Button>
       </section>
       <section className="mt-5 grid grid-cols-6 space-x-4">
         <div className="bg-white px-5 py-10 col-span-4">
           <h2 className="text-[24px] border-b pb-4 mb-6 ">Evaluation Report</h2>
-          <form className="space-y-4">
+          <form className="space-y-[20px]">
             <div>
-              <Label className="font-semibold">Subject</Label>
-              <Input placeholder="Enter Subject" className="text-[#C8C8C8]" />
-            </div>
-            <div>
-              <Label className="font-semibold">Description</Label>
-              <Textarea
-                placeholder="Type your message here."
-                className="h-56"
+              <Label className="font-medium mb-[8px]">Subject</Label>
+              <Input
+                placeholder="Enter Subject"
+                className=" placeholder:text-[#C8C8C8] border-[#C8C8C8] placeholder:text-[14px] focus-visible:ring-0 focus-visible:ring-offset-0 rounded-[8px]"
               />
             </div>
             <div>
-              <p className="text-[#10002E] font-medium mb-1">Media</p>
+              <Label className="font-medium mb-[8px]">Description</Label>
+              <Textarea
+                placeholder="Type your message here."
+                className="h-56  placeholder:text-[#C8C8C8] border-[#C8C8C8] placeholder:text-[14px] focus-visible:ring-0 focus-visible:ring-offset-0 rounded-[8px]"
+              />
+            </div>
+            <div>
+              <p className="text-[#10002E] font-medium mb-[8px]">Media</p>
               <Dropzone
                 files={files}
                 setFiles={setFiles}
@@ -79,14 +80,16 @@ const page = () => {
                         </div>
 
                         <div>
-                          <p className="text-[#111810] font-bold">
+                          <p className="text-[#111810] font-medium">
                             {file.name}
                           </p>
-                          <p className="">{file.size}</p>
+                          <p className="text-[12px] text-[#808080]">
+                            {file.size}
+                          </p>
                         </div>
                       </div>
-                      <div className="space-x-2">
-                        <button className="hover:scale-105 transition-all text-sm font-medium cursor-pointer active:scale-95">
+                      <div className="flex items-center space-x-2">
+                        <Button className="hover:scale-105 transition-all bg-transparent text-black hover:bg-transparent text-sm font-medium cursor-pointer active:scale-95">
                           <Link
                             href={file.preview}
                             download={true}
@@ -94,14 +97,16 @@ const page = () => {
                           >
                             Preview
                           </Link>
-                        </button>
-
-                        <button
-                          onClick={() => removeFile(file.name)}
-                          className="text-sm text-[#BF3100] font-medium cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                        </Button>
+                        <div className="bg-[#C8C8C8] rounded-full w-[4px] h-[4px]"></div>
+                        <Button
+                          // onClick={() => {
+                          //   setisDeleteOpen(true);
+                          // }}
+                          className="text-sm text-[#BF3100] font-medium bg-transparent hover:bg-transparent cursor-pointer hover:scale-105 active:scale-95 transition-all"
                         >
                           Delete
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -111,7 +116,7 @@ const page = () => {
           </form>
         </div>
         <div className="col-span-2 bg-white h-max p-5">
-          <div className="flex items-center">
+          <div className="flex pb-[20px] border-b space-x-[6px] items-center">
             <Avatar>
               <AvatarImage
                 className="object-contain"
@@ -121,20 +126,43 @@ const page = () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-lg font-semibold">Price_Dwight</p>
-              <p className="text-[#808080] text-sm">Creator</p>
+              <p className="font-medium">Price_Dwight</p>
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
+                  <span>
+                    <Image
+                      src={"/icons/profile.svg"}
+                      height={16}
+                      width={16}
+                      alt="profileIcon"
+                    />
+                  </span>
+                  <p className="text-[#808080] text-[14px]">Creator</p>
+                </div>
+                <p className="h-1 w-1 rounded-full bg-[#C8C8C8]"></p>
+                <div className="flex items-center space-x-1">
+                  <span>
+                    <Image
+                      src={"/icons/music.svg"}
+                      height={16}
+                      width={16}
+                      alt="musicIcon"
+                    />
+                  </span>
+                  <p className="text-[#808080] text-[14px]">Artist/Musician</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex justify-between border rounded-md p-3 w-full">
-            <div className="flex border-r grow  flex-col space-y-1">
-              <p className="text-[#808080] text-sm">Members in forum</p>
-              <h2 className="font-semibold text-lg">783</h2>
+          <div className="flex justify-between rounded-md px-3 w-full mt-[20px]">
+            <div className="flex flex-col space-y-1">
+              <p className="text-[#808080] text-[12px]">Members in forum</p>
+              <h2 className="font-Recoleta font-medium text-[20px]">783</h2>
             </div>
-            <div className="flex flex-col space-y-1 grow justify-end">
-              <p className="text-[#808080] text-sm flex justify-end">
-                Post in portfolio
-              </p>
-              <h2 className="font-semibold text-lg flex justify-end">783</h2>
+            <div className="h-[48px] w-[1px] bg-[#E4E4E4]"></div>
+            <div className="flex flex-col space-y-1 ">
+              <p className="text-[#808080] text-[12px]">Post in portfolio</p>
+              <h2 className="font-Recoleta font-medium text-[20px]">783</h2>
             </div>
           </div>
         </div>

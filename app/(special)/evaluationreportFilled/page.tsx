@@ -18,21 +18,23 @@ const page = () => {
     <section className="py-4 px-7 mx-auto max-w-screen-lg ">
       <div
         onClick={() => {
-          router.push("/report/submitted");
+          window.location.href = "/report/submitted";
         }}
-        className="flex items-center cursor-pointer transition-all  active:scale-95"
+        className="flex items-center cursor-pointer transition-all active:scale-95 text-[14px]"
       >
-        <ArrowLeft className="mr-2" />
+        <ArrowLeft width={20} height={20} className="mr-2" />
         <p>Return to dashboard</p>
       </div>
 
       <section className="mt-5 grid grid-cols-6 space-x-4">
         <div className="bg-white px-5 py-10 col-span-4 h-[90vh] flex flex-col">
-          <div>
-            <h2 className="text-[24px]  ">Evaluation Report</h2>
-            <p className="text-[#5B5B5B]">Uploaded 22 Jun 2024, 10:44 am</p>
+          <div className="pb-[16px] border-b">
+            <h2 className="text-[24px]">Evaluation Report</h2>
+            <p className="text-[#5B5B5B] text-[12px]">
+              Uploaded 22 Jun 2024, 10:44 am
+            </p>
           </div>
-          <div className=" mt-10">
+          <div className="mt-[20px]">
             <h3 className="text-[#10002E] font-medium">
               Investment Funds Management
             </h3>
@@ -71,7 +73,7 @@ const page = () => {
           </div>
         </div>
         <div className="col-span-2 bg-white h-max p-5">
-          <div className="flex space-x-1 items-center">
+          <div className="flex pb-[20px] border-b space-x-[6px] items-center">
             <Avatar>
               <AvatarImage
                 className="object-contain"
@@ -81,20 +83,43 @@ const page = () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-lg font-semibold">Price_Dwight</p>
-              <p className="text-[#808080] text-sm">Creator</p>
+              <p className="font-medium">Price_Dwight</p>
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
+                  <span>
+                    <Image
+                      src={"/icons/profile.svg"}
+                      height={16}
+                      width={16}
+                      alt="profileIcon"
+                    />
+                  </span>
+                  <p className="text-[#808080] text-[14px]">Creator</p>
+                </div>
+                <p className="h-1 w-1 rounded-full bg-[#C8C8C8]"></p>
+                <div className="flex items-center space-x-1">
+                  <span>
+                    <Image
+                      src={"/icons/music.svg"}
+                      height={16}
+                      width={16}
+                      alt="musicIcon"
+                    />
+                  </span>
+                  <p className="text-[#808080] text-[14px]">Artist/Musician</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex justify-between border rounded-md p-3 w-full">
-            <div className="flex border-r grow  flex-col space-y-1">
-              <p className="text-[#808080] text-sm">Members in forum</p>
-              <h2 className="font-semibold text-lg">783</h2>
+          <div className="flex justify-between rounded-md px-3 w-full mt-[20px]">
+            <div className="flex flex-col space-y-1">
+              <p className="text-[#808080] text-[12px]">Members in forum</p>
+              <h2 className="font-Recoleta font-medium text-[20px]">783</h2>
             </div>
-            <div className="flex flex-col space-y-1 grow justify-end">
-              <p className="text-[#808080] text-sm flex justify-end">
-                Post in portfolio
-              </p>
-              <h2 className="font-semibold text-lg flex justify-end">783</h2>
+            <div className="h-[48px] w-[1px] bg-[#E4E4E4]"></div>
+            <div className="flex flex-col space-y-1 ">
+              <p className="text-[#808080] text-[12px]">Post in portfolio</p>
+              <h2 className="font-Recoleta font-medium text-[20px]">783</h2>
             </div>
           </div>
         </div>

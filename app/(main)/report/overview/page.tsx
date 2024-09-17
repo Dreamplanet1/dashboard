@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const fruits = [
   { value: "apple", label: "Apple" },
@@ -145,10 +146,20 @@ const ReportOverview = () => {
                   Creator
                 </Label>
                 <div className="w-full">
-                  <div className="flex items-center border rounded-md px-1 py-1">
+                  <div
+                    className={cn(
+                      "flex items-center border rounded-md px-1 py-1",
+                      searchTerm ? "border-[#F75803]" : "border-[#C8C8C8]"
+                    )}
+                  >
                     {selectedFruit ? (
                       <div className="flex items-center">
-                        <SearchIcon color="#C8C8C8" className="h-4 w-4 mr-2" />
+                        <Image
+                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                          width={16}
+                          height={15.9}
+                          alt="searchIcon"
+                        />
                         <div className="flex items-center px-2 py-0 rounded-md space-x-1 border my-2">
                           <Avatar className="w-5 h-5">
                             <AvatarImage
@@ -169,17 +180,23 @@ const ReportOverview = () => {
                       </div>
                     ) : (
                       <div className="flex items-center">
-                        <SearchIcon color="#C8C8C8" className="h-4 w-4 ml-2" />
+                        <Image
+                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                          width={16}
+                          height={15.9}
+                          alt="searchIcon"
+                          className="ml-4"
+                        />
                         <Input
                           placeholder="Search "
-                          className="w-full pl-2 border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="w-full pl-2 border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
                       </div>
                     )}
                   </div>
-                  {searchTerm && !selectedFruit && (
+                  {searchTerm && (
                     <div className="w-full bg-white p-3 rounded-md border mt-1 z-10">
                       {filteredFruits.length > 0 ? (
                         filteredFruits.map((fruit) => (
@@ -215,10 +232,21 @@ const ReportOverview = () => {
                   Assignee
                 </Label>
                 <div className=" w-full">
-                  <div className="flex items-center border rounded-md px-1 py-1">
+                  <div
+                    className={cn(
+                      "flex items-center border rounded-md px-1 py-1",
+                      searchTerm2 ? "border-[#F75803]" : "border-[#C8C8C8]"
+                    )}
+                  >
                     {selectedAssignee ? (
                       <div className="flex items-center">
-                        <SearchIcon color="#C8C8C8" className="h-4 w-4 mr-2" />
+                        <Image
+                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                          width={16}
+                          height={15.9}
+                          alt="searchIcon"
+                          className="ml-4"
+                        />
                         <div className="flex items-center px-2 py-0 rounded-md space-x-1 border my-2">
                           <Avatar className="w-5 h-5">
                             <AvatarImage
@@ -241,17 +269,23 @@ const ReportOverview = () => {
                       </div>
                     ) : (
                       <div className="flex items-center">
-                        <SearchIcon color="#C8C8C8" className="h-4 w-4 ml-2" />
+                        <Image
+                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                          width={16}
+                          height={15.9}
+                          alt="searchIcon"
+                          className="ml-4"
+                        />
                         <Input
                           placeholder="Search"
-                          className="w-full pl-2 border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="w-full pl-2 border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                           value={searchTerm2}
                           onChange={(e) => setSearchTerm2(e.target.value)}
                         />
                       </div>
                     )}
                   </div>
-                  {searchTerm2 && !selectedAssignee && (
+                  {searchTerm2 && (
                     <div className=" w-full bg-white p-3 rounded-md border mt-1 z-10">
                       {filteredAssignees.length > 0 ? (
                         filteredAssignees.map((fruit) => (
@@ -286,7 +320,10 @@ const ReportOverview = () => {
                 <Label htmlFor="investor" className="font-medium">
                   No. of Investor
                 </Label>
-                <Input className="w-full py-5 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border" />
+                <Input
+                  className="w-full py-5 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border placeholder:text-[#C8C8C8] placeholder:text-[14px]"
+                  placeholder="Enter no. of Investor"
+                />
               </div>
             </div>
           </div>

@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 const SubmittedReport = () => {
@@ -50,12 +49,11 @@ const SubmittedReport = () => {
       date: "Sent 30 Jun 2024",
     },
   ];
-  const router = useRouter();
 
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-medium text-2xl"> Submitted Report</h2>
+        <h2 className="text-2xl"> Submitted Report</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
         </p>
@@ -64,7 +62,7 @@ const SubmittedReport = () => {
         {reportData.map((report) => (
           <div
             onClick={() => {
-              router.push("/evaluationreportFilled");
+              window.location.href = "/evaluationreportFilled";
             }}
             className="w-50 border cursor-pointer transition-all hover:scale-105 active:scale-95"
           >

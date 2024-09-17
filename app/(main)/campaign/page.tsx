@@ -295,9 +295,12 @@ const Campaign = () => {
         <Accordion type="single" collapsible>
           <AccordionItem className="px-[20px] pb-[16px]" value="item-1">
             <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">
+              <p className="text-[#373737] font-normal">
                 Artist/Musician
-                <span className="font-Recoleta text-[#F75803] "> (3)</span>
+                <span className="font-Recoleta font-medium text-[#F75803] ">
+                  {" "}
+                  (3)
+                </span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -347,9 +350,12 @@ const Campaign = () => {
           </AccordionItem>
           <AccordionItem className="px-[20px] pb-[16px]" value="item-2">
             <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">
+              <p className="text-[#373737] font-normal">
                 Artist/Musician
-                <span className="text-[#F75803] font-Recoleta"> (3)</span>
+                <span className="text-[#F75803] font-Recoleta font-medium">
+                  {" "}
+                  (3)
+                </span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -399,9 +405,12 @@ const Campaign = () => {
           </AccordionItem>
           <AccordionItem className="px-[20px] pb-[16px]" value="item-3">
             <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">
+              <p className="text-[#373737] font-normal">
                 Artist/Musician
-                <span className="text-[#F75803] font-Recoleta"> (3)</span>
+                <span className="text-[#F75803] font-Recoleta font-semibold">
+                  {" "}
+                  (3)
+                </span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
@@ -452,9 +461,12 @@ const Campaign = () => {
 
           <AccordionItem className="px-[20px] pb-[16px]" value="item-4">
             <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737]">
+              <p className="text-[#373737] font-normal">
                 Artist/Musician
-                <span className="text-[#F75803] font-Recoleta"> (3)</span>
+                <span className="text-[#F75803] font-Recoleta font-medium">
+                  {" "}
+                  (3)
+                </span>
               </p>
               <Image
                 src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}

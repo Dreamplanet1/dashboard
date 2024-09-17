@@ -82,8 +82,8 @@ const Broadcast = () => {
                     </div>
 
                     <div>
-                      <p className="text-[#111810] font-bold">{file.name}</p>
-                      <p className="">{file.size}</p>
+                      <p className="text-[#111810] font-medium">{file.name}</p>
+                      <p className="text-[12px] text-[#808080]">{file.size}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
