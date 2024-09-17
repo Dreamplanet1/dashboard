@@ -505,7 +505,7 @@ const Campaign = () => {
         </Accordion>
       </section>
 
-      <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
+      {/* <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
         <SheetContent className="sm:max-w-[519px] overflow-y-auto scrollbar-hide">
           <SheetHeader>
             <SheetTitle className="flex justify-between">
@@ -805,7 +805,7 @@ const Campaign = () => {
             </div>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };
