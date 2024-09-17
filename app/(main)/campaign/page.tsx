@@ -201,7 +201,7 @@ const Campaign = () => {
   ];
 
   return (
-    <div className="grid grid-cols-8 w-full space-x-4">
+    <div className="w-full grid grid-cols-8 space-x-4">
       <section className="col-span-6 flex flex-col space-y-7">
         <div>
           <h2 className="text-2xl">Campaign</h2>
@@ -505,7 +505,7 @@ const Campaign = () => {
         </Accordion>
       </section>
 
-      {/* <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
+      <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
         <SheetContent className="sm:max-w-[519px] overflow-y-auto scrollbar-hide">
           <SheetHeader>
             <SheetTitle className="flex justify-between">
@@ -805,7 +805,7 @@ const Campaign = () => {
             </div>
           </div>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </div>
   );
 };
