@@ -407,7 +407,7 @@ const Campaign = () => {
             <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
               <p className="text-[#373737] font-normal">
                 Artist/Musician
-                <span className="text-[#F75803] font-Recoleta font-semibold">
+                <span className="text-[#F75803] font-Recoleta font-medium">
                   {" "}
                   (3)
                 </span>

@@ -52,14 +52,12 @@ const AddMemberForm = () => {
       onSubmit={(e) => e.preventDefault()}
       className="mx-auto bg-white form-background max-w-[500px] border-t-[#547AFF] border-t-8"
     >
-      <div className="w-full py-4 px-7 mb-7 border-b flex items-center justify-between">
-        <h2 className="font-semibold">Add Member</h2>
+      <div className="w-full py-4 px-7  border-b flex items-center justify-between">
+        <h2 className="text-[20px] font-normal">Add Member</h2>
         <div className="space-x-2">
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="bg-transparent hover:bg-transparent border transition-all hover:scale-105 active:scale-95 text-black">
-                Copy link
-              </Button>
+              <Button className="btnPlain">Copy link</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md ">
               <DialogHeader className="border-b py-2">
@@ -108,9 +106,7 @@ const AddMemberForm = () => {
 
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95 text-white">
-                Submit
-              </Button>
+              <Button className="btnColored">Submit</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader className="border-b pb-4">
@@ -169,66 +165,81 @@ const AddMemberForm = () => {
           </Dialog>
         </div>
       </div>
-      <div className="space-y-4 py-4 px-7 ">
+      <div className="space-y-[20px] py-[48px] px-7 ">
         <div className="flex items-center space-x-3">
-          <div className="grid w-full  items-center gap-1.5">
-            <Label className="font-semibold" htmlFor="firstName">
+          <div className="grid w-full  items-center gap-[8px]">
+            <Label
+              className="font-medium text-[14px] text-[#10002E]"
+              htmlFor="firstName"
+            >
               First Name
             </Label>
             <Input
               type="firstName"
               id="firstName"
               placeholder="Enter First Name"
-              className="focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
           </div>
-          <div className="grid w-full  items-center gap-1.5">
-            <Label className="font-semibold" htmlFor="lastName">
+          <div className="grid w-full  items-center gap-[8px]">
+            <Label
+              className="font-medium text-[14px] text-[#10002E]"
+              htmlFor="lastName"
+            >
               Last Name
             </Label>
             <Input
               type="lastName"
               id="lastName"
               placeholder="Enter Last Name"
-              className="focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
           </div>
         </div>
-        <div>
-          <Label className="font-semibold" htmlFor="country">
+        <div className="grid w-full  items-center gap-[8px]">
+          <Label
+            className="font-medium text-[14px] text-[#10002E]"
+            htmlFor="country"
+          >
             Country
           </Label>
           <select
             id="country"
-            className="w-full p-2 border rounded text-[#8B849B] text-[14px] focus:ring-0 focus:outline-none"
+            className="w-full p-2 border  text-[#8B849B] text-[14px] focus:ring-0 focus:outline-none  border-[#C8C8C8] rounded-[8px]"
           >
             <option value="" disabled selected>
-              Select Country
+              <p className="text-[#C8C8C8]">Select Country</p>
             </option>
             <option value="nigeria">Nigeria</option>
             <option value="ghana">Ghana</option>
           </select>
         </div>
         <div>
-          <div className="grid w-full  items-center gap-1.5">
-            <Label className="font-semibold" htmlFor="mobile">
+          <div className="grid w-full  items-center gap-[8px]">
+            <Label
+              className="font-medium text-[14px] text-[#10002E]"
+              htmlFor="mobile"
+            >
               Mobile No.
             </Label>
             <Input
               type="mobile"
               id="mobile"
               placeholder="Enter Mobile No."
-              className="focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
           </div>
         </div>
-        <div>
-          <Label className="font-semibold" htmlFor="role">
+        <div className="grid w-full  items-center gap-[8px]">
+          <Label
+            className="font-medium text-[14px] text-[#10002E]"
+            htmlFor="role"
+          >
             Role
           </Label>
           <select
             id="role"
-            className="w-full p-2 border rounded text-[#8B849B] text-[14px] focus:ring-0 focus:outline-none"
+            className="w-full p-2 border  text-[#8B849B] text-[14px] focus:ring-0 focus:outline-none  border-[#C8C8C8] rounded-[8px]"
           >
             <option value="" disabled selected>
               Enter Role
@@ -238,8 +249,11 @@ const AddMemberForm = () => {
           </select>
         </div>
         <div>
-          <div className="flex flex-col  transition-all space-y-2">
-            <Label htmlFor="features" className="font-semibold">
+          <div className="flex flex-col  transition-all space-y-[8px]">
+            <Label
+              htmlFor="features"
+              className="font-medium text-[14px] text-[#10002E] "
+            >
               Features
             </Label>
             <button

@@ -1,9 +1,63 @@
+"use client";
 import { UserTable } from "@/components/UserTable";
-import { data } from "@/mock/row";
-import { columns } from "./paymentcolumns";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { paymentData } from "@/mock/row";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const PaymentHistory = () => {
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <div className="flex items-center space-x-1">
+          <Avatar>
+            <AvatarImage
+              className="object-contain"
+              src="https://github.com/shadcn.png"
+              alt="@shadcn"
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <div>
+            <p>{row.getValue("name")}</p>
+            <p className="text-[#A4A4A4]">@{row.getValue("name")}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "type",
+      header: "User type",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">{row.getValue("type")}</p>
+      ),
+    },
+    {
+      accessorKey: "payment",
+      header: "Payment type",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">{row.getValue("payment")}</p>
+      ),
+    },
+    {
+      accessorKey: "amount",
+      header: "Amount",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#2BAC47]">{row.getValue("amount")}</p>
+      ),
+    },
+    {
+      accessorKey: "date",
+      header: "Date",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">{row.getValue("date")}</p>
+      ),
+    },
+  ];
+
   return (
     <div className="flex flex-col space-y-7">
       <div>
@@ -45,7 +99,7 @@ const PaymentHistory = () => {
         <UserTable
           top={true}
           placeholder="Search username, full name..."
-          data={data}
+          data={paymentData}
           columns={columns}
         />
       </div>

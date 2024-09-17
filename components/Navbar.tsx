@@ -4,7 +4,7 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <div className="pt-[40px] pb-4 sticky  top-0 flex items-center justify-between border-b z-30">
+    <div className="pt-[40px] pb-4 sticky  top-0 flex items-center bg-white justify-between border-b z-30">
       <div>
         <Image
           src={"/DASHBOARDASSETS/LOGO/DASHBOARD LOGO.svg"}

@@ -559,4 +559,26 @@ export const accessData = [
   },
 ];
 
-
+export const paymentData = [
+  {
+    name: "Mack Spinka",
+    type: "Creator",
+    payment: "Wallet top-up",
+    amount: "+ $700",
+    date: "20 Jun, 2024",
+  },
+  {
+    name: "Pedro Welch",
+    type: "Investor",
+    payment: "Donation",
+    amount: "+ $200",
+    date: "20 Jun, 2024",
+  },
+  {
+    name: "Mack Spinka",
+    type: "Fan",
+    payment: "Subscription",
+    amount: "+ $400",
+    date: "23 Jun, 2024",
+  },
+];

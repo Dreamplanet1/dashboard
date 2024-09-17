@@ -124,12 +124,12 @@ const Broadcast = () => {
         <DialogContent className="sm:max-w-[384px]">
           <div className="flex flex-col items-center justify-center gap-2 mt-7">
             <Image
-              src={"/icons/trash.png"}
+              src={"/DASHBOARDASSETS/ILLUSTRATION/DELETE.png"}
               height={72}
-              width={47.61}
+              width={69.68}
               alt="trashIcon"
             />
-            <p className="text-[20px]">Delete this Broadcast?</p>
+            <p className="text-[20px] font-medium">Delete this Broadcast?</p>
             <p className="text-[14px] text-center text-[#808080]">
               Are you sure you want to delete this broadcast? This action is
               irreversible.
@@ -139,13 +139,13 @@ const Broadcast = () => {
           <DialogFooter>
             <div className="flex w-full justify-center items-center space-x-2">
               <Button
-                className="w-full text-[14px] text-black bg-transparent hover:bg-transparent transition-all hover:scale-105 active:scale-95 border"
+                className="w-full shadow-md text-[14px] text-black bg-transparent hover:bg-transparent transition-all hover:scale-105 active:scale-95 border"
                 type="submit"
               >
                 Cancel
               </Button>
               <Button
-                className="w-full text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
+                className="w-full shadow-md text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
                 type="submit"
               >
                 Delete
