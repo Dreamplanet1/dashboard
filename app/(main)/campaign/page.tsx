@@ -201,7 +201,7 @@ const Campaign = () => {
   ];
 
   return (
-    <div className="grid grid-cols-8 space-x-4">
+    <div className="grid grid-cols-8 w-full space-x-4">
       <section className="col-span-6 flex flex-col space-y-7">
         <div>
           <h2 className="text-2xl">Campaign</h2>
