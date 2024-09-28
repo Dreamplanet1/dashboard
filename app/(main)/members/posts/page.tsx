@@ -6,17 +6,46 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, CheckIcon, ChevronDownIcon, Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import useGetUsers from "@/hooks/useGetUsers";
 const Posts = () => {
+  const { updateUserPosts } = useGetUsers();
   const [isOpen, setisOpen] = useState(false);
   const closeDialog = () => setisOpen(false);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
-  const closeDeleteDialog = () => setisDeleteOpen(false);
+  const [postdetail, setPostdetail] = useState<any>();
+  const closeDeleteDialog = () => {
+    setisDeleteOpen(false);
+    setPostdetail({});
+  };
   const [isRestoreOpen, setisRestoreOpen] = useState(false);
   const closeRestoreDialog = () => setisRestoreOpen(false);
   const options = ["All Post", "Forum", "Feed"];
-  const [selected, setSelected] = useState<string | null>("All Post");
+  const [selected, setSelected] = useState<string>("All Post");
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement | null>(null);
+  const { userPost, userProfile } = useSelector(
+    (state: RootState) => state.usersOnboarded
+  );
+
+  const timeSincePost = (createdAt: string) => {
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const diffInMs = now.getTime() - createdDate.getTime();
+
+    const minutes = Math.floor(diffInMs / (1000 * 60));
+    const hours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    const months = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30));
+    const years = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 365));
+
+    if (minutes < 60) return `${minutes}min`;
+    else if (hours < 24) return `${hours}h`;
+    else if (days < 30) return `${days}d`;
+    else if (months < 12) return `${months}m`;
+    else return `${years}y`;
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,14 +85,21 @@ const Posts = () => {
   const handleSelect = (option: string) => {
     setSelected(option);
   };
+
+  useEffect(() => {
+    if (selected === "All Post") {
+      updateUserPosts(userProfile.id, "all");
+    } else {
+      updateUserPosts(userProfile.id, selected.toLowerCase());
+    }
+  }, [selected]);
+
   const router = useRouter();
   useEffect(() => {
     const timer = setTimeout(() => {
       const closeButton = document.querySelector(
         "button.absolute.right-4.top-4"
       );
-      console.log(closeButton);
-
       if (closeButton) {
         closeButton.remove();
       }
@@ -89,13 +125,13 @@ const Posts = () => {
           <Avatar>
             <AvatarImage
               className="object-cover"
-              src="https://s3-alpha-sig.figma.com/img/ca9b/8186/93a3470ebce5d867977c8a74e082ca1a?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fmd0M4meW0V58p-r2-hSqLTvPlF6zkdRjJXsSirQv9i3qlMCtMCkTBm5xsWSFF08dlsuJpqXm7wFwLQWT5rmIMiGWha2OO8~WwhlTNSRURFscCvdyYuMxuELIHrrG-JBayIVp-r7py7aNBAbf~NKndO~IPQOJh~TavdlhmrBZdDWHfZ2W~WIu6la4E16WSCUXgQpvOLv6dtHTnWbI6YBOVRpoqIPufyDaDnLsHTWp-KdnVFMYCDeZWVCfpGf1Xn32RLHvJhI9R-bfIUa-~gozZdTcm2wtstOvizayn0DCzm40lsDIYvnDYTF73rvcL5Sp~DjQv4vgFjyzL5vdQm87A__"
+              src={userProfile?.image}
               alt="@shadcn"
             />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{userProfile.fullName[0]}</AvatarFallback>
           </Avatar>
           <div>
-            <p>Mack Spinka</p>
+            <p>{userProfile.fullName}</p>
             <div className="flex items-center space-x-2">
               <p className="text-[#808080] flex items-center space-x-2">
                 <span className="mr-1">
@@ -106,7 +142,7 @@ const Posts = () => {
                     alt="profileIcon"
                   />
                 </span>
-                Creator
+                {userProfile.type}
               </p>
               <div className="h-1 w-1 rounded-full bg-[#808080]"></div>
               <p className="text-[#808080] flex items-center space-x-2">
@@ -164,220 +200,107 @@ const Posts = () => {
           )}
         </div>
       </div>
-      <div>
+      {userPost ? (
         <div>
-          <p className="text-[20px] font-medium mb-2">All Post</p>
+          <div>
+            <p className="text-[20px] font-medium mb-2">All Post</p>
+          </div>
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {userPost.map((post: any) => {
+              return (
+                <div
+                  key={post?.id}
+                  className="relative border rounded-md transition-all "
+                >
+                  <div className="relative w-full h-[201px]">
+                    {post?.feed?.media_url ? (
+                      <>
+                        <Image
+                          src={post?.feed?.media_url[0]}
+                          layout="fill"
+                          objectFit="cover"
+                          alt="userpost"
+                        />
+                        {/* <video width="320" height="201" controls>
+                        <source src={post.feed.media_url[0]} />
+                        Error Message
+                      </video> */}
+                      </>
+                    ) : (
+                      <div className="w-full bg-black flex items-center justify-center h-full">
+                        <Avatar className="w-[72px] h-[72px]">
+                          <AvatarImage
+                            className="object-cover "
+                            src={userProfile.image}
+                            alt="@shadcn"
+                          />
+                          <AvatarFallback>
+                            {userProfile.fullName[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[14px] my-2 text-[#5B5B5B] px-4">
+                    {post?.feed?.text_content}
+                    <span
+                      onClick={() => {
+                        setisOpen(true);
+                        setPostdetail(post);
+                      }}
+                      className="cursor-pointer ml-2 text-[#F75803]"
+                    >
+                      view more.
+                    </span>
+                  </p>
+                  <div className="flex space-x-4 my-2 px-4">
+                    <p className="text-[#A4A4A4] text-[12px] flex items-center space-x-1">
+                      <span className="mr-2">
+                        <Image
+                          src={"/icons/likeIcon.svg"}
+                          height={14}
+                          width={14}
+                          alt="likeicon"
+                        />
+                      </span>
+                      {post?.likes_count}
+                    </p>
+                    <div className="border-l border-[#E0E0E0] h-4"></div>
+                    <p className="text-[#A4A4A4] text-[12px] flex items-center">
+                      <span className="mr-2">
+                        <Image
+                          src={"/icons/messageIcon.svg"}
+                          height={14}
+                          width={14}
+                          alt="messageicon"
+                        />
+                      </span>
+                      {post?.comments_count}
+                    </p>
+                  </div>
+                  <div
+                    onClick={() => {
+                      setisOpen(false);
+                      setisDeleteOpen(true);
+                    }}
+                    className="cursor-pointer absolute right-0 top-2 z-20"
+                  >
+                    <Image
+                      src="/icons/whitetrash.svg"
+                      alt="deletepost"
+                      width={14}
+                      height={14}
+                      className="mr-3 z-40"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Repeatable Card */}
-          <div className="relative border rounded-md transition-all ">
-            <div className="relative w-full h-[201px]">
-              <Image
-                src="https://s3-alpha-sig.figma.com/img/0478/42ba/3c812f02a3f72966c72e98d38f88eb79?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Px~UHe0rbpoAmXUAIQ47qqsTrEbemJLPbVZAfIeEMY~Vv8pWLAU9xEwBGYR3bvpNE3uylIQYsO5oc6OREikMUA962XeTyW-iuNsb4S9Ir0mhpJbPmGyW32xX9RvAX2Y3lKr0QdcqCJ9S8WlrDM-eN4RR5qzHp8bF8764LfD3tXxVeeQL71qJTR6nZ5ewq7Xm2iefDAbLKpFRdAtu5KFL3zOI4Tey4gdKyz8ySLMHsXZemKYiyTfW483N5J0QhxcNVx1hc3y4d8Kp1iyaJNv4oQavOyzfNqkzB08FDsXtOGVWbEJOF8On-nWSHDyTBUOb4rjLuQDmmKrz9F3iZs5K~A__"
-                layout="fill"
-                objectFit="cover"
-                alt="foulpost"
-              />
-            </div>
-            <p className="text-[14px] my-2 text-[#5B5B5B] px-4">
-              Lorem ipsum dolor sit amet consectetur. Ipsum...{" "}
-              <span
-                onClick={() => {
-                  setisOpen(true);
-                }}
-                className="cursor-pointer text-[#F75803]"
-              >
-                view more.
-              </span>
-            </p>
-            <div className="flex space-x-4 my-2 px-4">
-              <p className="text-[#A4A4A4] text-[12px] flex items-center space-x-1">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/likeIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="likeicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-              <div className="border-l border-[#E0E0E0] h-4"></div>
-              <p className="text-[#A4A4A4] text-[12px] flex items-center">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/messageIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="messageicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-            </div>
-            <div
-              onClick={() => {
-                setisOpen(false);
-                setisDeleteOpen(true);
-              }}
-              className="cursor-pointer absolute right-0 top-2 z-20"
-            >
-              <Image
-                src="/icons/whitetrash.svg"
-                alt="deletepost"
-                width={14}
-                height={14}
-                className="mr-3"
-              />
-            </div>
-          </div>
-          <div className="border relative rounded-md transition-all ">
-            <div className="relative w-full bg-black h-[201px]">
-              <div className="w-full flex items-center justify-center h-full">
-                <Avatar className="w-[72px] h-[72px]">
-                  <AvatarImage
-                    className="object-cover "
-                    src={
-                      "https://s3-alpha-sig.figma.com/img/ca9b/8186/93a3470ebce5d867977c8a74e082ca1a?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fmd0M4meW0V58p-r2-hSqLTvPlF6zkdRjJXsSirQv9i3qlMCtMCkTBm5xsWSFF08dlsuJpqXm7wFwLQWT5rmIMiGWha2OO8~WwhlTNSRURFscCvdyYuMxuELIHrrG-JBayIVp-r7py7aNBAbf~NKndO~IPQOJh~TavdlhmrBZdDWHfZ2W~WIu6la4E16WSCUXgQpvOLv6dtHTnWbI6YBOVRpoqIPufyDaDnLsHTWp-KdnVFMYCDeZWVCfpGf1Xn32RLHvJhI9R-bfIUa-~gozZdTcm2wtstOvizayn0DCzm40lsDIYvnDYTF73rvcL5Sp~DjQv4vgFjyzL5vdQm87A__"
-                    }
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </div>
-            </div>
-            <p className="text-[14px] my-2 text-[#5B5B5B] px-4">
-              Lorem ipsum dolor sit amet consectetur. Ipsum...{" "}
-              <span
-                onClick={() => {
-                  setisOpen(true);
-                }}
-                className="cursor-pointer text-[#F75803]"
-              >
-                view more.
-              </span>
-            </p>
-            <div className="flex space-x-4 my-2 px-4">
-              <p className="text-[#A4A4A4] text-[12px] flex items-center space-x-1">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/likeIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="likeicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-              <div className="border-l border-[#E0E0E0] h-4"></div>
-              <p className="text-[#A4A4A4] text-[12px] flex items-center">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/messageIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="messageicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-            </div>
-            <div
-              onClick={() => {
-                setisOpen(false);
-                setisDeleteOpen(true);
-              }}
-              className="cursor-pointer absolute right-0 top-2 z-20"
-            >
-              <Image
-                src="/icons/whitetrash.svg"
-                alt="deletepost"
-                width={14}
-                height={14}
-                className="mr-3"
-              />
-            </div>
-          </div>
-          <div className="border rounded-md transition-all hover:scale-105 active:scale-90">
-            <div className="relative w-full h-[201px]">
-              <Image
-                src="https://s3-alpha-sig.figma.com/img/36ec/d26e/856e11cbb50e46ea3636fa8f97ce5ebf?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=W9x6bEzfbJdm31KgBmEwTDMtxctRperr0WbhCtUsLfunbZEujzZTLt-zw3bpsgLhgB4HxToH75UpmgjDDZTR1liy0vhncAyBsC2eoeEAR7sw0FQabbpsJ0AVHMQLotrGNAdjZa0wF7lz92Le4OVgK3mkDK~SiGsCsk8dcwJgobqMPmZyKMlGvHb0KiDlrmla7tSf0GPMJH~G6oR167J93wQqNnM-gLmT6rTyC1HQcKmwvTcXB8R-ps98pbphPGWLSOrdoImWvqhmbfUWk~MC4J9xY188Q28n-rrFNXNNQXZ~hkJeYRZIRfC0X2L4LMACB9v98gH7RBjtQiSBcwmtxw__"
-                layout="fill"
-                objectFit="cover"
-                alt="foulpost"
-              />
-            </div>
-            <p className="text-[14px] my-2 text-[#5B5B5B] px-4">
-              Lorem ipsum dolor sit amet consectetur. Ipsum...view more.
-            </p>
-            <div className="flex space-x-4 my-2 px-4">
-              <p className="text-[#A4A4A4] text-[12px] flex items-center space-x-1">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/likeIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="likeicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-              <div className="border-l border-[#E0E0E0] h-4"></div>
-              <p className="text-[#A4A4A4] text-[12px] flex items-center">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/messageIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="messageicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-            </div>
-          </div>
-          <div className="border rounded-md transition-all hover:scale-105 active:scale-90">
-            <div className="relative w-full h-[201px]">
-              <Image
-                src="https://s3-alpha-sig.figma.com/img/0478/42ba/3c812f02a3f72966c72e98d38f88eb79?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Px~UHe0rbpoAmXUAIQ47qqsTrEbemJLPbVZAfIeEMY~Vv8pWLAU9xEwBGYR3bvpNE3uylIQYsO5oc6OREikMUA962XeTyW-iuNsb4S9Ir0mhpJbPmGyW32xX9RvAX2Y3lKr0QdcqCJ9S8WlrDM-eN4RR5qzHp8bF8764LfD3tXxVeeQL71qJTR6nZ5ewq7Xm2iefDAbLKpFRdAtu5KFL3zOI4Tey4gdKyz8ySLMHsXZemKYiyTfW483N5J0QhxcNVx1hc3y4d8Kp1iyaJNv4oQavOyzfNqkzB08FDsXtOGVWbEJOF8On-nWSHDyTBUOb4rjLuQDmmKrz9F3iZs5K~A__"
-                layout="fill"
-                objectFit="cover"
-                alt="foulpost"
-              />
-            </div>
-            <p className="text-[14px] my-2 text-[#5B5B5B] px-4">
-              Lorem ipsum dolor sit amet consectetur. Ipsum...view more.
-            </p>
-            <div className="flex space-x-4 my-2 px-4">
-              <p className="text-[#A4A4A4] text-[12px] flex items-center space-x-1">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/likeIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="likeicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-              <div className="border-l border-[#E0E0E0] h-4"></div>
-              <p className="text-[#A4A4A4] text-[12px] flex items-center">
-                <span className="mr-2">
-                  <Image
-                    src={"/icons/messageIcon.svg"}
-                    height={14}
-                    width={14}
-                    alt="messageicon"
-                  />
-                </span>
-                1,000,645
-              </p>
-            </div>
-          </div>
-
-          {/* Repeat the same structure for other cards */}
-        </div>
-      </div>
+      ) : (
+        <p className="text-[20px] font-medium mb-2">No Post</p>
+      )}
 
       <Dialog open={isOpen} onOpenChange={closeDialog}>
         <DialogContent className="sm:max-w-[375px] sm:rounded-sm p-0 pb-4 ">
@@ -386,22 +309,22 @@ const Posts = () => {
               <Avatar>
                 <AvatarImage
                   className="object-cover"
-                  src={
-                    "https://s3-alpha-sig.figma.com/img/ca9b/8186/93a3470ebce5d867977c8a74e082ca1a?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fmd0M4meW0V58p-r2-hSqLTvPlF6zkdRjJXsSirQv9i3qlMCtMCkTBm5xsWSFF08dlsuJpqXm7wFwLQWT5rmIMiGWha2OO8~WwhlTNSRURFscCvdyYuMxuELIHrrG-JBayIVp-r7py7aNBAbf~NKndO~IPQOJh~TavdlhmrBZdDWHfZ2W~WIu6la4E16WSCUXgQpvOLv6dtHTnWbI6YBOVRpoqIPufyDaDnLsHTWp-KdnVFMYCDeZWVCfpGf1Xn32RLHvJhI9R-bfIUa-~gozZdTcm2wtstOvizayn0DCzm40lsDIYvnDYTF73rvcL5Sp~DjQv4vgFjyzL5vdQm87A__"
-                  }
+                  src={userProfile?.image}
                   alt="@shadcn"
                 />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback>{userProfile.fullName[0]}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-[14px] flex items-center space-x-2 font-semibold">
-                  Mack.Sprinka
+                  {userProfile.fullName}
                   <span className="flex items-center space-x-2">
                     <div className="h-1 w-1 ml-2 bg-[#A4A4A4] rounded-full"></div>
-                    <p className="text-[#A4A4A4] text-[12px]">3d</p>
+                    <p className="text-[#A4A4A4] text-[12px]">
+                      {timeSincePost(postdetail?.feed?.created_at)}
+                    </p>
                   </span>
                 </p>
-                <p className="text-[12px] text-[#A4A4A4]">Creator</p>
+                <p className="text-[12px] text-[#A4A4A4]">{userProfile.type}</p>
               </div>
             </div>
             <div>
@@ -424,18 +347,35 @@ const Posts = () => {
           </div>
           <div className=" rounded-md transition-all ">
             <div className="relative w-full h-[170px]">
-              <Image
-                src="https://s3-alpha-sig.figma.com/img/435c/0823/e0826fd756a44c598ceda33bb41512ce?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Gk0deDW6SScG5j2lKWVBIVbfNKVbeExT2vSvXXrlm1Z85it1xYn5JBarK65h86BonGHow5-foD4U-Xlyt8bGqW5HubQD8I2CWaqQ0krdKk0KTj8HG1RfOfKW1okYvZhRAyHAhE9Zit2jnUFmZGNejVrt~FDYNVgjoYAXrqufREYQtwDywS2HLcP1wa6OYWkuwrF-Ljrr20EBzosE6MYhTM8UTVipv7SwWjWcDoGT8NPEQVQUhVkZCu6kTC3Srs~fDTc-4DQUrpd9S67O7oVzPKwT7Wpds2-3jt6FDuTuMfQz9Rp~qFW9cjtlST~2ts0dQq-EQ~s8gQjJRk8zMyytQA__"
-                layout="fill"
-                objectFit="cover"
-                alt="foulpost"
-              />
+              {postdetail?.feed?.media_url ? (
+                <>
+                  <Image
+                    src={postdetail?.feed?.media_url[0]}
+                    layout="fill"
+                    objectFit="cover"
+                    alt="userpost"
+                  />
+                  {/* <video width="320" height="201" controls>
+                        <source src={postdetail.feed.media_url[0]} />
+                        Error Message
+                      </video> */}
+                </>
+              ) : (
+                <div className="w-full bg-black flex items-center justify-center h-full">
+                  <Avatar className="w-[72px] h-[72px]">
+                    <AvatarImage
+                      className="object-cover "
+                      src={userProfile.image}
+                      alt="@shadcn"
+                    />
+                    <AvatarFallback>{userProfile?.fullName[0]}</AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
             </div>
             <div className="px-6">
               <p className="text-[14px] my-2 py-2 text-[#5B5B5B]  border-b">
-                Capturing the essence of Beyoncé's power and grace, I immerse
-                myself in the soul-stirring melody of 'Hello' 🎤✨ With every
-                note, I channel her energy, infusing each lyric with raw{" "}
+                {postdetail?.feed?.text_content}
                 <span className="text-[#F75803]">
                   #BeyonceVibes #HelloCover
                 </span>
@@ -452,7 +392,7 @@ const Posts = () => {
                     alt="likeicon"
                   />
                 </span>
-                1,147
+                {postdetail?.likes_count}
               </p>
 
               <p className="text-[#A4A4A4] text-[12px] flex items-center">
@@ -464,7 +404,7 @@ const Posts = () => {
                     alt="messageicon"
                   />
                 </span>
-                37
+                {postdetail?.comments_count}
               </p>
               <Image
                 src={"/icons/shareIcon.svg"}

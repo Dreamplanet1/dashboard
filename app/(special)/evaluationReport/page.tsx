@@ -18,7 +18,6 @@ interface FileWithPreview extends File {
 
 const page = () => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  console.log(files);
   const removeFile = (fileName: string) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
   };

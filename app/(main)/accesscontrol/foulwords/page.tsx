@@ -42,7 +42,6 @@ const foulwords = () => {
       const closeButton = document.querySelector(
         "button.absolute.right-4.top-4"
       );
-      console.log(closeButton);
 
       if (closeButton) {
         closeButton.remove();

@@ -39,7 +39,7 @@ const CreatorDetails = () => {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[140px] text-black justify-end space-x-2 text-left font-normal",
+                  "w-max text-black justify-end space-x-2 text-left font-normal",
                   !date && "text-muted-foreground text-black"
                 )}
               >

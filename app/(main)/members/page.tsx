@@ -25,12 +25,113 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CalendarIcon, EllipsisVertical } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import useGetUsers from "@/hooks/useGetUsers";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
 
 const Members = () => {
+  const {
+    getUsersAll,
+    getUsersCreator,
+    getUsersFan,
+    getUsersInvestor,
+    updateStatus,
+    getUserPosts,
+  } = useGetUsers();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const { usersAll, usersCreator, usersFan, usersInvestor } = useSelector(
+    (state: RootState) => state.usersOnboarded
+  );
+  const [searchTermAll, setSearchTermAll] = useState("");
+
+  const filteredUsersAll = usersAll?.filter(
+    (user) =>
+      user.full_name?.toLowerCase().includes(searchTermAll.toLowerCase()) ||
+      user.username?.toLowerCase().includes(searchTermAll.toLowerCase())
+  );
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [selectedStatusCreator, setSelectedStatusCreator] =
+    useState<string>("all");
+  const [selectedStatusFan, setSelectedStatusFan] = useState<string>("all");
+  const [profileData, setprofileData] = useState<any>({});
+  const [date, setDate] = useState<Date>();
+
+  const [selectedStatusInvestor, setSelectedStatusInvestor] =
+    useState<string>("all");
+
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value);
+  };
+  const handleStatusChangeCreator = (value: string) => {
+    setSelectedStatusCreator(value);
+  };
+  const handleStatusChangeFan = (value: string) => {
+    setSelectedStatusFan(value);
+  };
+  const handleStatusChangeInvestor = (value: string) => {
+    setSelectedStatusInvestor(value);
+  };
+  const hasMounted = useRef(false);
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status = selectedStatus === "all" ? null : selectedStatus;
+      getUsersAll(status);
+    }
+  }, [selectedStatus]);
+
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status =
+        selectedStatusCreator === "all" ? null : selectedStatusCreator;
+      getUsersAll(status);
+    }
+  }, [selectedStatusCreator]);
+
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status = selectedStatusFan === "all" ? null : selectedStatusFan;
+      getUsersAll(status);
+    }
+  }, [selectedStatusFan]);
+
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status =
+        selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
+      getUsersAll(status);
+    }
+  }, [selectedStatusInvestor]);
+
+  useEffect(() => {
+    getUsersAll(null);
+    // getUsersCreator(null);
+    // getUsersFan(null);
+    // getUsersInvestor(null);
+
+    hasMounted.current = true;
+  }, []);
+
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,40 +154,55 @@ const Members = () => {
     {
       accessorKey: "name",
       header: "Name",
-      cell: ({ row }) => (
-        <div className="flex items-center space-x-1">
-          <Avatar>
-            <AvatarImage
-              className="object-contain"
-              src="https://github.com/shadcn.png"
-              alt="@shadcn"
-            />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <div>
-            <p>{row.getValue("name")}</p>
-            <p className="text-[#A4A4A4]">@{row.getValue("name")}</p>
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <div className="flex items-center space-x-1">
+            <Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={profile.image}
+                alt="@shadcn"
+              />
+              <AvatarFallback className="bg-gray-200 text-black">
+                {profile.name[0]}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p>{row.getValue("name")}</p>
+              <p className="text-[#A4A4A4]">@{profile.username}</p>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       accessorKey: "country",
       header: "Country",
+      cell: ({ row }) => (
+        <p className="text-[#A4A4A4]">{row.getValue("country") || "Null"}</p>
+      ),
     },
     {
-      accessorKey: "subscription",
+      accessorKey: "subscription_plan",
       header: "Subscription type",
+      cell: ({ row }) => (
+        <p className="text-[#A4A4A4]">{row.getValue("subscription_plan")}</p>
+      ),
     },
     {
-      accessorKey: "date",
+      accessorKey: "createdAt",
       header: "Date joined",
+      cell: ({ row }) => {
+        const dateJoined = String(row.getValue("createdAt")).slice(0, 10); // Cast to string
+        return <p className="text-[#A4A4A4]">{dateJoined}</p>;
+      },
     },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) =>
-        row.getValue("status") === "Activated" ? (
+        row.getValue("status") === "active" ? (
           <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
@@ -96,7 +212,7 @@ const Members = () => {
                 alt="activateIcon"
               />
             </span>
-            <p>{row.getValue("status")}</p>
+            <p>Activated</p>
           </div>
         ) : (
           <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
@@ -108,7 +224,7 @@ const Members = () => {
                 alt="deactivateIcon"
               />
             </span>
-            <p>{row.getValue("status")}</p>
+            <p>Deactivated</p>
           </div>
         ),
     },
@@ -128,7 +244,8 @@ const Members = () => {
             <DropdownMenuContent className="space-y-2" align="end">
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={() => {
+                onClick={async () => {
+                  await getUserPosts(profile.id, "all");
                   router.push("/members/posts");
                 }}
               >
@@ -144,7 +261,10 @@ const Members = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={openSheet}
+                onClick={() => {
+                  openSheet();
+                  setprofileData(profile);
+                }}
               >
                 <span>
                   <Image
@@ -190,60 +310,305 @@ const Members = () => {
           <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
             <TabsTrigger
               className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              onClick={() => {
+                getUsersAll(null);
+              }}
               value="all"
             >
               All (12,398)
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              onClick={() => {
+                getUsersInvestor(null);
+              }}
               value="investor"
             >
               Investor
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              onClick={() => {
+                getUsersCreator(null);
+              }}
               value="creator"
             >
               Creator
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+              onClick={() => {
+                getUsersFan(null);
+              }}
               value="fan"
             >
               Fan
             </TabsTrigger>
           </TabsList>
           <TabsContent value="all">
-            <UserTable
-              placeholder="Search username, full name..."
-              top={true}
-              data={data}
-              columns={columns}
-            />
+            {usersAll?.length > 0 ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-[16px]">
+                    <Select>
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-md">
+                        <SelectValue placeholder="All Country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Country</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      onValueChange={handleStatusChange}
+                      value={selectedStatus}
+                    >
+                      <SelectTrigger className="w-[118px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-md">
+                        <SelectValue placeholder="All Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <div className="flex justify-center space-x-[12px] items-center min-w-[96px] w-max border border-[#E4E4E4] rounded-md shadow-md">
+                          <Button
+                            variant="ghost"
+                            className={cn(
+                              "w-max text-black justify-end hover:bg-transparent space-x-2 text-left px-2 font-normal border-transparent",
+                              !date && "text-muted-foreground text-black "
+                            )}
+                          >
+                            {date ? (
+                              format(date, "PPP")
+                            ) : (
+                              <span className="text-black text-[14px]">
+                                Date
+                              </span>
+                            )}
+                            <Image
+                              src="./icons/calendarIcon.svg"
+                              height={15}
+                              width={16.25}
+                              alt="calendarIcon"
+                            />
+                          </Button>
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={setDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Username, full name..."
+                      value={searchTermAll}
+                      onChange={(e) => setSearchTermAll(e.target.value)}
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div>
+                </div>
+
+                <UserTable
+                  data={filteredUsersAll}
+                  columns={columns}
+                  placeholder="Search username, full name..."
+                />
+              </>
+            ) : (
+              <p>Currently none </p>
+            )}
           </TabsContent>
           <TabsContent value="investor">
-            <UserTable
-              placeholder="Search username, full name..."
-              top={true}
-              data={data}
-              columns={columns}
-            />
+            {usersInvestor?.length > 0 ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-[16px]">
+                    <Select>
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
+                        <SelectValue placeholder="All Country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Country</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      onValueChange={handleStatusChangeInvestor}
+                      value={selectedStatusInvestor}
+                    >
+                      <SelectTrigger className="w-[118px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
+                        <SelectValue placeholder="All Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Username, full name..."
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div>
+                </div>
+
+                <UserTable
+                  data={usersInvestor}
+                  columns={columns}
+                  placeholder="Search username, full name..."
+                />
+              </>
+            ) : (
+              <p>Currently no Investors </p>
+            )}
           </TabsContent>
           <TabsContent value="creator">
-            <UserTable
-              placeholder="Search username, full name..."
-              top={true}
-              data={data}
-              columns={columns}
-            />
+            {usersCreator?.length > 0 ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-[16px]">
+                    <Select>
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
+                        <SelectValue placeholder="All Country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Country</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      onValueChange={handleStatusChangeCreator}
+                      value={selectedStatusCreator}
+                    >
+                      <SelectTrigger className="w-[118px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
+                        <SelectValue placeholder="All Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Username, full name..."
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div>
+                </div>
+
+                <UserTable
+                  data={usersCreator}
+                  columns={columns}
+                  placeholder="Search username, full name..."
+                />
+              </>
+            ) : (
+              <p>Currently no Creators </p>
+            )}
           </TabsContent>
           <TabsContent value="fan">
-            <UserTable
-              placeholder="Search username, full name..."
-              top={true}
-              data={data}
-              columns={columns}
-            />
+            {usersFan?.length > 0 ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-[16px]">
+                    <Select>
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
+                        <SelectValue placeholder="All Country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Country</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      onValueChange={handleStatusChangeFan}
+                      value={selectedStatusFan}
+                    >
+                      <SelectTrigger className="w-[118px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
+                        <SelectValue placeholder="All Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Username, full name..."
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div>
+                </div>
+
+                <UserTable
+                  data={usersFan}
+                  columns={columns}
+                  placeholder="Search username, full name..."
+                />
+              </>
+            ) : (
+              <p>Currently no Fans </p>
+            )}
           </TabsContent>
         </Tabs>
       </div>
@@ -279,7 +644,7 @@ const Members = () => {
               </Avatar>
               <div>
                 <p className="text-[20px] font-medium text-[#111810]">
-                  Mack Spinka
+                  {profileData?.full_name}
                 </p>
                 <div className="flex items-center space-x-2">
                   <p className="flex items-center space-x-1">
@@ -312,14 +677,18 @@ const Members = () => {
             <div className="w-full flex items-center justify-between border rounded-md p-3 mb-[40px]">
               <div className="flex flex-col space-y-1">
                 <p className="text-[#A4A4A4] text-[14px]">Members in forum</p>
-                <h2 className="font-medium text-[28px]">783</h2>
+                <h2 className="font-Recoleta font-medium text-[28px]">
+                  {profileData?.noOfMembers}
+                </h2>
               </div>
               <div className="h-[61px] w-[1px] bg-[#E4E4E4]"></div>
               <div className="flex flex-col space-y-1 ">
                 <p className="text-[#A4A4A4] text-[14px]  ">
                   Post in portfolio
                 </p>
-                <h2 className="font-medium text-[28px] flex ">783</h2>
+                <h2 className="font-Recoleta font-medium text-[28px] flex ">
+                  {profileData?.noOfPosts}
+                </h2>
               </div>
             </div>
             <div className="space-y-[24px] mb-[32px]">
@@ -327,32 +696,78 @@ const Members = () => {
 
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Full Name</p>
-                <p className="">name</p>
+                <p className="">{profileData?.full_name}</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Email</p>
-                <p className="text-[#F75803]">email</p>
+                <p className="text-[#F75803]">{profileData?.email}</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Phone Number</p>
-                <p className="text-[#F75803]">phone</p>
+                <p className="text-[#F75803]">{profileData?.phone_number}</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Country</p>
-                <p className="">country </p>
+                <p className="">{profileData?.country || "Null"}</p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">Interested Creators</p>
+                <p className="">interested creators</p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">Active Camapaigns</p>
+                <p className="">Active Campaigns</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4] line-clamp-2">Date Joined</p>
-                <p className="">date</p>
+                <p className="">{profileData?.createdAt?.substring(0, 10)}</p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">No Of Investor</p>
+                <p className="">investor</p>
+              </div>
+              <div className="flex items-center justify-between border-b pb-2">
+                <p className=" text-[#A4A4A4]">Verification</p>
+                <p className="">{profileData?.verification_type}</p>
               </div>
             </div>
           </div>
           <SheetFooter>
-            <SheetClose asChild>
-              <Button className="w-full bg-[#2BAC47] text-white" type="submit">
+            {profileData?.status === "active" ? (
+              <Button
+                onClick={async () => {
+                  try {
+                    const data = await updateStatus(
+                      profileData?.id,
+                      "inactive"
+                    );
+
+                    setprofileData(data);
+                    await getUsersAll(null);
+                  } catch (error) {
+                    console.error("Error updating status:", error);
+                  }
+                }}
+                className="w-full bg-[#C83532] text-white hover:bg-[#C83532] transition-all active:scale-95"
+              >
+                Restrict Account
+              </Button>
+            ) : (
+              <Button
+                onClick={async () => {
+                  try {
+                    const data = await updateStatus(profileData?.id, "active");
+                    setprofileData(data);
+                    await getUsersAll(null);
+                  } catch (error) {
+                    console.error("Error updating status:", error);
+                  }
+                }}
+                className="w-full bg-[#2BAC47] text-white hover:bg-[#2BAC47] transition-all active:scale-95"
+              >
                 Activate Account
               </Button>
-            </SheetClose>
+            )}
           </SheetFooter>
         </SheetContent>
       </Sheet>

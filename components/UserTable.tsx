@@ -57,7 +57,8 @@ export function UserTable<TData, TValue>({
     },
   });
 
-  const totalItems = table.getFilteredRowModel().rows.length;
+  const totalItems = table?.getFilteredRowModel()?.rows?.length || 0;
+
   const startIndex =
     table.getState().pagination.pageIndex *
       table.getState().pagination.pageSize +
