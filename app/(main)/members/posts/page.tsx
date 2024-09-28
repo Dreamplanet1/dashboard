@@ -128,7 +128,9 @@ const Posts = () => {
               src={userProfile?.image}
               alt="@shadcn"
             />
-            <AvatarFallback>{userProfile.fullName[0]}</AvatarFallback>
+            <AvatarFallback>
+              {userProfile?.fullName ? userProfile.fullName[0] : "CN"}
+            </AvatarFallback>
           </Avatar>
           <div>
             <p>{userProfile.fullName}</p>
@@ -213,7 +215,7 @@ const Posts = () => {
                   className="relative border rounded-md transition-all "
                 >
                   <div className="relative w-full h-[201px]">
-                    {post?.feed?.media_url ? (
+                    {post?.feed?.media_url?.length > 0 ? (
                       <>
                         <Image
                           src={post?.feed?.media_url[0]}
@@ -235,7 +237,9 @@ const Posts = () => {
                             alt="@shadcn"
                           />
                           <AvatarFallback>
-                            {userProfile.fullName[0]}
+                            {userProfile?.fullName
+                              ? userProfile.fullName[0]
+                              : "CN"}
                           </AvatarFallback>
                         </Avatar>
                       </div>
@@ -312,7 +316,9 @@ const Posts = () => {
                   src={userProfile?.image}
                   alt="@shadcn"
                 />
-                <AvatarFallback>{userProfile.fullName[0]}</AvatarFallback>
+                <AvatarFallback>
+                  {userProfile?.fullName ? userProfile.fullName[0] : "CN"}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-[14px] flex items-center space-x-2 font-semibold">
@@ -347,7 +353,7 @@ const Posts = () => {
           </div>
           <div className=" rounded-md transition-all ">
             <div className="relative w-full h-[170px]">
-              {postdetail?.feed?.media_url ? (
+              {postdetail?.feed?.media_url?.length > 0 ? (
                 <>
                   <Image
                     src={postdetail?.feed?.media_url[0]}
