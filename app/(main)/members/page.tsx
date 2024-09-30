@@ -351,7 +351,7 @@ const Members = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
                     <Select>
-                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-md">
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
                         <SelectValue placeholder="All Country" />
                       </SelectTrigger>
                       <SelectContent>
@@ -366,7 +366,7 @@ const Members = () => {
                       onValueChange={handleStatusChange}
                       value={selectedStatus}
                     >
-                      <SelectTrigger className="w-[118px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-md">
+                      <SelectTrigger className="w-[118px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
                         <SelectValue placeholder="All Status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -379,7 +379,7 @@ const Members = () => {
                     </Select>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <div className="flex justify-center space-x-[12px] items-center min-w-[96px] w-max border border-[#E4E4E4] rounded-md shadow-md">
+                        <div className="flex justify-center space-x-[12px] items-center min-w-[96px] w-max border border-[#E4E4E4] rounded-md shadow-sm">
                           <Button
                             variant="ghost"
                             className={cn(
