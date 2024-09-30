@@ -237,9 +237,10 @@ const Posts = () => {
                             alt="@shadcn"
                           />
                           <AvatarFallback>
-                            {userProfile?.fullName
+                            {/* {userProfile?.fullName
                               ? userProfile.fullName[0]
-                              : "CN"}
+                              : "CN"} */}
+                            <p>CN</p>
                           </AvatarFallback>
                         </Avatar>
                       </div>
