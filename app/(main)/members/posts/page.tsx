@@ -375,7 +375,10 @@ const Posts = () => {
                       src={userProfile.image}
                       alt="@shadcn"
                     />
-                    <AvatarFallback>{userProfile?.fullName[0]}</AvatarFallback>
+                    <AvatarFallback>
+                      {" "}
+                      {userProfile?.fullName ? userProfile.fullName[0] : "CN"}
+                    </AvatarFallback>
                   </Avatar>
                 </div>
               )}
