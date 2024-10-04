@@ -12,8 +12,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-interface FileWithPreview extends File {
-  preview: string;
+interface FileWithPreview {
+  preview: string; // Cloudinary URL
+  name: string; // Original file name
+  size: number; // File size
 }
 
 const page = () => {

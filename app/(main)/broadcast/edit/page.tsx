@@ -17,6 +17,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useBroadcast from "@/hooks/useBroadcast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 
 interface FileWithPreview {
   preview: string; // Cloudinary URL
@@ -24,13 +27,30 @@ interface FileWithPreview {
   size: number; // File size
 }
 
-const BroadcastCreate = () => {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
+const BroadcastEdit = () => {
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
-  const { createBroadCast } = useBroadcast();
+  const { updateBroadCast, deleteBroadcast } = useBroadcast();
+  const router = useRouter();
 
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const broadcastEdit = useSelector(
+    (state: RootState) => state.broadcast.broadcastEdit
+  );
+  const transformMediaUrls = (mediaUrls: string[]): FileWithPreview[] => {
+    return mediaUrls.map((url, index) => ({
+      preview: url,
+      name: `File-${index + 1}`, // Fallback name since no file name is provided
+      size: 0, // No file size available from backend, set as 0
+    }));
+  };
+
+  // Pre-populate fields from Redux state
+  const [title, setTitle] = useState<string>(broadcastEdit?.title || "");
+  const [description, setDescription] = useState<string>(
+    broadcastEdit?.text_content || ""
+  );
+  const [files, setFiles] = useState<FileWithPreview[]>(
+    broadcastEdit?.media_url ? transformMediaUrls(broadcastEdit.media_url) : []
+  );
 
   const closeDeleteDialog = () => setisDeleteOpen(false);
   const removeFile = (fileName: string) => {
@@ -53,7 +73,7 @@ const BroadcastCreate = () => {
     <div className="flex justify-between items-start">
       <div className="flex w-3/6 flex-col space-y-[24px]">
         <div>
-          <h2 className=" text-2xl">Create Broadcast</h2>
+          <h2 className=" text-2xl">Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">
             Lorem ipsum dolor sit amet consectetur.
           </p>
@@ -152,10 +172,14 @@ const BroadcastCreate = () => {
           <Button
             onClick={async () => {
               const filePreviews = files.map((file) => file.preview);
-              await createBroadCast(title, null, description, filePreviews);
-              setTitle("");
-              setDescription("");
-              setFiles([]);
+              await updateBroadCast(
+                broadcastEdit.id,
+                title,
+                null,
+                description,
+                filePreviews
+              );
+              router.push("/broadcast");
             }}
             className="btnColored"
           >
@@ -189,12 +213,19 @@ const BroadcastCreate = () => {
               <Button
                 className="w-full shadow-md text-[14px] text-black bg-transparent hover:bg-transparent transition-all hover:scale-105 active:scale-95 border"
                 type="submit"
+                onClick={() => {
+                  closeDeleteDialog();
+                }}
               >
                 Cancel
               </Button>
               <Button
                 className="w-full shadow-md text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
                 type="submit"
+                onClick={async () => {
+                  await deleteBroadcast(broadcastEdit.id);
+                  router.push("/broadcast");
+                }}
               >
                 Delete
               </Button>
@@ -206,4 +237,4 @@ const BroadcastCreate = () => {
   );
 };
 
-export default BroadcastCreate;
+export default BroadcastEdit;

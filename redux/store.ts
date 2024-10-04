@@ -10,11 +10,13 @@ import {
   REGISTER,
 } from "redux-persist";
 import { usersOnboardedSlice } from "./slices/usersOnboardedslice";
+import { broadcastslice } from "./slices/broadcastslice";
 // Import your slice correctly
 
 // Combine all reducers
 const rootReducer = combineReducers({
   usersOnboarded: usersOnboardedSlice.reducer,
+  broadcast: broadcastslice.reducer,
 });
 
 // Persist configuration

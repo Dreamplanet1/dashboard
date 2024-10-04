@@ -1,10 +1,12 @@
 "use client";
-import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
+import React, { Dispatch, SetStateAction, useCallback } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 
-interface FileWithPreview extends File {
-  preview: string;
+interface FileWithPreview {
+  preview: string; // Cloudinary URL
+  name: string; // Original file name
+  size: number; // File size
 }
 
 export default function Dropzone({
@@ -17,12 +19,35 @@ export default function Dropzone({
   files: FileWithPreview[];
 }) {
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles((prevFiles) => [
-      ...prevFiles,
-      ...acceptedFiles.map((file) =>
-        Object.assign(file, { preview: URL.createObjectURL(file) })
-      ),
-    ]);
+    acceptedFiles.forEach(async (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append(
+        "upload_preset",
+        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
+      );
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.secure_url) {
+        setFiles((prevFiles) => [
+          ...prevFiles,
+          {
+            preview: data.secure_url, // Cloudinary URL
+            name: file.name, // Original file name
+            size: file.size, // File size
+          },
+        ]);
+      }
+    });
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -32,7 +57,7 @@ export default function Dropzone({
       "video/mp4": [],
       "video/mov": [],
     },
-    maxSize: 1024 * 2000,
+    maxSize: 1024 * 2000, // 2 MB limit
     onDrop,
   });
 

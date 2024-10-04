@@ -413,7 +413,7 @@ const Members = () => {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
+                  <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md shadow-sm">
                     <Image
                       src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
                       width={20}

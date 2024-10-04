@@ -30,8 +30,10 @@ import { Switch } from "@/components/ui/switch";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-interface FileWithPreview extends File {
-  preview: string;
+interface FileWithPreview {
+  preview: string; // Cloudinary URL
+  name: string; // Original file name
+  size: number; // File size
 }
 
 const CreateChallenge = () => {
