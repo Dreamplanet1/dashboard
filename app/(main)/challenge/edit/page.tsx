@@ -4,16 +4,7 @@ import Dropzone from "@/components/Dropzone";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -30,6 +21,8 @@ import { Switch } from "@/components/ui/switch";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useChallenge from "@/hooks/useChallenge";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface FileWithPreview {
   preview: string; // Cloudinary URL
@@ -37,24 +30,51 @@ interface FileWithPreview {
   size: number; // File size
 }
 
-const CreateChallenge = () => {
-  const { createChallenge } = useChallenge();
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [isDeleteOpen, setisDeleteOpen] = useState(false);
-  const closeDeleteDialog = () => setisDeleteOpen(false);
-  const [name, setName] = useState<string>("");
-  const [instructions, setInstructions] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  const [link, setLink] = useState<string>("");
-  const [status, setStatus] = useState<string>("active");
-  const [durationValue, setDurationValue] = useState<string>("");
-  const [durationUnit, setDurationUnit] = useState<string>("days");
-  const [deleteAfter, setDeleteAfter] = useState<boolean>(false);
-  const [hashtag, setHashtag] = useState<string>("");
+const UpdateChallenge = () => {
+  const { updateChallenge } = useChallenge();
+  const challengeEdit = useSelector(
+    (state: RootState) => state.challenge.challengeEdit
+  );
+  const transformMediaUrls = (mediaUrls: string[]): FileWithPreview[] => {
+    return mediaUrls.map((url, index) => ({
+      preview: url,
+      name: `File-${index + 1}`, // Fallback name since no file name is provided
+      size: 0, // No file size available from backend, set as 0
+    }));
+  };
 
+  const [files, setFiles] = useState<FileWithPreview[]>(
+    challengeEdit?.media_url ? transformMediaUrls(challengeEdit.media_url) : []
+  );
+
+  const [name, setName] = useState<string>(challengeEdit?.name || "");
+  const [instructions, setInstructions] = useState<string>(
+    challengeEdit?.instructions || ""
+  );
+  const [price, setPrice] = useState<string>(challengeEdit?.price || "");
+  const [link, setLink] = useState<string>(challengeEdit?.link || "");
+  const [status, setStatus] = useState<string>("active");
   const removeFile = (fileName: string) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
   };
+  // Extract duration value and unit
+  const durationParts = challengeEdit?.duration?.split(" ") || [];
+  const [durationValue, setDurationValue] = useState<string>(
+    durationParts[0] || ""
+  );
+  const [durationUnit, setDurationUnit] = useState<string>(
+    durationParts[1] || "months"
+  );
+
+  const handleDurationChange = (unit: string) => {
+    setDurationUnit(unit);
+  };
+  const [deleteafter, setDeleteAfter] = useState<boolean>(
+    challengeEdit?.delete_after_duration === true
+  );
+
+  const [hashtag, setHashtag] = useState<string>(challengeEdit?.hashtag || "");
+
   const router = useRouter();
   return (
     <div className="flex justify-between items-start">
@@ -75,7 +95,7 @@ const CreateChallenge = () => {
             <span className="ml-[8px]">Go back to overview</span>
           </p>
           <div className="mt-[13.5px]">
-            <h2 className="text-2xl">Create Challenges</h2>
+            <h2 className="text-2xl">Challenge</h2>
           </div>
         </div>
 
@@ -107,11 +127,11 @@ const CreateChallenge = () => {
               </Label>
               <Input
                 className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#C8C8C8] mt-1 placeholder:text-[14px]"
-                type="hashtag"
                 value={hashtag}
                 onChange={(e) => {
                   setHashtag(e.target.value);
                 }}
+                type="hashtag"
                 placeholder="Enter Hashtag"
               />
             </div>
@@ -125,18 +145,15 @@ const CreateChallenge = () => {
               Duration
             </Label>
             <div className="flex items-center space-x-4">
-              <Select
-                onValueChange={(value) => setDurationUnit(value)}
-                value={durationUnit}
-              >
+              <Select value={durationUnit} onValueChange={handleDurationChange}>
                 <SelectTrigger className="w-full mt-1 focus:ring-0 focus:ring-offset-0 focus:outline-none text-[#373737] text-[14px]">
-                  <SelectValue placeholder="Select unit" />
+                  <SelectValue placeholder="Select Unit" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem value="days">Days</SelectItem>
-                    <SelectItem value="weeks">Weeks</SelectItem>
                     <SelectItem value="months">Months</SelectItem>
+                    <SelectItem value="years">Years</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -144,7 +161,7 @@ const CreateChallenge = () => {
                 className="w-full focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#C8C8C8] mt-1 placeholder:text-[14px]"
                 value={durationValue}
                 onChange={(e) => setDurationValue(e.target.value)}
-                placeholder="Enter duration"
+                placeholder="Enter Days"
               />
             </div>
           </div>
@@ -254,7 +271,7 @@ const CreateChallenge = () => {
             <Switch
               id="switch"
               className="[&[data-state='checked']]:bg-[#F75803]"
-              checked={deleteAfter}
+              checked={deleteafter}
               onCheckedChange={(checked) => setDeleteAfter(checked)}
             />
           </div>
@@ -265,9 +282,10 @@ const CreateChallenge = () => {
         instructions &&
         price &&
         link &&
-        durationUnit &&
-        durationValue &&
+        status &&
         hashtag &&
+        durationValue &&
+        durationUnit &&
         files.length > 0 ? (
           <Button
             // onClick={() => {
@@ -286,16 +304,17 @@ const CreateChallenge = () => {
         instructions &&
         price &&
         link &&
-        durationUnit &&
-        durationValue &&
+        status &&
         hashtag &&
+        durationValue &&
+        durationUnit &&
         files.length > 0 ? (
           <Button
             onClick={async () => {
-              const filePreviews = files.map((file) => file.preview);
               const formattedDuration = `${durationValue} ${durationUnit}`;
-
-              await createChallenge(
+              const filePreviews = files.map((file) => file.preview);
+              await updateChallenge(
+                challengeEdit.id,
                 name,
                 instructions,
                 price,
@@ -303,7 +322,7 @@ const CreateChallenge = () => {
                 filePreviews,
                 status,
                 formattedDuration,
-                deleteAfter,
+                deleteafter,
                 hashtag
               );
               router.push("/challenge");
@@ -322,4 +341,4 @@ const CreateChallenge = () => {
   );
 };
 
-export default CreateChallenge;
+export default UpdateChallenge;

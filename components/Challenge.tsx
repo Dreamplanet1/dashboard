@@ -1,132 +1,173 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  PlusIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  SearchIcon,
-  XIcon,
-  EllipsisVertical,
-} from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { UserTable } from "@/components/UserTable";
-import { reportData } from "@/mock/row";
+import { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import useChallenge from "@/hooks/useChallenge";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { updateChallengeEdit } from "@/redux/slices/challengeslice";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ColumnDef } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-
-const rows = [
-  {
-    name: "Billy Gleason",
-    hashtag: "Raba-bag challenge",
-    entries: "1,433 entries",
-    engagement: "103219",
-    date: "22 Jun 2024",
-    duration: "13 days",
-  },
-  {
-    name: "Billy Gleason",
-    hashtag: "#KSC",
-    entries: "1,433 entries",
-    engagement: "103219",
-    date: "22 Jun 2024",
-    duration: "13 days",
-  },
-  {
-    name: "Billy Gleason",
-    hashtag: "#DMW",
-    entries: "1,433 entries",
-    engagement: "103219",
-    date: "22 Jun 2024",
-    duration: "13 days",
-  },
-];
-
-export const columns: ColumnDef<any>[] = [
-  {
-    accessorKey: "name",
-    header: "Title",
-    cell: ({ row }) => (
-      <div>
-        <p className="text-[14px] text-[#373737]">{row.getValue("name")}</p>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "hashtag",
-    header: "Hashtag",
-    cell: ({ row }) => (
-      <p className="text-[14px] text-[#373737]">{row.getValue("hashtag")}</p>
-    ),
-  },
-  {
-    accessorKey: "entries",
-    header: "Entries",
-    cell: ({ row }) => (
-      <p className="text-[14px] text-[#373737]">{row.getValue("entries")}</p>
-    ),
-  },
-  {
-    accessorKey: "engagement",
-    header: "Engagement",
-    cell: ({ row }) => (
-      <p className="text-[14px] text-[#373737]">{row.getValue("engagement")}</p>
-    ),
-  },
-
-  {
-    accessorKey: "date",
-    header: "Date Created",
-    cell: ({ row }) => (
-      <p className="text-[14px] text-[#373737]">{row.getValue("date")}</p>
-    ),
-  },
-  {
-    accessorKey: "duration",
-    header: "Days running",
-    cell: ({ row }) => (
-      <p className="text-[14px] text-[#373737]">{row.getValue("duration")}</p>
-    ),
-  },
-  {
-    accessorKey: "options",
-    header: "",
-    cell: () => {
-      return (
-        <div className="flex items-center justify-end space-x-4">
-          <Image
-            src={"/icons/editbl.svg"}
-            width={15.62}
-            height={15.62}
-            className="cursor-pointer"
-            alt="editIcon"
-          />
-          <Image
-            src={"/icons/deleteIconred.svg"}
-            width={15.62}
-            height={15.62}
-            className="cursor-pointer"
-            alt="deleteIconred"
-          />
-        </div>
-      );
-    },
-  },
-];
+import { Input } from "./ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { cn } from "@/lib/utils";
+import { Calendar } from "./ui/calendar";
+import { format } from "date-fns";
 
 const Challenge = () => {
   const router = useRouter();
+  const [isDeleteOpen, setisDeleteOpen] = useState(false);
+  const closeDeleteDialog = () => setisDeleteOpen(false);
+  const { challengeAll, challengeEdit } = useSelector(
+    (state: RootState) => state.challenge
+  );
+  const [date, setDate] = useState<Date>();
+
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const closeButton = document.querySelector(
+        "button.absolute.right-4.top-4"
+      );
+
+      if (closeButton) {
+        closeButton.remove();
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [isDeleteOpen, setisDeleteOpen]);
+  const { getAllChallenges, deleteChallenge } = useChallenge();
+  const [searchString, setSearchString] = useState<string>("");
+
+  useEffect(() => {
+    getAllChallenges(searchString);
+  }, [searchString]);
+  const [challengeId, setChallengeId] = useState<number>(1);
+
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "name",
+      header: "Title",
+      cell: ({ row }) => (
+        <div>
+          <p className="text-[14px] text-[#373737]">{row.getValue("name")}</p>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "hashtag",
+      header: "Hashtag",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">{row.getValue("hashtag")}</p>
+      ),
+    },
+    {
+      accessorKey: "entries",
+      header: "Entries",
+      cell: ({ row }) => {
+        const entries = row.original.entries;
+        return (
+          <p className="text-[14px] text-[#373737]">{`${entries} entries`}</p>
+        );
+      },
+    },
+    {
+      accessorKey: "engagement",
+      header: "Engagement",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">
+          {row.getValue("engagement")}
+        </p>
+      ),
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ row }) => {
+        const dateCreated = row.original.createdAt?.substring(0, 10);
+        return <p className="text-[14px] text-[#373737]">{dateCreated}</p>;
+      },
+    },
+    {
+      accessorKey: "duration",
+      header: "Days running",
+      cell: ({ row }) => {
+        const createdAt = row.original.createdAt;
+
+        if (!createdAt) {
+          return <p className="text-[14px] text-[#373737]">Null</p>;
+        }
+
+        const daysDifference = Math.floor(
+          (new Date().getTime() - new Date(createdAt).getTime()) /
+            (1000 * 3600 * 24)
+        );
+
+        if (daysDifference === 0) {
+          return <p className="text-[14px] text-[#373737]">Today</p>;
+        }
+
+        return (
+          <p className="text-[14px] text-[#373737]">{daysDifference}days</p>
+        );
+      },
+    },
+    {
+      accessorKey: "options",
+      header: "",
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <div className="flex items-center justify-end space-x-4">
+            <Image
+              src={"/icons/editbl.svg"}
+              width={15.62}
+              height={15.62}
+              className="cursor-pointer"
+              alt="editIcon"
+              onClick={() => {
+                dispatch(updateChallengeEdit(profile));
+                router.push("/challenge/edit");
+              }}
+            />
+            <Image
+              src={"/icons/deleteIconred.svg"}
+              width={15.62}
+              height={15.62}
+              className="cursor-pointer"
+              onClick={() => {
+                setChallengeId(profile.id);
+                setisDeleteOpen(true);
+              }}
+              alt="deleteIconred"
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <div className="flex flex-col space-y-7">
       <div className="flex items-center justify-between">
@@ -151,13 +192,118 @@ const Challenge = () => {
         </div>
       </div>
       <div>
-        <UserTable
-          top={true}
-          placeholder="Search Challenge name"
-          columns={columns}
-          data={rows}
-        />
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-[16px]">
+            <Select>
+              <SelectTrigger className="w-[104px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+                <SelectValue placeholder="All Title" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup></SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select>
+              <SelectTrigger className="w-[118px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+                <SelectValue placeholder="All Hashtag" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup></SelectGroup>
+              </SelectContent>
+            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="flex justify-center space-x-[12px] items-center min-w-[96px] w-max border border-[#E4E4E4] rounded-md shadow-sm">
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-max text-black justify-end hover:bg-transparent space-x-2 text-left px-2 font-normal border-transparent",
+                      !date && "text-muted-foreground text-black "
+                    )}
+                  >
+                    {date ? (
+                      format(date, "PPP")
+                    ) : (
+                      <span className="text-black text-[14px]">Date</span>
+                    )}
+                    <Image
+                      src="./icons/calendarIcon.svg"
+                      height={15}
+                      width={16.25}
+                      alt="calendarIcon"
+                    />
+                  </Button>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="flex w-[350px] items-center border px-2 rounded-md ">
+            <Image
+              src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+              width={20}
+              height={19.88}
+              alt="searchIcon"
+            />
+            <Input
+              placeholder="Search Challenge name"
+              className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+              value={searchString}
+              onChange={(e) => setSearchString(e.target.value)} // Update search string on input change
+            />
+          </div>
+        </div>
+        <UserTable columns={columns} data={challengeAll} />
       </div>
+
+      <Dialog open={isDeleteOpen} onOpenChange={closeDeleteDialog}>
+        <DialogContent className="sm:max-w-[384px]">
+          <div className="flex flex-col items-center justify-center gap-2 mt-7">
+            <Image
+              src={"/DASHBOARDASSETS/ILLUSTRATION/DELETE.png"}
+              height={72}
+              width={69.68}
+              alt="trashIcon"
+            />
+            <p className="text-[20px] font-medium">Delete this Broadcast?</p>
+            <p className="text-[14px] text-center text-[#808080]">
+              Are you sure you want to delete this broadcast? This action is
+              irreversible.
+            </p>
+          </div>
+
+          <DialogFooter>
+            <div className="flex w-full justify-center items-center space-x-2">
+              <Button
+                className="w-full shadow-md text-[14px] text-black bg-transparent hover:bg-transparent transition-all hover:scale-105 active:scale-95 border"
+                type="submit"
+                onClick={() => {
+                  closeDeleteDialog();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="w-full shadow-md text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
+                type="submit"
+                onClick={async () => {
+                  await deleteChallenge(challengeId);
+                  getAllChallenges();
+                  closeDeleteDialog();
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

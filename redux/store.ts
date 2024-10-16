@@ -11,12 +11,16 @@ import {
 } from "redux-persist";
 import { usersOnboardedSlice } from "./slices/usersOnboardedslice";
 import { broadcastslice } from "./slices/broadcastslice";
+import { campaignslice } from "./slices/campaignslice";
+import { challengeslice } from "./slices/challengeslice";
 // Import your slice correctly
 
 // Combine all reducers
 const rootReducer = combineReducers({
   usersOnboarded: usersOnboardedSlice.reducer,
   broadcast: broadcastslice.reducer,
+  campaign: campaignslice.reducer,
+  challenge: challengeslice.reducer,
 });
 
 // Persist configuration

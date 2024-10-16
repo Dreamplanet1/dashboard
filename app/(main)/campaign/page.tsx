@@ -33,6 +33,9 @@ import { UserTable } from "@/components/UserTable";
 import { campaignData } from "@/mock/row";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
+import useCampaign from "@/hooks/useCampaign";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const profile = {
   name: "Randall_Henn",
@@ -44,6 +47,8 @@ const profile = {
 const Campaign = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [detailsData, setDetailsData] = useState<any>({});
+
   useEffect(() => {
     const hideChevronsInTrigger = () => {
       // Select all AccordionTrigger elements
@@ -73,6 +78,28 @@ const Campaign = () => {
       observer.disconnect();
     };
   }, []);
+  const {
+    getActiveCampaigns,
+    getStoppedCampaigns,
+    getCompletedCampaigns,
+    getMostPerformedCampaigns,
+    getAllDonations,
+    stopCampaign,
+  } = useCampaign();
+  useEffect(() => {
+    getActiveCampaigns();
+  }, []);
+  useEffect(() => {
+    console.log(detailsData);
+  }, [detailsData, setDetailsData]);
+  const {
+    campaignActive,
+    campaignCompleted,
+    campaignMostPerformed,
+    campaignStopped,
+    groupedCampaigns,
+    donations,
+  } = useSelector((state: RootState) => state.campaign);
 
   const openSheet = () => setIsSheetOpen(true);
   const closeSheet = () => setIsSheetOpen(false);
@@ -94,35 +121,46 @@ const Campaign = () => {
 
   const columns: ColumnDef<any>[] = [
     {
-      accessorKey: "name",
+      accessorKey: "creators_name",
       header: "Creator",
-      cell: ({ row }) => (
-        <div className="flex items-center space-x-1">
-          <Avatar>
-            <AvatarImage
-              className="object-contain"
-              src="https://github.com/shadcn.png"
-              alt="@shadcn"
-            />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <div>
-            <p>{row.getValue("name")}</p>
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <div className="flex items-center space-x-1">
+            <Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={profile?.user_image}
+                alt="@shadcn"
+              />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-[14px] text-[#373737]">
+                {profile?.creators_name}
+              </p>
+              <p className="text-[14px] text-[#A4A4A4]">
+                @{profile?.user_username}
+              </p>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
-      accessorKey: "amountPaid",
+      accessorKey: "goal_amount",
       header: "Amount",
-      cell: ({ row }) => (
-        <p className="text-[14px] space-x-1 flex text-[#373737]">
-          <span className="text-[14px] text-[#2BAC47]">
-            {row.getValue("amountPaid")}
-          </span>
-          <p>of $100,000</p>
-        </p>
-      ),
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <p className="text-[14px] space-x-1 flex text-[#373737]">
+            <span className="text-[14px] text-[#2BAC47]">
+              {profile?.amount_raised}
+            </span>
+            <p>of {profile?.goal_amount}</p>
+          </p>
+        );
+      },
     },
     {
       accessorKey: "reason",
@@ -133,16 +171,32 @@ const Campaign = () => {
     },
 
     {
-      accessorKey: "duration",
+      accessorKey: "createdAt",
       header: "Duration",
-      cell: ({ row }) => (
-        <p className="text-[14px] text-[#373737]">{row.getValue("duration")}</p>
-      ),
+      cell: ({ row }) => {
+        const createdAt = row.original.createdAt;
+
+        if (!createdAt) {
+          return <p className="text-[14px] text-[#373737]">Null</p>;
+        }
+
+        const daysDifference = Math.floor(
+          (new Date().getTime() - new Date(createdAt).getTime()) /
+            (1000 * 3600 * 24)
+        );
+
+        if (daysDifference === 0) {
+          return <p className="text-[14px] text-[#373737]">Today</p>;
+        }
+
+        return <p className="text-[14px] text-[#373737]">{daysDifference}d</p>;
+      },
     },
     {
       accessorKey: "options",
       header: "",
-      cell: () => {
+      cell: ({ row }) => {
+        const profile = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -153,7 +207,11 @@ const Campaign = () => {
             <DropdownMenuContent align="end" className="space-y-2">
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={openSheet}
+                onClick={() => {
+                  setDetailsData(profile);
+                  getAllDonations(profile?.id);
+                  openSheet();
+                }}
               >
                 <span>
                   <Image
@@ -215,30 +273,43 @@ const Campaign = () => {
             <TabsList className="space-x-7 bg-transparent border-b rounded-none px-0 w-full justify-start pb-0">
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                onClick={() => {
+                  getActiveCampaigns();
+                }}
                 value="active"
               >
                 Active (3)
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0  py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                onClick={() => {
+                  getActiveCampaigns();
+                }}
                 value="processing"
               >
                 Processing
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                onClick={() => {
+                  getStoppedCampaigns();
+                }}
                 value="stopped"
               >
                 Stopped
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                onClick={() => {
+                  getMostPerformedCampaigns();
+                }}
                 value="performed"
               >
                 Most Performed
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
+                onClick={() => getCompletedCampaigns()}
                 value="completed"
               >
                 Completed
@@ -247,40 +318,35 @@ const Campaign = () => {
             <TabsContent value="active">
               <UserTable
                 placeholder="Search for creator"
-                bottom={true}
-                data={campaignData}
+                data={campaignActive}
                 columns={columns}
               />
             </TabsContent>
             <TabsContent value="processing">
               <UserTable
                 placeholder="Search for creator"
-                bottom={true}
-                data={campaignData}
+                data={campaignActive}
                 columns={columns}
               />
             </TabsContent>
             <TabsContent value="stopped">
               <UserTable
                 placeholder="Search for creator"
-                bottom={true}
-                data={campaignData}
+                data={campaignStopped}
                 columns={columns}
               />
             </TabsContent>
             <TabsContent value="performed">
               <UserTable
                 placeholder="Search for creator"
-                bottom={true}
-                data={campaignData}
+                data={campaignMostPerformed}
                 columns={columns}
               />
             </TabsContent>
             <TabsContent value="completed">
               <UserTable
                 placeholder="Search for creator"
-                bottom={true}
-                data={campaignData}
+                data={campaignCompleted}
                 columns={columns}
               />
             </TabsContent>
@@ -290,230 +356,57 @@ const Campaign = () => {
       <section className="col-span-2 border-2 border-[#F1F1F1]">
         <h2 className="p-[20px] pb-[12px] border-b font-medium">
           Campaign Purpose{" "}
-          <span className="text-[#808080] font-Recoleta">(12)</span>
+          <span className="text-[#808080] font-Recoleta">
+            ({groupedCampaigns?.length})
+          </span>
         </h2>
         <Accordion type="single" collapsible>
-          <AccordionItem className="px-[20px] pb-[16px]" value="item-1">
-            <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737] font-normal">
-                Artist/Musician
-                <span className="font-Recoleta font-medium text-[#F75803] ">
-                  {" "}
-                  (3)
-                </span>
-              </p>
-              <Image
-                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
-                alt="right arrow"
-                width={16}
-                height={16}
-              />
-            </AccordionTrigger>
-            <AccordionContent className="pt-[16px] space-y-[18px]">
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Lawrence Oyor
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Sunmisola Agbebi
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Godswill Oyor
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem className="px-[20px] pb-[16px]" value="item-2">
-            <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737] font-normal">
-                Artist/Musician
-                <span className="text-[#F75803] font-Recoleta font-medium">
-                  {" "}
-                  (3)
-                </span>
-              </p>
-              <Image
-                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
-                alt="right arrow"
-                width={16}
-                height={16}
-              />
-            </AccordionTrigger>
-            <AccordionContent className="pt-[16px] space-y-[18px]">
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Lawrence Oyor
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Sunmisola Agbebi
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Godswill Oyor
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem className="px-[20px] pb-[16px]" value="item-3">
-            <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737] font-normal">
-                Artist/Musician
-                <span className="text-[#F75803] font-Recoleta font-medium">
-                  {" "}
-                  (3)
-                </span>
-              </p>
-              <Image
-                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
-                alt="right arrow"
-                width={16}
-                height={16}
-              />
-            </AccordionTrigger>
-            <AccordionContent className="pt-[16px] space-y-[18px]">
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Lawrence Oyor
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Sunmisola Agbebi
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Godswill Oyor
-              </p>
-            </AccordionContent>
-          </AccordionItem>
+          {groupedCampaigns?.map((campaign: any, index: number) => (
+            <AccordionItem
+              key={index}
+              className="px-[20px] pb-[16px]"
+              value={campaign?.campaigns[0]?.username}
+            >
+              <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0 relative">
+                <div className="flex items-center space-x-1 relative w-3/6">
+                  <p className="text-[#373737] font-normal whitespace-nowrap overflow-hidden">
+                    {campaign?.creator_type}
+                  </p>
+                  <span className="font-Recoleta font-medium text-[#F75803] ml-1">
+                    ({campaign?.total_campaigns})
+                  </span>
+                </div>
 
-          <AccordionItem className="px-[20px] pb-[16px]" value="item-4">
-            <AccordionTrigger className="accordion-trigger hover:no-underline  pt-[32px] pb-0">
-              <p className="text-[#373737] font-normal">
-                Artist/Musician
-                <span className="text-[#F75803] font-Recoleta font-medium">
-                  {" "}
-                  (3)
-                </span>
-              </p>
-              <Image
-                src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
-                alt="right arrow"
-                width={16}
-                height={16}
-              />
-            </AccordionTrigger>
-            <AccordionContent className="pt-[16px] space-y-[18px]">
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
+                <div>
                   <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
+                    src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
+                    alt="right arrow"
+                    width={16}
+                    height={16}
                   />
-                </span>{" "}
-                Lawrence Oyor
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Sunmisola Agbebi
-              </p>
-              <p className="text-[#7E2D02] text-[14px] flex items-center">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-                    width={13.01}
-                    height={12.51}
-                    alt="profile Icon"
-                    className="mr-[8px]"
-                  />
-                </span>{" "}
-                Godswill Oyor
-              </p>
-            </AccordionContent>
-          </AccordionItem>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pt-[16px] space-y-[18px]">
+                {campaign?.campaigns.map((campaign: any, idx: number) => (
+                  <p
+                    key={idx}
+                    className="text-[#7E2D02] text-[14px] flex items-center"
+                  >
+                    <span>
+                      <Image
+                        src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                        width={13.01}
+                        height={12.51}
+                        alt="profile Icon"
+                        className="mr-[8px]"
+                      />
+                    </span>
+                    {campaign?.username}
+                  </p>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </section>
 
@@ -551,15 +444,15 @@ const Campaign = () => {
                 <div className="flex items-center space-x-[12px]">
                   <Avatar>
                     <AvatarImage
-                      className="object-contain"
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
+                      className="object-cover"
+                      src={detailsData?.user_image}
+                      alt="userImage"
                     />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-[20px] font-medium text-[#111810]">
-                      {profile.name}
+                      {detailsData?.creators_name}
                     </p>
                     <div className="flex items-center space-x-2">
                       <p className="flex items-center space-x-1">
@@ -571,9 +464,11 @@ const Campaign = () => {
                             alt="profileIcon"
                           />
                         </span>
-                        <p className="text-[#808080]">Creator</p>
+                        <p className="text-[#808080]">
+                          {detailsData?.creators_type}
+                        </p>
                       </p>
-                      <p className="h-1 w-1 rounded-full bg-[#C8C8C8]"></p>
+                      {/* <p className="h-1 w-1 rounded-full bg-[#C8C8C8]"></p>
                       <p className="flex items-center space-x-1">
                         <span>
                           <Image
@@ -584,97 +479,145 @@ const Campaign = () => {
                           />
                         </span>
                         <p className="text-[#808080]">Artist/Musician</p>
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 </div>
                 <div className="space-y-[24px] mt-[32px] mb-[48px]">
                   <div className="flex w-full justify-between items-center border-b py-2">
                     <p className="text-[#A4A4A4] text-[16px]">Creator Name</p>
-                    <p>{profile.name}</p>
+                    <p>{detailsData?.creators_name}</p>
                   </div>
                   <div className="flex w-full justify-between items-center border-b py-2">
                     <p className="text-[#A4A4A4]">Reason</p>
-                    <p>{profile.reason}</p>
+                    <p>{detailsData?.reason}</p>
+                  </div>
+                  <div className="flex w-full justify-between items-center border-b py-2">
+                    <p className="text-[#A4A4A4]">Status</p>
+                    <p>{detailsData?.status}</p>
+                  </div>
+                  <div className="flex w-full justify-between items-center border-b py-2">
+                    <p className="text-[#A4A4A4]">Target</p>
+                    <p>{detailsData?.goal_amount}</p>
                   </div>
                   <div className="flex w-full justify-between items-center border-b py-2">
                     <p className="text-[#A4A4A4]">Raised</p>
                     <p className="text-[#2BAC47]">{profile.raised}</p>
                   </div>
                   <div className="flex w-full justify-between items-center border-b py-2">
+                    <p className="text-[#A4A4A4]">Donation Number</p>
+                    <p>{detailsData?.number_of_donations}</p>
+                  </div>
+                  <div className="flex w-full justify-between items-center border-b py-2">
                     <p className="text-[#A4A4A4]">Starter</p>
-                    <p className="text-[#F75803] ">{profile.starter}</p>
+                    <p className="text-[#F75803] ">
+                      {detailsData?.starter_name}
+                    </p>
+                  </div>
+                  <div className="flex w-full justify-between items-center border-b py-2">
+                    <p className="text-[#A4A4A4]">Start Date</p>
+                    <p>{detailsData?.createdAt?.substring(0, 10)}</p>
+                  </div>
+                  <div className="flex w-full justify-between items-center border-b py-2">
+                    <p className="text-[#A4A4A4]">Duration</p>
+                    <p className="text-[14px] text-[#373737]">
+                      {(() => {
+                        const createdAt = detailsData?.createdAt;
+
+                        if (!createdAt) {
+                          return "Null";
+                        }
+
+                        const daysDifference = Math.floor(
+                          (new Date().getTime() -
+                            new Date(createdAt).getTime()) /
+                            (1000 * 3600 * 24)
+                        );
+
+                        return daysDifference === 0
+                          ? "Today"
+                          : `${daysDifference} days`;
+                      })()}
+                    </p>
                   </div>
                 </div>
-                <Button className="w-full bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95 text-white py-2 text-[14px]">
+                <Button
+                  className="w-full bg-[#C83532] transition-all hover:bg-[#C83532] active:scale-95 text-white py-2 text-[14px]"
+                  onClick={async () => {
+                    await stopCampaign(detailsData?.id);
+                  }}
+                >
                   Stop Campaign
                 </Button>
               </TabsContent>
               <TabsContent value="donation">
                 <div className="space-y-[20px]">
-                  <div className="flex justify-between items-center py-2 w-full border-b">
-                    <div className="flex items-center space-x-[12px]">
-                      <Avatar>
-                        <AvatarImage
-                          className="object-contain"
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-[14px] font-semibold">
-                          {profile.name}
-                        </p>
-                        <p className="text-[#A4A4A4] text-[14px]">14hr ago</p>
+                  {donations?.map((donation) => {
+                    const createdAt = donation?.createdAt;
+                    const now = new Date();
+                    const createdDate = new Date(createdAt);
+                    const differenceInMs =
+                      now.getTime() - createdDate.getTime();
+
+                    const differenceInHours = Math.floor(
+                      differenceInMs / (1000 * 60 * 60)
+                    );
+                    const differenceInDays = Math.floor(
+                      differenceInMs / (1000 * 60 * 60 * 24)
+                    );
+                    const differenceInMonths = Math.floor(
+                      differenceInMs / (1000 * 60 * 60 * 24 * 30)
+                    );
+                    const differenceInYears = Math.floor(
+                      differenceInMs / (1000 * 60 * 60 * 24 * 365)
+                    );
+
+                    let timeAgo = "";
+
+                    if (differenceInYears > 0) {
+                      timeAgo = `${differenceInYears}y ago`;
+                    } else if (differenceInMonths > 0) {
+                      timeAgo = `${differenceInMonths}mo ago`;
+                    } else if (differenceInDays > 0) {
+                      timeAgo = `${differenceInDays}d ago`;
+                    } else if (differenceInHours > 0) {
+                      timeAgo = `${differenceInHours}h ago `;
+                    } else {
+                      timeAgo = "Just now";
+                    }
+                    return (
+                      <div
+                        key={donation?.id}
+                        className="flex justify-between items-center py-2 w-full border-b"
+                      >
+                        <div className="flex items-center space-x-[12px]">
+                          <Avatar>
+                            <AvatarImage
+                              className="object-cover"
+                              src={donation?.image}
+                              alt="@shadcn"
+                            />
+                            <AvatarFallback>
+                              {donation?.username[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="text-[14px] font-medium">
+                              {donation?.username}
+                            </p>
+                            <p className="text-[#A4A4A4] text-[14px]">
+                              {timeAgo}
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-[#2BAC47]">
+                            + ${donation?.amount}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <p className="text-[#2BAC47]">+ $30</p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center py-2 w-full border-b">
-                    <div className="flex items-center space-x-[12px]">
-                      <Avatar>
-                        <AvatarImage
-                          className="object-contain"
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-[14px] font-semibold">
-                          {profile.name}
-                        </p>
-                        <p className="text-[#A4A4A4] text-[14px]">14hr ago</p>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-[#2BAC47]">+ $30</p>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center py-2 w-full border-b">
-                    <div className="flex items-center space-x-[12px]">
-                      <Avatar>
-                        <AvatarImage
-                          className="object-contain"
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-[14px] font-semibold">
-                          {profile.name}
-                        </p>
-                        <p className="text-[#A4A4A4] text-[14px]">14hr ago</p>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-[#2BAC47]">+ $30</p>
-                    </div>
-                  </div>
+                    );
+                  })}
                 </div>
               </TabsContent>
               <TabsContent value="verification">
