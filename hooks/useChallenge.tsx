@@ -15,8 +15,6 @@ const useChallenge = () => {
   const router = useRouter();
 
   const getAllChallenges = async (searchTerm?: string) => {
-    console.log("test");
-
     const response = await axios.post(`${base_url}/challenge/get/all`, {
       page: 1,
       perPage: 5,

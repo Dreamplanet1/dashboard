@@ -17,7 +17,7 @@ const Sidebar = () => {
   const path = usePathname();
 
   return (
-    <div className="flex flex-col items-center justify-between space-y-10">
+    <div className="flex flex-col items-center justify-between space-y-10 ">
       <div className="flex flex-col w-full grow  space-y-[12px]">
         {NavLinks.map((item: any) => {
           const isActive =

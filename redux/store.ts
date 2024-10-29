@@ -13,6 +13,8 @@ import { usersOnboardedSlice } from "./slices/usersOnboardedslice";
 import { broadcastslice } from "./slices/broadcastslice";
 import { campaignslice } from "./slices/campaignslice";
 import { challengeslice } from "./slices/challengeslice";
+import { paymentslice } from "./slices/paymentslice";
+import { reportslice } from "./slices/reportslice";
 // Import your slice correctly
 
 // Combine all reducers
@@ -21,6 +23,8 @@ const rootReducer = combineReducers({
   broadcast: broadcastslice.reducer,
   campaign: campaignslice.reducer,
   challenge: challengeslice.reducer,
+  payment: paymentslice.reducer,
+  report: reportslice.reducer,
 });
 
 // Persist configuration

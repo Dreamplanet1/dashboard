@@ -6,13 +6,25 @@ import {
   ChevronUpIcon,
   SearchIcon,
   XIcon,
+  EllipsisVertical,
 } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { UserTable } from "@/components/UserTable";
 import { reportData } from "@/mock/row";
-import { columns } from "./overviewcolumns";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -22,21 +34,129 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
-
-const fruits = [
-  { value: "apple", label: "Apple" },
-  { value: "banana", label: "Banana" },
-  { value: "blueberry", label: "Blueberry" },
-  { value: "grapes", label: "Grapes" },
-  { value: "pineapple", label: "Pineapple" },
-];
+import useReport from "@/hooks/useReport";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const ReportOverview = () => {
-  // Creator
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "name",
+      header: "Creator",
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <div className="flex items-center space-x-1">
+            <Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={profile?.user_image}
+                alt={profile?.user_name[0]}
+              />
+              <AvatarFallback>{profile?.user_name[0]}</AvatarFallback>
+            </Avatar>
+            <div>
+              <p>{profile?.user_name}</p>
+              <p className="text-[#A4A4A4]">@{profile.user_username}</p>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "admin_email",
+      header: "Assignee",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">
+          {row.getValue("admin_email")}
+        </p>
+      ),
+    },
+    {
+      accessorKey: "adminrole",
+      header: "Assignee's Role",
+      cell: ({ row }) => (
+        <div className="flex items-center space-x-1 border  text-xs font-medium w-max rounded-xl py-1 px-2">
+          <span className="h-1 w-1 rounded-full bg-[#BF3100]"></span>
+          {/* <p>{row.getValue("admin.role")}</p> */}
+        </div>
+      ),
+    },
+
+    {
+      accessorKey: "no_of_investors",
+      header: "No. of Investor",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">
+          {row.getValue("no_of_investors")} Investors
+        </p>
+      ),
+    },
+
+    {
+      accessorKey: "options",
+      header: "",
+      cell: ({ row }) => {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <EllipsisVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <span>
+                  <Image
+                    src={"/icons/editaccess.svg"}
+                    width={18}
+                    height={13}
+                    alt="editIcon"
+                    className="mr-2"
+                  />
+                </span>
+                Edit Access
+              </DropdownMenuItem>
+
+              <DropdownMenuItem>
+                <span>
+                  <Image
+                    src={"/icons/reportIcon.svg"}
+                    width={18}
+                    height={13}
+                    alt="reportIcon"
+                    className="mr-2"
+                  />
+                </span>
+                Create Report
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <span>
+                  <Image
+                    src={"/icons/removemember.svg"}
+                    width={18}
+                    height={13}
+                    alt="removeIcon"
+                    className="mr-2"
+                  />
+                </span>
+                Remove Member
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+  const { creatorReport, admin, creator } = useSelector(
+    (state: RootState) => state.report
+  );
+
   const [isOpen, setisOpen] = useState(false);
   const closeOpenDialog = () => setisOpen(false);
+  const { getCreatorReport, getAdmin, getCreator, createCreatorReport } =
+    useReport();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,44 +171,49 @@ const ReportOverview = () => {
 
     return () => clearTimeout(timer);
   }, [isOpen, setisOpen]);
-  const [selectedFruit, setSelectedFruit] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchCreatorReport, setSearchCreatorReport] = useState("");
 
-  // Assignee
-  const [selectedAssignee, setSelectedAssignee] = useState<string | null>(null);
-  const [searchTerm2, setSearchTerm2] = useState("");
+  const [searchReport, setSearchReport] = useState("");
+  const [adminSearch, setAdminSearch] = useState("");
+  const [selectedCreator, setSelectedCreator] = useState<{
+    username: string;
+    userId: number;
+    image: string | undefined;
+  } | null>(null);
+  const [selectedAdmin, setSelectedAdmin] = useState<{
+    first_name: string;
+    id: number;
+  } | null>(null);
+  const [investor, setInvestor] = useState<number | undefined>(undefined);
 
-  // Handle selection for fruits (Creator)
-  const handleSelect = (value: string) => {
-    setSelectedFruit(value);
-    setSearchTerm(""); // Clear search input after selection
+  useEffect(() => {
+    getAdmin(adminSearch);
+  }, [adminSearch]);
+
+  useEffect(() => {
+    getCreatorReport(searchCreatorReport);
+  }, [searchCreatorReport]);
+
+  useEffect(() => {
+    getCreator(searchReport);
+  }, [searchReport]);
+
+  const handleSelectCreator = (creator: any) => {
+    setSelectedCreator({
+      username: creator.username,
+      userId: Number(creator.userId),
+      image: creator.image,
+    });
+    setSearchReport("");
   };
 
-  // Handle selection for assignees (Assignee)
-  const handleSelect2 = (value: string) => {
-    setSelectedAssignee(value);
-    setSearchTerm2(""); // Clear search input after selection
+  const handleSelectAdmin = (admin: any) => {
+    setSelectedAdmin({ first_name: admin.first_name, id: admin.id });
+    setAdminSearch("");
   };
 
-  // Handle removal for fruits (Creator)
-  const handleRemove = () => {
-    setSelectedFruit(null);
-  };
-
-  // Handle removal for assignees (Assignee)
-  const handleRemove2 = () => {
-    setSelectedAssignee(null);
-  };
-
-  // Filter fruits based on search term for Creator
-  const filteredFruits = fruits.filter((fruit) =>
-    fruit.value.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Filter fruits based on search term for Assignee
-  const filteredAssignees = fruits.filter((fruit) =>
-    fruit.value.toLowerCase().includes(searchTerm2.toLowerCase())
-  );
+  const handleRemoveCreator = () => setSelectedCreator(null);
+  const handleRemoveAdmin = () => setSelectedAdmin(null);
 
   return (
     <div className="flex flex-col space-y-7">
@@ -114,17 +239,30 @@ const ReportOverview = () => {
         </div>
       </div>
       <div>
-        <UserTable
-          bottom={true}
-          placeholder="Search for Admin Name"
-          columns={columns}
-          data={reportData}
-        />
+        <div className="flex w-[350px] items-center border px-2 rounded-md">
+          <Image
+            src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+            width={20}
+            height={19.88}
+            alt="searchIcon"
+          />
+          <Input
+            placeholder={"Search for Admin Name"}
+            value={searchCreatorReport}
+            onChange={(e) => {
+              setSearchCreatorReport(e.target.value);
+            }}
+            className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+          />
+        </div>
+        <UserTable columns={columns} data={creatorReport} />
       </div>
       <Dialog open={isOpen} onOpenChange={closeOpenDialog}>
-        <DialogContent className="sm:max-w-[432px] px-0 rounded-full">
+        <DialogContent className="sm:max-w-[432px] max-h-[80%] px-0 rounded-full overflow-scroll scrollbar-hide">
           <DialogHeader className="pb-[18.5px] border-b">
             <DialogTitle className="px-[16px] flex justify-between items-center">
+              <DialogTitle className="hidden"></DialogTitle>
+              <DialogDescription className="hidden"></DialogDescription>
               <p className="font-medium"> Add Creator</p>
               <span
                 className="cursor-pointer transition-all active:scale-95"
@@ -149,191 +287,219 @@ const ReportOverview = () => {
                   <div
                     className={cn(
                       "flex items-center border rounded-md px-1 py-1",
-                      searchTerm ? "border-[#F75803]" : "border-[#C8C8C8]"
+                      searchReport ? "border-[#F75803]" : "border-[#C8C8C8]"
                     )}
                   >
-                    {selectedFruit ? (
-                      <div className="flex items-center">
-                        <Image
-                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
-                          width={16}
-                          height={15.9}
-                          alt="searchIcon"
-                        />
-                        <div className="flex items-center px-2 py-0 rounded-md space-x-1 border my-2">
-                          <Avatar className="w-5 h-5">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                      className="ml-[12px]"
+                    />
+                    {selectedCreator ? (
+                      <div className="flex items-center justify-between border rounded-[8px] space-x-[12px] w-[140px] ml-[8px] px-[8px] py-[4px]">
+                        <div className="flex space-x-2 ">
+                          <Avatar className="w-[16px] h-[16px]">
                             <AvatarImage
-                              className="object-contain"
-                              src="https://github.com/shadcn.png"
-                              alt="@shadcn"
+                              src={selectedCreator?.image}
+                              alt="selectedImage"
                             />
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarFallback>
+                              {selectedCreator?.username[0]}
+                            </AvatarFallback>
                           </Avatar>
-                          <span className="text-[12px]">{selectedFruit}</span>
+                          <span className="text-[12px]">
+                            {selectedCreator?.username}
+                          </span>
+                        </div>
+                        <div>
                           <XIcon
-                            size={14}
+                            size={16}
                             color="#C8C8C8"
-                            className="cursor-pointer transition-all hover:scale-105 active:scale-95"
-                            onClick={handleRemove}
+                            className="cursor-pointer "
+                            onClick={handleRemoveCreator}
                           />
                         </div>
                       </div>
                     ) : (
-                      <div className="flex items-center">
-                        <Image
-                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
-                          width={16}
-                          height={15.9}
-                          alt="searchIcon"
-                          className="ml-4"
-                        />
-                        <Input
-                          placeholder="Search "
-                          className="w-full pl-2 border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                      </div>
+                      <Input
+                        placeholder="Search for Creator"
+                        className="w-full focus-visible:ring-0 focus-visible:ring-offset-0 border-none placeholder:text-[#C8C8C8] placeholder:text-[14px]"
+                        value={searchReport}
+                        onChange={(e) => setSearchReport(e.target.value)}
+                      />
                     )}
                   </div>
-                  {searchTerm && (
-                    <div className="w-full bg-white p-3 rounded-md border mt-1 z-10">
-                      {filteredFruits.length > 0 ? (
-                        filteredFruits.map((fruit) => (
-                          <div
-                            key={fruit.value}
-                            className="flex justify-between items-center cursor-pointer p-2 rounded-md hover:bg-gray-100"
-                            onClick={() => handleSelect(fruit.value)}
-                          >
-                            <div className="flex items-center space-x-1">
-                              <Avatar className="w-8 h-8">
-                                <AvatarImage
-                                  className="object-contain"
-                                  src="https://github.com/shadcn.png"
-                                  alt="@shadcn"
-                                />
-                                <AvatarFallback>CN</AvatarFallback>
-                              </Avatar>
-                              <span className="text-[14px]">{fruit.label}</span>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-gray-500">
-                          No results found
-                        </p>
-                      )}
+                  {searchReport && creator?.length > 0 && (
+                    <div className="bg-white p-3 rounded-md border mt-1 z-10">
+                      {creator.map((person) => (
+                        <div
+                          key={person.userId}
+                          className="p-2 cursor-pointer flex items-center space-x-[12px]"
+                          onClick={() => handleSelectCreator(person)}
+                        >
+                          <Avatar className="w-[20px] h-[20px]">
+                            <AvatarImage src={person?.image} alt={"image"} />
+                            <AvatarFallback>
+                              {person?.username[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-[14px] font-medium">
+                            {person.username}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
               </div>
-              <div className="flex flex-col space-y-2 ">
+
+              {/* Admin Selection */}
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="assignee" className="font-medium">
                   Assignee
                 </Label>
-                <div className=" w-full">
+                <div className="w-full">
                   <div
                     className={cn(
                       "flex items-center border rounded-md px-1 py-1",
-                      searchTerm2 ? "border-[#F75803]" : "border-[#C8C8C8]"
+                      adminSearch ? "border-[#F75803]" : "border-[#C8C8C8]"
                     )}
                   >
-                    {selectedAssignee ? (
-                      <div className="flex items-center">
-                        <Image
-                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
-                          width={16}
-                          height={15.9}
-                          alt="searchIcon"
-                          className="ml-4"
-                        />
-                        <div className="flex items-center px-2 py-0 rounded-md space-x-1 border my-2">
-                          <Avatar className="w-5 h-5">
-                            <AvatarImage
-                              className="object-contain"
-                              src="https://github.com/shadcn.png"
-                              alt="@shadcn"
-                            />
-                            <AvatarFallback>CN</AvatarFallback>
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                      className="ml-[12px]"
+                    />
+                    {selectedAdmin ? (
+                      <div className="flex items-center justify-between border rounded-[8px] space-x-[12px] w-[140px] ml-[8px] px-[8px] py-[4px]">
+                        <div className="flex space-x-2 ">
+                          <Avatar className="w-[16px] h-[16px]">
+                            <AvatarImage src={""} alt="selectedImage" />
+                            <AvatarFallback>
+                              {selectedAdmin?.first_name[0]}
+                            </AvatarFallback>
                           </Avatar>
                           <span className="text-[12px]">
-                            {selectedAssignee}
+                            {selectedAdmin?.first_name}
                           </span>
+                        </div>
+                        <div>
                           <XIcon
-                            size={14}
+                            size={16}
                             color="#C8C8C8"
-                            className="cursor-pointer transition-all hover:scale-105 active:scale-95"
-                            onClick={handleRemove2}
+                            className="cursor-pointer "
+                            onClick={handleRemoveAdmin}
                           />
                         </div>
                       </div>
                     ) : (
-                      <div className="flex items-center">
-                        <Image
-                          src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
-                          width={16}
-                          height={15.9}
-                          alt="searchIcon"
-                          className="ml-4"
-                        />
-                        <Input
-                          placeholder="Search"
-                          className="w-full pl-2 border-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
-                          value={searchTerm2}
-                          onChange={(e) => setSearchTerm2(e.target.value)}
-                        />
-                      </div>
+                      <Input
+                        placeholder="Search for Admin"
+                        className="w-full focus-visible:ring-0 focus-visible:ring-offset-0 border-none placeholder:text-[#C8C8C8] placeholder:text-[14px]"
+                        value={adminSearch}
+                        onChange={(e) => setAdminSearch(e.target.value)}
+                      />
                     )}
                   </div>
-                  {searchTerm2 && (
-                    <div className=" w-full bg-white p-3 rounded-md border mt-1 z-10">
-                      {filteredAssignees.length > 0 ? (
-                        filteredAssignees.map((fruit) => (
-                          <div
-                            key={fruit.value}
-                            className="flex justify-between items-center cursor-pointer p-2 rounded-md hover:bg-gray-100"
-                            onClick={() => handleSelect2(fruit.value)}
-                          >
-                            <div className="flex items-center space-x-1">
-                              <Avatar className="w-8 h-8">
-                                <AvatarImage
-                                  className="object-contain"
-                                  src="https://github.com/shadcn.png"
-                                  alt="@shadcn"
-                                />
-                                <AvatarFallback>CN</AvatarFallback>
-                              </Avatar>
-                              <span className="text-[14px]">{fruit.label}</span>
-                            </div>
+                  {adminSearch && admin.length > 0 && (
+                    <div className="bg-white p-3 rounded-md border mt-1 z-10">
+                      {admin.map((person) => (
+                        <div
+                          key={person.id}
+                          className="p-2 cursor-pointer flex items-center space-x-2"
+                          onClick={() => handleSelectAdmin(person)}
+                        >
+                          <Avatar className="w-[20px] h-[20px]">
+                            <AvatarImage src="" alt="firstname" />
+                            <AvatarFallback>
+                              {person?.first_name[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="text-[14px]">
+                            <p> {person?.first_name}</p>
+
+                            <p className="text-[#808080] text-[12px]">
+                              {person?.role_name}
+                            </p>
                           </div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-gray-500">
-                          No results found
-                        </p>
-                      )}
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="investor" className="font-medium">
                   No. of Investor
                 </Label>
-                <Input
-                  className="w-full py-5 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border placeholder:text-[#C8C8C8] placeholder:text-[14px]"
+                <input
+                  className="w-full p-2 rounded-[8px] outline-none border border-[#C8C8C8] placeholder:text-[#C8C8C8] placeholder:text-[14px] appearance-none"
+                  type="text"
+                  value={investor ?? ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Set value as a number if it’s valid; otherwise, keep it as-is
+                    if (/^\d*$/.test(value))
+                      setInvestor(value === "" ? undefined : parseInt(value));
+                  }}
                   placeholder="Enter no. of Investor"
                 />
               </div>
             </div>
           </div>
           <DialogFooter className="px-[16px]">
-            <Button className="btnPlainInactive w-[96px]" type="submit">
-              Cancel
-            </Button>
-            <Button className="btnColoredInactive w-[96px]" type="submit">
-              Add
-            </Button>
+            {selectedCreator?.userId &&
+            selectedAdmin?.id &&
+            investor !== undefined &&
+            investor !== null ? (
+              <Button
+                className="btnPlain w-[96px]"
+                type="submit"
+                onClick={() => {
+                  setisOpen(false);
+                  setSelectedAdmin(null);
+                  setSelectedCreator(null);
+                  setInvestor(undefined);
+                }}
+              >
+                Cancel
+              </Button>
+            ) : (
+              <Button className="btnPlainInactive w-[96px]" type="submit">
+                Cancel
+              </Button>
+            )}
+
+            {selectedCreator?.userId &&
+            selectedAdmin?.id &&
+            investor !== undefined &&
+            investor !== null ? (
+              <Button
+                className="btnColored w-[96px]"
+                type="submit"
+                onClick={async () => {
+                  await createCreatorReport(
+                    selectedAdmin?.id,
+                    selectedCreator?.userId,
+                    investor
+                  );
+                  setisOpen(false);
+                  setSelectedAdmin(null);
+                  setSelectedCreator(null);
+                  setInvestor(undefined);
+                }}
+              >
+                Add
+              </Button>
+            ) : (
+              <Button className="btnColoredInactive w-[96px]" type="submit">
+                Add
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
