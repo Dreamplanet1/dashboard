@@ -4,18 +4,52 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RootState } from "@/redux/store";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 const page = () => {
+  const formatDateTime = (dateString: string) => {
+    // Extract date and time components from ISO string
+    const [datePart, timePart] = dateString.split("T");
+    const [year, month, day] = datePart.split("-");
+    const [hour, minute] = timePart.split(":");
+
+    // Format month name
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const monthName = monthNames[parseInt(month, 10) - 1];
+
+    // Convert hour to 12-hour format and determine AM/PM
+    let hourInt = parseInt(hour, 10);
+    const ampm = hourInt >= 12 ? "PM" : "AM";
+    hourInt = hourInt % 12 || 12; // Convert hour "0" to "12" for 12-hour format
+
+    return `Uploaded ${day} ${monthName} ${year}, ${hourInt}:${minute} ${ampm}`;
+  };
+
   const router = useRouter();
+  const { activeReport } = useSelector((state: RootState) => state.report);
   return (
     <section className="py-4 px-7 mx-auto max-w-screen-lg ">
       <div
         onClick={() => {
-          window.location.href = "/report/submitted";
+          router.push("/report/submitted");
         }}
         className="flex items-center cursor-pointer transition-all active:scale-95 text-[14px]"
       >
@@ -28,35 +62,25 @@ const page = () => {
           <div className="pb-[16px] border-b">
             <h2 className="text-[24px]">Evaluation Report</h2>
             <p className="text-[#5B5B5B] text-[12px]">
-              Uploaded 22 Jun 2024, 10:44 am
+              {formatDateTime(activeReport?.createdAt)}
             </p>
           </div>
           <div className="mt-[20px]">
             <h3 className="text-[#10002E] font-medium">
-              Investment Funds Management
+              {activeReport?.subject}
             </h3>
-            <p className="text-[12px]">
-              Lorem ipsum dolor sit amet consectetur. Facilisi habitasse cras id
-              vulputate praesent turpis vitae mauris. Bibendum malesuada vel
-              mauris consectetur libero facilisi viverra arcu. Adipiscing sed
-              molestie ac fermentum pharetra habitant adipiscing fames.
-              Tristique lectus amet libero in nulla vitae tristique. Eu sed
-              porttitor tincidunt nisl. Diam quis et orci habitant aliquam.
-              Vestibulum condimentum amet massa proin varius morbi id interdum.
-              In ullamcorper viverra sed massa. Varius diam vitae vestibulum
-              consequat molestie hac id aliquet. Cum pharetra mattis purus velit
-              morbi amet tristique amet augue. Penatibus magna morbi nibh
-              ultrices. Non bibendum massa sed non amet. Vitae vel volutpat nibh
-              proin in sed suspendisse aliquam augue. Ultricies libero et
-              pulvinar proin dui non arcu.
-            </p>
-            <Image
-              alt="evaluationImage"
-              src="/evaluationImage.png"
-              className="mt-4"
-              height={80}
-              width={96}
-            />
+            <p className="text-[12px]">{activeReport?.description}</p>
+            <div className="grid grid-cols-3 gap-3">
+              {activeReport?.media_url.map((media: any) => (
+                <Image
+                  alt="evaluationImage"
+                  src={media}
+                  className="mt-4"
+                  height={80}
+                  width={96}
+                />
+              ))}
+            </div>
           </div>
           <div className="mt-auto items-end">
             <Image
@@ -65,8 +89,10 @@ const page = () => {
               height={19.94}
               alt="logoreportIcon"
             />
-            <h2 className="font-medium">Ezomonglory@gmail.com</h2>
-            <p className="text-[#808080] text-[12px]">Sub-Admin</p>
+            <h2 className="font-medium">{activeReport?.user_name}</h2>
+            <p className="text-[#808080] text-[12px]">
+              {activeReport?.user_type}
+            </p>
           </div>
         </div>
         <div className="col-span-2 bg-white h-max p-5">
@@ -80,7 +106,7 @@ const page = () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium">Price_Dwight</p>
+              <p className="font-medium">{activeReport?.user_name}</p>
               <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-1">
                   <span>
@@ -91,20 +117,29 @@ const page = () => {
                       alt="profileIcon"
                     />
                   </span>
-                  <p className="text-[#808080] text-[14px]">Creator</p>
+                  <p className="text-[#808080] text-[14px]">
+                    {activeReport?.user_type}
+                  </p>
                 </div>
-                <p className="h-1 w-1 rounded-full bg-[#C8C8C8]"></p>
-                <div className="flex items-center space-x-1">
-                  <span>
-                    <Image
-                      src={"/icons/music.svg"}
-                      height={16}
-                      width={16}
-                      alt="musicIcon"
-                    />
-                  </span>
-                  <p className="text-[#808080] text-[14px]">Artist/Musician</p>
-                </div>
+                {activeReport?.content_creator_type && (
+                  <p className="h-1 w-1 rounded-full bg-[#C8C8C8]"></p>
+                )}
+
+                {activeReport?.content_creator_type && (
+                  <div className="flex items-center space-x-1">
+                    <span>
+                      <Image
+                        src={"/icons/music.svg"}
+                        height={16}
+                        width={16}
+                        alt="musicIcon"
+                      />
+                    </span>
+                    <p className="text-[#808080] text-[14px]">
+                      {activeReport?.content_creator_type}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import {
   updateAdmin,
   updateCreator,
   updateCreatorReport,
+  updateReports,
 } from "@/redux/slices/reportslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
@@ -10,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const useReport = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
-  const challenge = useSelector((state: RootState) => state.challenge);
+  const { creatorData } = useSelector((state: RootState) => state.report);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -23,7 +24,6 @@ const useReport = () => {
         searchString: searchString,
       }
     );
-    console.log(response?.data?.response?.docs);
     dispatch(updateCreatorReport(response?.data?.response?.docs));
   };
   const createCreatorReport = async (
@@ -39,7 +39,6 @@ const useReport = () => {
         no_of_investors: investorNumber,
       }
     );
-    console.log(response);
     getCreatorReport("");
     //  dispatch(updateCreatorReport(response?.data?.response?.docs));
   };
@@ -50,7 +49,6 @@ const useReport = () => {
         name: searchString,
       }
     );
-    console.log(response);
     dispatch(updateAdmin(response?.data?.response));
   };
   const getCreator = async (searchString?: string) => {
@@ -62,11 +60,35 @@ const useReport = () => {
     dispatch(updateCreator(response?.data?.response));
   };
 
+  const getReports = async () => {
+    const response = await axios.post(`${base_url}/report/get-all-reports`, {
+      page: 1,
+      perPage: 10,
+      searchString: "",
+    });
+    dispatch(updateReports(response?.data?.response?.docs));
+  };
+  const createReport = async (
+    subject: string,
+    description: string,
+    media_url: string[]
+  ) => {
+    const response = await axios.post(`${base_url}/report/create-report`, {
+      subject: subject,
+      description: description,
+      media_url: media_url,
+      creator_id: creatorData?.creator_id,
+    });
+    //  dispatch(updateCreatorReport(response?.data?.response?.docs));
+  };
+
   return {
     getCreatorReport,
     createCreatorReport,
     getAdmin,
     getCreator,
+    getReports,
+    createReport,
   };
 };
 

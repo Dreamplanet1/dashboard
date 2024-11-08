@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import { AeonikFont, RecoletaFont } from "@/utils/customFonts";
 
 export default function RootLayout({
   children,
@@ -7,7 +8,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
         <div className="px-10">
           <Navbar />
         </div>

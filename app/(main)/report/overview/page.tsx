@@ -36,10 +36,14 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import useReport from "@/hooks/useReport";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { updateCreatorData } from "@/redux/slices/reportslice";
+import { useRouter } from "next/navigation";
 
 const ReportOverview = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "name",
@@ -98,6 +102,7 @@ const ReportOverview = () => {
       accessorKey: "options",
       header: "",
       cell: ({ row }) => {
+        const profile = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -105,7 +110,7 @@ const ReportOverview = () => {
                 <EllipsisVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="space-y-2" align="end">
               <DropdownMenuItem>
                 <span>
                   <Image
@@ -119,7 +124,12 @@ const ReportOverview = () => {
                 Edit Access
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  dispatch(updateCreatorData(profile));
+                  router.push("/evaluationReport");
+                }}
+              >
                 <span>
                   <Image
                     src={"/icons/reportIcon.svg"}

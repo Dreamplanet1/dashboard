@@ -1,6 +1,11 @@
 "use client";
+import useReport from "@/hooks/useReport";
+import { updateActiveReport } from "@/redux/slices/reportslice";
+import { RootState } from "@/redux/store";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const SubmittedReport = () => {
   const reportData = [
@@ -49,7 +54,35 @@ const SubmittedReport = () => {
       date: "Sent 30 Jun 2024",
     },
   ];
+  const { reports } = useSelector((state: RootState) => state.report);
+  const { getReports } = useReport();
+  const router = useRouter();
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getReports();
+  }, []);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = monthNames[date.getMonth()]; // Get month abbreviation
+    const year = date.getFullYear();
+    return `${day} ${month}, ${year}`;
+  };
   return (
     <div className="space-y-5">
       <div>
@@ -58,13 +91,14 @@ const SubmittedReport = () => {
           Lorem ipsum dolor sit amet consectetur.
         </p>
       </div>
-      <div className="grid grid-cols-5 gap-6 rounded-md">
-        {reportData.map((report) => (
+      <div className="grid grid-cols-5 gap-6">
+        {reports.map((report) => (
           <div
             onClick={() => {
-              window.location.href = "/evaluationreportFilled";
+              dispatch(updateActiveReport(report));
+              router.push("/evaluationreportFilled");
             }}
-            className="w-50 border cursor-pointer transition-all hover:scale-105 active:scale-95"
+            className="w-50 border cursor-pointer transition-all active:scale-95 rounded-[4px]"
           >
             <div className="flex justify-center bg-[#F1F1F1]">
               <Image
@@ -76,8 +110,10 @@ const SubmittedReport = () => {
               />
             </div>
             <div className="px-4 py-2">
-              <h2 className="font-medium text-[#111810]">{report.name}</h2>
-              <p className="text-[12px] text-[#A4A4A4]">{report.date}</p>
+              <h2 className="font-medium text-[#111810]">{report.user_name}</h2>
+              <p className="text-[12px] text-[#A4A4A4]">
+                {formatDate(report.createdAt)}
+              </p>
             </div>
           </div>
         ))}
