@@ -251,7 +251,7 @@ const Members = () => {
               >
                 <span>
                   <Image
-                    src={"/icons/deletePost.svg"}
+                    src={"/icons/deletepost.svg"}
                     alt="viewIcon"
                     width={16.25}
                     height={16.25}
