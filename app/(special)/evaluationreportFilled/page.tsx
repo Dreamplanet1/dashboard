@@ -64,7 +64,7 @@ const page = () => {
             </h3>
             <p className="text-[12px]">{activeReport?.description}</p>
             <div className="grid grid-cols-3 gap-3">
-              {activeReport?.media_url.map((media: any) => (
+              {activeReport?.media_url?.map((media: any) => (
                 <Image
                   alt="evaluationImage"
                   src={media}
