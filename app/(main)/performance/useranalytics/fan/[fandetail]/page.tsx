@@ -12,32 +12,35 @@ import {
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const FanDetails = () => {
   const [date, setDate] = useState<Date>();
+  const { activeUser, fanInvestorPerformance } = useSelector((state: RootState) => state.performance);
 
   return (
     <div className="space-y-10">
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <Avatar>
+        <Avatar>
             <AvatarImage
-              className="object-contain"
-              src="https://github.com/shadcn.png"
+              className="object-cover"
+              src={activeUser?.image}
               alt="@shadcn"
             />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{activeUser?.full_name[0]}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-[20px]">Mack.Spinka</p>
-            <div className="text-[#808080] flex items-center space-x-1">
+          <p className="text-[20px] ">{activeUser?.full_name}</p>
+          <div className="text-[#808080] flex items-center space-x-1">
               <Image
                 src={"/DASHBOARDASSETS/ICONS/PROFILEFAN.svg"}
                 height={16}
                 width={16}
                 alt="profileIcon"
               />
-              <p>Fan</p>
+            <p className="text-[#808080] text-sm">{activeUser?.user_type}</p>
             </div>
           </div>
         </div>
@@ -76,59 +79,38 @@ const FanDetails = () => {
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
             <p className="text-[#373737] text-[14px]">No. of forums created</p>
           </div>
-          <p className="text-[32px] font-Recoleta font-medium">10</p>
+          <p className="text-[32px] font-Recoleta font-medium">{fanInvestorPerformance?.number_of_forum_created}</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <div className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#111810] "></div>
             <p className="text-[#373737] text-[14px]">No. of users in forum</p>
           </div>
-          <p className="text-[32px] font-Recoleta font-medium">23k</p>
+          <p className="text-[32px] font-Recoleta font-medium">{fanInvestorPerformance?.total_users_in_created_forums}</p>
         </div>
       </div>
       <section className="">
         <div className="w-2/5">
           <p className="font-medium mb-4 pb-4 border-b">Forums Joined</p>
           <div className="space-y-6">
-            <div className="flex border p-2 items-center rounded-md space-x-2">
-              <Image
-                src={"/creatorImage.jpg"}
-                width={48}
-                height={48}
-                alt="forumImage"
-                className="rounded-md"
-              />
-              <div>
-                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
-                <p className="text-[#808080]">12,324 Members</p>
-              </div>
-            </div>
-            <div className="flex border p-2 items-center rounded-md space-x-2">
-              <Image
-                src={"/creatorImage.jpg"}
-                width={48}
-                height={48}
-                alt="forumImage"
-                className="rounded-md"
-              />
-              <div>
-                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
-                <p className="text-[#808080]">12,324 Members</p>
-              </div>
-            </div>
-            <div className="flex border p-2 items-center rounded-md space-x-2">
-              <Image
-                src={"/creatorImage.jpg"}
-                width={48}
-                height={48}
-                alt="forumImage"
-                className="rounded-md"
-              />
-              <div>
-                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
-                <p className="text-[#808080]">12,324 Members</p>
-              </div>
-            </div>
+            {fanInvestorPerformance?.forums?.map((performance: any, index:any) => (
+    <div key={index} className="flex border p-2 items-center rounded-md space-x-2">
+   {performance?.logo !== "" &&  <Image
+      src={performance?.logo}
+      width={48}
+      height={48}
+      alt="forumImage"
+      className="rounded-md h-[48px] w-[48px] object-cover"
+    />}
+   
+    <div>
+      <p className="font-medium">{performance?.name}</p>
+      <p className="text-[#808080]">{performance?.noOfMembers}</p>
+    </div>
+  </div>
+            ))}
+           
+           
           </div>
         </div>
       </section>

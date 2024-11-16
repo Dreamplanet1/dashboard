@@ -94,20 +94,11 @@ export const NavLinks = [
     accordion: false,
   },
   {
-    name: "User Settings",
+    name: "Admin Setting",
     icon: <AccountSetupIcon className="mr-2 h-7 w-4" pathColor="#808080" />,
-    href: "/usersettings",
-    accordion: true,
-    sublink: [
-      {
-        title: "Admin Setting",
-        href: "/usersettings/admin",
-      },
-      {
-        title: "Creator Setting",
-        href: "/usersettings/creator",
-      },
-    ],
+    href: "/adminsetting",
+    accordion: false,
+
   },
   {
     name: "Investments",

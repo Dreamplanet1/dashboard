@@ -12,9 +12,14 @@ import {
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const CreatorDetails = () => {
   const [date, setDate] = useState<Date>();
+  const { activeUser, creatorPerformance } = useSelector((state: RootState) => state.performance);
+  const mediaUrl = creatorPerformance?.result?.feed?.media_url[0];
+  const isVideo = mediaUrl && mediaUrl.endsWith('.mp4');
 
   return (
     <div className="space-y-10">
@@ -22,45 +27,18 @@ const CreatorDetails = () => {
         <div className="flex items-center space-x-2">
           <Avatar>
             <AvatarImage
-              className="object-contain"
-              src="https://github.com/shadcn.png"
+              className="object-cover"
+              src={activeUser?.image}
               alt="@shadcn"
             />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{activeUser?.full_name[0]}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-[20px] ">Mack.Spinka</p>
-            <p className="text-[#808080] text-sm">Creator</p>
+            <p className="text-[20px] ">{activeUser?.full_name}</p>
+            <p className="text-[#808080] text-sm">{activeUser?.user_type}</p>
           </div>
         </div>
-        <div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-max text-black justify-end space-x-2 text-left font-normal",
-                  !date && "text-muted-foreground text-black"
-                )}
-              >
-                {date ? (
-                  format(date, "PPP")
-                ) : (
-                  <span className="text-black">Last 7 days</span>
-                )}
-                <CalendarIcon className="mr-2 h-4 w-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+    
       </div>
       <div className="flex items-center space-x-[142.5px]">
         <div className="space-y-2">
@@ -68,7 +46,7 @@ const CreatorDetails = () => {
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
             <p className="text-[#373737] text-[14px]">No. of Post</p>
           </div>
-          <p className="text-[32px] font-Recoleta font-medium">10</p>
+          <p className="text-[32px] font-Recoleta font-medium">{creatorPerformance?.result?.total_posts}</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <div className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -77,7 +55,7 @@ const CreatorDetails = () => {
               Total no. of fans in forum
             </p>
           </div>
-          <p className="text-[32px] font-medium font-Recoleta">20m</p>
+          <p className="text-[32px] font-medium font-Recoleta">{creatorPerformance?.total_users_in_created_forums}</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <div className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -86,7 +64,7 @@ const CreatorDetails = () => {
               Total no. of forums joined
             </p>
           </div>
-          <p className="text-[32px] font-medium font-Recoleta">12</p>
+          <p className="text-[32px] font-medium font-Recoleta">{creatorPerformance?.number_of_forums_joined}</p>
         </div>
       </div>
       <section className="grid grid-cols-8  space-x-7 ">
@@ -94,23 +72,30 @@ const CreatorDetails = () => {
           <div className="text-[16px] flex items-center space-x-2 border-b pb-4 mb-4 ">
             <p>Top Engagement</p>
             <div className="bg-[#C8C8C8] w-[6px] h-[6px] rounded-full"></div>
-            <p className="text-[#F75803] ml-3">139,895,3020 Engagement</p>
+            <p className="text-[#F75803] ml-3">{creatorPerformance?.result?.likes_count + creatorPerformance?.result?.comments_count}</p>
           </div>
 
           <div className="space-y-3">
-            <Image
-              src={"/creatorImage.jpg"}
-              height={331}
-              width={592}
-              className="object-contain"
-              alt="creatorImage"
-            />
+             <>
+    {isVideo ? (
+     <video 
+     src={mediaUrl} 
+     className="w-[592px] h-[331px] object-contain" 
+     controls 
+   />
+    ) : (
+      <Image
+        src={mediaUrl}
+        height={331}
+        width={592}
+        className="object-contain"
+        alt="creatorImage"
+      />
+    )}
+  </>
+         
             <p className="text-[#5B5B5B] w-[592px]">
-              Lorem ipsum dolor sit amet consectetur. Sed purus amet enim nunc
-              quis quam dui. Nisl varius viverra quis leo dolor nisi faucibus
-              adipiscing. Ultricies scelerisque nisl ullamcorper enim
-              condimentum vestibulum lacus etiam ultrices. Ultrices tortor sed
-              malesuada accumsan varius sed diam dictum orci.
+             {creatorPerformance?.result?.feed?.text_content}
             </p>
           </div>
           <div className="flex  items-center justify-between border p-2 rounded-md w-[256px]">
@@ -118,59 +103,38 @@ const CreatorDetails = () => {
               <span className="mr-2">
                 <Heart />
               </span>
-              1,000,645
+              {creatorPerformance?.result?.likes_count}
             </p>
             <div className="h-[12px] w-[1px] bg-[#C8C8C8]"></div>
             <p className="flex items-center space-x-2 text-[#808080]">
               <span className="mr-2">
                 <MessageCircle />
               </span>
-              39,645
+              {creatorPerformance?.result?.comments_count}
             </p>
           </div>
         </div>
         <div className="col-span-3">
           <p className="font-medium mb-4 pb-4 border-b">Forums Joined</p>
           <div className="space-y-6">
-            <div className="flex border p-2 items-center rounded-md space-x-2">
-              <Image
-                src={"/creatorImage.jpg"}
+            {creatorPerformance?.forums?.map((performance: any, index: any) => (
+              <div key={index} className="flex border p-2 items-center rounded-md space-x-2">
+             {performance?.logo !== "" &&  <Image
+                src={performance?.logo}
                 width={48}
                 height={48}
                 alt="forumImage"
                 className="rounded-md"
-              />
+              />}
+             
               <div>
-                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
-                <p className="text-[#808080]">12,324 Members</p>
+                <p className="font-medium">{performance?.name}</p>
+                <p className="text-[#808080]">{performance?.noOfMembers} Member(s)</p>
               </div>
             </div>
-            <div className="flex border p-2 items-center rounded-md space-x-2">
-              <Image
-                src={"/creatorImage.jpg"}
-                width={48}
-                height={48}
-                alt="forumImage"
-                className="rounded-md"
-              />
-              <div>
-                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
-                <p className="text-[#808080]">12,324 Members</p>
-              </div>
-            </div>
-            <div className="flex border p-2 items-center rounded-md space-x-2">
-              <Image
-                src={"/creatorImage.jpg"}
-                width={48}
-                height={48}
-                alt="forumImage"
-                className="rounded-md"
-              />
-              <div>
-                <p className="font-medium">Ecofriendly Affairs Worldwide</p>
-                <p className="text-[#808080]">12,324 Members</p>
-              </div>
-            </div>
+            ))}
+            
+           
           </div>
         </div>
       </section>

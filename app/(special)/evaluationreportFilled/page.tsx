@@ -12,36 +12,29 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 const page = () => {
-  const formatDateTime = (dateString: string) => {
+  const formatDateTime = (dateString?: string) => {
+    if (!dateString) return "No date provided"; // Handle undefined or empty input
+  
     // Extract date and time components from ISO string
     const [datePart, timePart] = dateString.split("T");
     const [year, month, day] = datePart.split("-");
     const [hour, minute] = timePart.split(":");
-
+  
     // Format month name
     const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ];
     const monthName = monthNames[parseInt(month, 10) - 1];
-
+  
     // Convert hour to 12-hour format and determine AM/PM
     let hourInt = parseInt(hour, 10);
     const ampm = hourInt >= 12 ? "PM" : "AM";
-    hourInt = hourInt % 12 || 12; // Convert hour "0" to "12" for 12-hour format
-
+    hourInt = hourInt % 12 || 12;
+  
     return `Uploaded ${day} ${monthName} ${year}, ${hourInt}:${minute} ${ampm}`;
   };
+  
 
   const router = useRouter();
   const { activeReport } = useSelector((state: RootState) => state.report);

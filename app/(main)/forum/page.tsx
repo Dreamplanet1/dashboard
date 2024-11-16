@@ -7,100 +7,94 @@ import Image from "next/image";
 import { UserTable } from "@/components/UserTable";
 import { data } from "@/mock/row";
 import { EllipsisVertical } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import useForum from "@/hooks/useForum";
+import { useEffect } from "react";
 
-const row = [
-  {
-    name: "Direct Group Developer",
-    status: "Activated",
-    members: "67,578,395",
-    admin: "Danny Okeefe",
-    engagement: "456,678",
-    date: "22 Jun, 2024",
-  },
-  {
-    name: "Direct Group Developer",
-    status: "Deactivated",
-    members: "67,578,395",
-    admin: "Danny Okeefe",
-    engagement: "456,678",
-    date: "22 Jun, 2024",
-  },
-];
+
 
 const Forum = () => {
+  const {allForums} = useSelector((state: RootState) => state.forum);
+  const {getAllForums} = useForum();
+  useEffect(() => {
+    getAllForums()
+   },[])
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "name",
-      header: "Name of Forum",
-      cell: ({ row }) => (
-        <p className="text-[14px] text-[#373737]">{row.getValue("name")}</p>
-      ),
+      header: "Name of forum",
     },
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) =>
-        row.getValue("status") === "Activated" ? (
-          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
-            <span>
-              <Image
-                src={"/icons/ActivateIcon.svg"}
-                width={10}
-                height={10}
-                alt="activateIcon"
-              />
-            </span>
-            <p>{row.getValue("status")}</p>
-          </div>
-        ) : (
-          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
-            <span>
-              <Image
-                src={"/icons/DeactivateIcon.svg"}
-                width={10}
-                height={10}
-                alt="deactivateIcon"
-              />
-            </span>
-            <p>{row.getValue("status")}</p>
-          </div>
-        ),
+      cell: ({ row }) => (
+        <p>{row.getValue("status")}</p>
+      )
+        // row.getValue("status") === "Activated" ? (
+        //   <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+        //     <span>
+        //       <Image
+        //         src={"/icons/ActivateIcon.svg"}
+        //         width={10}
+        //         height={10}
+        //         alt="activateIcon"
+        //       />
+        //     </span>
+        //     <p>{row.getValue("status")}</p>
+        //   </div>
+        // ) : (
+        //   <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+        //     <span>
+        //       <Image
+        //         src={"/icons/DeactivateIcon.svg"}
+        //         width={10}
+        //         height={10}
+        //         alt="deactivateIcon"
+        //       />
+        //     </span>
+        //     <p>{row.getValue("status")}</p>
+        //   </div>
+        // ),
     },
     {
-      accessorKey: "members",
+      accessorKey: "noOfmembers",
       header: "No. of members",
-      cell: ({ row }) => (
-        <p className="text-[14px] text-[#373737]">{row.getValue("members")}</p>
-      ),
     },
     {
-      accessorKey: "admin",
+      accessorKey: "adminName",
       header: "Admin",
-      cell: ({ row }) => (
-        <p className="text-[14px] text-[#373737]">{row.getValue("admin")}</p>
-      ),
     },
     {
       accessorKey: "engagement",
       header: "Engagement",
       cell: ({ row }) => (
-        <p className="text-[14px] flex items-center space-x-1 text-[#2BAC47]">
-          <Image
-            src={"/icons/engagementIcon.svg"}
-            width={14}
-            height={14}
-            alt="engagementIcon"
-          />
-          <span> {row.getValue("engagement")}</span>
+        <p className="flex items-center text-[#2BAC47] ">
+          <span className="mr-2">
+            <Image
+              src={"/icons/engagementIcon.svg"}
+              height={10}
+              width={10}
+              alt="engagementIcon"
+            />
+          </span>
+          {row.getValue("engagement")}
         </p>
       ),
     },
     {
-      accessorKey: "date",
+      accessorKey: "createdAt",
       header: "Created date",
-      cell: ({ row }) => (
-        <p className="text-[14px] text-[#373737]">{row.getValue("date")}</p>
-      ),
+      cell: ({ row }) => {
+        const createdAt = new Date(row.getValue("createdAt"));
+        const formattedDate = createdAt.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+    
+        return <p>{formattedDate}</p>;
+      }
     },
 
     {
@@ -124,9 +118,8 @@ const Forum = () => {
       </div>
       <div>
         <UserTable
-          placeholder="Search Admin or Forum name"
-          top={true}
-          data={row}
+          
+          data={allForums}
           columns={columns}
         />
       </div>

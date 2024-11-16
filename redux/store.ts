@@ -15,6 +15,9 @@ import { campaignslice } from "./slices/campaignslice";
 import { challengeslice } from "./slices/challengeslice";
 import { paymentslice } from "./slices/paymentslice";
 import { reportslice } from "./slices/reportslice";
+import { adminsettingslice } from "./slices/adminsettingslice";
+import { performanceslice } from "./slices/performanceslice";
+import { forumslice } from "./slices/forumslice";
 // Import your slice correctly
 
 // Combine all reducers
@@ -25,6 +28,9 @@ const rootReducer = combineReducers({
   challenge: challengeslice.reducer,
   payment: paymentslice.reducer,
   report: reportslice.reducer,
+  adminsetting: adminsettingslice.reducer,
+  performance: performanceslice.reducer,
+  forum: forumslice.reducer,
 });
 
 // Persist configuration

@@ -30,9 +30,17 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
+import useForum from "@/hooks/useForum";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const ForumAnalytics = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const {allForums, forumMembers} = useSelector((state: RootState) => state.forum);
+  const {getAllForums, getForumMembers, deleteForumMember} = useForum();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [forumId, setForumId] = useState(0);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       const closeButton = document.querySelector(
@@ -48,7 +56,17 @@ const ForumAnalytics = () => {
   }, [isSheetOpen, setIsSheetOpen]);
 
   const openSheet = () => setIsSheetOpen(true);
-  const closeSheet = () => setIsSheetOpen(false);
+  const closeSheet = () => {setIsSheetOpen(false)
+    setSearchTerm("")
+  };
+  
+  useEffect(() => {
+   getAllForums()
+  },[])
+
+  useEffect(() => {
+    getForumMembers(forumId, searchTerm);
+  },[searchTerm, setSearchTerm])
 
   const columns: ColumnDef<any>[] = [
     {
@@ -58,39 +76,43 @@ const ForumAnalytics = () => {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) =>
-        row.getValue("status") === "Activated" ? (
-          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
-            <span>
-              <Image
-                src={"/icons/ActivateIcon.svg"}
-                width={10}
-                height={10}
-                alt="activateIcon"
-              />
-            </span>
-            <p>{row.getValue("status")}</p>
-          </div>
-        ) : (
-          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
-            <span>
-              <Image
-                src={"/icons/DeactivateIcon.svg"}
-                width={10}
-                height={10}
-                alt="deactivateIcon"
-              />
-            </span>
-            <p>{row.getValue("status")}</p>
-          </div>
-        ),
+      cell: ({ row }) => (
+        <p>{row.getValue("status")}</p>
+
+      )
+
+        // row.getValue("status") === "Activated" ? (
+        //   <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+        //     <span>
+        //       <Image
+        //         src={"/icons/ActivateIcon.svg"}
+        //         width={10}
+        //         height={10}
+        //         alt="activateIcon"
+        //       />
+        //     </span>
+        //     <p>{row.getValue("status")}</p>
+        //   </div>
+        // ) : (
+        //   <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+        //     <span>
+        //       <Image
+        //         src={"/icons/DeactivateIcon.svg"}
+        //         width={10}
+        //         height={10}
+        //         alt="deactivateIcon"
+        //       />
+        //     </span>
+        //     <p>{row.getValue("status")}</p>
+        //   </div>
+        // ),
     },
     {
-      accessorKey: "members",
+      accessorKey: "noOfmembers",
       header: "No. of members",
     },
     {
-      accessorKey: "admin",
+      accessorKey: "adminName",
       header: "Admin",
     },
     {
@@ -111,13 +133,24 @@ const ForumAnalytics = () => {
       ),
     },
     {
-      accessorKey: "created",
+      accessorKey: "createdAt",
       header: "Created date",
+      cell: ({ row }) => {
+        const createdAt = new Date(row.getValue("createdAt"));
+        const formattedDate = createdAt.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+    
+        return <p>{formattedDate}</p>;
+      }
     },
     {
       accessorKey: "options",
       header: "",
       cell: ({ row }) => {
+        const profile = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -128,7 +161,11 @@ const ForumAnalytics = () => {
             <DropdownMenuContent align="end" className="space-y-2">
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={openSheet}
+                onClick={async() => {
+                  setForumId(profile?.id);
+                 await getForumMembers(profile?.id, searchTerm);
+                  setIsSheetOpen(true)
+                }}
               >
                 <span>
                   <Image
@@ -168,7 +205,7 @@ const ForumAnalytics = () => {
           Lorem ipsum dolor sit amet consectetur.
         </p>
       </div>
-      <div className="flex items-center space-x-[77.75px] w-full">
+      <div className="flex items-center space-x-[50px] w-full">
         <div className="space-y-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
@@ -211,9 +248,8 @@ const ForumAnalytics = () => {
       </div>
       <div>
         <UserTable
-          top={true}
-          placeholder="Search Admin or Forum name..."
-          data={forumAnalytics}
+          
+          data={allForums}
           columns={columns}
         />
       </div>
@@ -224,7 +260,7 @@ const ForumAnalytics = () => {
             <SheetTitle className="flex justify-between mb-[40px]">
               <p className="text-[#111810] font-medium text-[20px]">
                 Forum Members{" "}
-                <span className="font-Recoleta text-[#808080]">(34,912)</span>
+                <span className="font-Recoleta text-[#808080]">({forumMembers?.length})</span>
               </p>
               <Image
                 src="/DASHBOARDASSETS/ICONS/CANCEL WITH FILL.svg"
@@ -232,6 +268,7 @@ const ForumAnalytics = () => {
                 className="cursor-pointer transition-all active:scale-95 "
                 onClick={() => {
                   setIsSheetOpen(false);
+                  setSearchTerm("");
                 }}
                 width={26}
                 height={26}
@@ -248,44 +285,37 @@ const ForumAnalytics = () => {
               />
               <Input
                 placeholder="Search Member name..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                }}
                 className="max-w-sm  focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8] "
               />
             </div>
             <div className="space-y-[20px]">
-              <div className="flex justify-between items-center mt-[24px] pb-[16px] border-b">
-                <div className="flex items-center space-x-1">
-                  <Avatar>
-                    <AvatarImage
-                      className="object-contain"
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p>Kristie Fell</p>
-                    <p className="text-[#A4A4A4]">@KritieFell</p>
+              {forumMembers?.map((member: any) => (
+                  <div className="flex justify-between items-center mt-[24px] pb-[16px] border-b">
+                  <div className="flex items-center space-x-1">
+                    <Avatar>
+                      <AvatarImage
+                        className="object-cover"
+                        src={member?.image}
+                        alt="@shadcn"
+                      />
+  {member?.username ? member.username[0] : "?"}
+  </Avatar>
+                    <div>
+                      <p>{member?.username}</p>
+                      <p className="text-[#A4A4A4]">@{member.username}</p>
+                    </div>
                   </div>
+                  <button onClick={() => {
+                    deleteForumMember(forumId, member?.id)
+                  }} className="text-[#C83532]">Delete</button>
                 </div>
-                <button className="text-[#C83532]">Delete</button>
-              </div>
-              <div className="flex justify-between items-center mt-[24px] pb-[16px] border-b">
-                <div className="flex items-center space-x-1">
-                  <Avatar>
-                    <AvatarImage
-                      className="object-contain"
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p>Kristie Fell</p>
-                    <p className="text-[#A4A4A4]">@KritieFell</p>
-                  </div>
-                </div>
-                <button className="text-[#C83532]">Delete</button>
-              </div>
+              ))}
+             
+             
             </div>
           </div>
           <SheetFooter></SheetFooter>

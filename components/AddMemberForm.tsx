@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronDown, ChevronUp, Copy, XIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -23,6 +23,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import Image from "next/image";
+import useAdminsetting from "@/hooks/useAdminsetting";
 
 const features = [
   "Broadcast",
@@ -33,136 +34,51 @@ const features = [
 ];
 
 const AddMemberForm = () => {
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOpen, setisOpen] = useState(false);
+  const closeOpenDialog = () => setisOpen(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const closeButton = document.querySelector(
+        "button.absolute.right-4.top-4"
+      );
 
-  const toggleFeature = (feature: string) => {
-    setSelectedFeatures((prev) =>
-      prev.includes(feature)
-        ? prev.filter((f) => f !== feature)
-        : [...prev, feature]
-    );
-  };
+      if (closeButton) {
+        closeButton.remove();
+      }
+    }, 0); // Delay of 0 ensures it happens after the render cycle
 
-  const removeFeature = (feature: string) => {
-    setSelectedFeatures((prev) => prev.filter((f) => f !== feature));
-  };
+    return () => clearTimeout(timer);
+  }, [isOpen, setisOpen]);
+  const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [firstName, setFirstName] = useState<string> ('');
+  const [lastName, setLastName] = useState<string> ('');
+  const [phoneNumber, setPhoneNumber] = useState<string> ('');
+  const [email, setEmail] = useState<string> ('');
+  const { createAdmin } = useAdminsetting();
+
+
   return (
+    <>
     <form
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={async(e) => { e.preventDefault();
+        await createAdmin(firstName, lastName, selectedCountry,phoneNumber, email);
+        setSelectedCountry('');
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPhoneNumber('')
+       }}
       className="mx-auto bg-white form-background max-w-[500px] border-t-[#547AFF] border-t-8"
     >
       <div className="w-full py-4 px-7  border-b flex items-center justify-between">
-        <h2 className="text-[20px] font-normal">Add Member</h2>
+        <h2 className="text-[20px] font-normal">Add Admin</h2>
         <div className="space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="btnPlain">Copy link</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md ">
-              <DialogHeader className="border-b py-2">
-                <DialogTitle>Copy link</DialogTitle>
-              </DialogHeader>
-              <div className="flex items-center  border rounded-md py-2 space-x-2">
-                <div className="grid flex-1 gap-2">
-                  <Label htmlFor="link" className="sr-only">
-                    Form Link
-                  </Label>
-                  <Input
-                    id="link"
-                    className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0"
-                    defaultValue="http://dreamplanet/generatelink.com"
-                    readOnly
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="px-3 bg-transparent hover:bg-transparent"
-                >
-                  <span className="sr-only">Copy</span>
-                  <Image
-                    src={"/icons/copyIcon.svg"}
-                    className=""
-                    width={18}
-                    height={18}
-                    alt="copyIcon"
-                  />
-                </Button>
-              </div>
-              <DialogFooter className="sm:justify-end">
-                <DialogClose asChild>
-                  <Button className="bg-transparent hover:bg-transparent border transition-all hover:scale-105 active:scale-95 text-black">
-                    Cancel
-                  </Button>
-                </DialogClose>
+        <Button type="button" onClick={() => setisOpen(true)} className="btnPlain">Send link</Button>
+         {selectedCountry && firstName && lastName && phoneNumber && email ?           <Button type="submit" className="btnColored">Add Admin</Button>
+:           <Button disabled className="btnColoredInactive">Add Admin</Button>
+ 
+ }
 
-                <Button className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95 text-white">
-                  Copy
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="btnColored">Submit</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader className="border-b pb-4">
-                <div className="flex space-x-2 items-center">
-                  <p className="text-md font-semibold">Send Form</p>
-                </div>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    defaultValue=""
-                    placeholder="Enter Email"
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="subject" className="">
-                    Subject
-                  </Label>
-                  <Input
-                    id="subject"
-                    placeholder="Subject"
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="message" className="">
-                    Message
-                  </Label>
-                  <Input
-                    id="message"
-                    placeholder="Message"
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  className=" bg-transparent hover:bg-transparent text-black hover:scale-105 active:scale-95 transition-all"
-                  type="submit"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className=" bg-[#F75803] hover:bg-[#F75803] text-white hover:scale-105 active:scale-95 transition-all"
-                  type="submit"
-                >
-                  Send
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
       <div className="space-y-[20px] py-[48px] px-7 ">
@@ -175,8 +91,11 @@ const AddMemberForm = () => {
               First Name
             </Label>
             <Input
-              type="firstName"
-              id="firstName"
+              type="text"
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value)
+              }}
               placeholder="Enter First Name"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
@@ -189,9 +108,12 @@ const AddMemberForm = () => {
               Last Name
             </Label>
             <Input
-              type="lastName"
-              id="lastName"
-              placeholder="Enter Last Name"
+              type="text"
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value)
+              }}      
+                 placeholder="Enter Last Name"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
           </div>
@@ -203,138 +125,105 @@ const AddMemberForm = () => {
           >
             Country
           </Label>
-          <select
-            id="country"
-            className="w-full p-2 border  text-[#8B849B] text-[14px] focus:ring-0 focus:outline-none  border-[#C8C8C8] rounded-[8px]"
-          >
-            <option value="" disabled selected>
-              <p className="text-[#C8C8C8]">Select Country</p>
-            </option>
-            <option value="nigeria">Nigeria</option>
-            <option value="ghana">Ghana</option>
-          </select>
+          <Select value={selectedCountry} onValueChange={(value) => setSelectedCountry(value)}>
+                <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0 border-[#C8C8C8] placeholder:text-[#C8C8C8]">
+                  <SelectValue className="" placeholder="Select Country" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="Nigeria">Nigeria</SelectItem>
+                    <SelectItem value="Ghana">Ghana</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
         </div>
-        <div>
           <div className="grid w-full  items-center gap-[8px]">
             <Label
               className="font-medium text-[14px] text-[#10002E]"
               htmlFor="mobile"
+              
             >
               Mobile No.
             </Label>
             <Input
-              type="mobile"
-              id="mobile"
-              placeholder="Enter Mobile No."
+              type="text"
+              value={phoneNumber}
+              onChange={(e) => {
+                setPhoneNumber(e.target.value)
+              }}
+        placeholder="Enter Mobile No."
               className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
           </div>
-        </div>
-        <div className="grid w-full  items-center gap-[8px]">
-          <Label
-            className="font-medium text-[14px] text-[#10002E]"
-            htmlFor="role"
-          >
-            Role
-          </Label>
-          <select
-            id="role"
-            className="w-full p-2 border  text-[#8B849B] text-[14px] focus:ring-0 focus:outline-none  border-[#C8C8C8] rounded-[8px]"
-          >
-            <option value="" disabled selected>
-              Enter Role
-            </option>
-            <option value="admin">Admin</option>
-            <option value="sub-admin">Sub-Admin</option>
-          </select>
-        </div>
-        <div>
-          <div className="flex flex-col  transition-all space-y-[8px]">
+          <div className="grid w-full  items-center gap-[8px]">
             <Label
-              htmlFor="features"
-              className="font-medium text-[14px] text-[#10002E] "
+              className="font-medium text-[14px] text-[#10002E]"
+              htmlFor="email"
             >
-              Features
+              Email
             </Label>
-            <button
-              className="w-full transition-all border p-2 text-left flex justify-between items-center"
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
-              <div className="flex space-x-2 flex-wrap items-center">
-                {selectedFeatures.length > 0 ? (
-                  selectedFeatures.slice(0, 2).map((feature) => (
-                    <div
-                      key={feature}
-                      className="flex items-center space-x-1 bg-[#F1F1F1] px-2 py-1 rounded text-[14px]"
-                    >
-                      <span>{feature}</span>
-                      <XIcon
-                        size={16}
-                        className="cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeFeature(feature);
-                        }}
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <span className="text-[14px] text-[#8B849B]">
-                    Select Features
-                  </span>
-                )}
-                {selectedFeatures.length > 1 && (
-                  <div className="flex items-center">
-                    <p>....</p>
-                    <div className="ml-2 bg-[#808080] text-white px-2 py-1 rounded">
-                      {selectedFeatures.length}
-                    </div>
-                  </div>
-                )}
-              </div>
-              {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            </button>
-
-            {/* Expandable section */}
-            {isExpanded && (
-              <div className="border transition-all px-2 pt-2 w-full">
-                {features.map((feature) => (
-                  <div
-                    key={feature}
-                    className="flex items-center space-x-2 py-2 cursor-pointer"
-                    onClick={() => toggleFeature(feature)}
-                  >
-                    <div
-                      className={`w-4 h-4 flex items-center border justify-center  ${
-                        selectedFeatures.includes(feature)
-                          ? "bg-[#F75803] border-0"
-                          : "bg-white "
-                      }`}
-                    >
-                      {selectedFeatures.includes(feature) && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 text-white"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 6.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    <span className="text-[14px] ">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <Input
+              type="text"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
+              placeholder="Email"
+              className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
+            />
           </div>
-        </div>
+        
       </div>
     </form>
+        <Dialog open={isOpen} onOpenChange={closeOpenDialog}>
+           
+            <DialogContent className="sm:max-w-md px-0">
+            <DialogHeader className="pb-[18.5px] border-b">
+            <DialogTitle className="px-[16px] flex justify-between items-center">
+              <DialogDescription className="hidden"></DialogDescription>
+              <p className="font-medium">Send Form</p>
+              <span
+                className="cursor-pointer transition-all active:scale-95"
+                onClick={() => setisOpen(false)}
+              >
+                <Image
+                  src="/DASHBOARDASSETS/ICONS/CANCEL.svg"
+                  width={24}
+                  height={24}
+                  alt="cancel"
+                />
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+              <div className="grid w-full py-[31px] items-center gap-[8px] px-4">
+            <Label
+              className="font-medium text-[14px] text-[#10002E]"
+              htmlFor="email"
+            >
+              Email
+            </Label>
+            <Input
+              type="email"
+              id="email"
+              placeholder="Email"
+              className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
+            />
+          </div>
+              <DialogFooter className="sm:justify-end px-4">
+                <DialogClose asChild>
+                  <Button className="bg-transparent hover:bg-transparent border transition-all hover:scale-105 active:scale-95 text-black">
+                    Cancel
+                  </Button>
+                </DialogClose>
+
+                <Button className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95 text-white">
+                  Send
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+    </>
+    
   );
 };
 

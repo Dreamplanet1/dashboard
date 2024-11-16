@@ -271,7 +271,6 @@ const ReportOverview = () => {
         <DialogContent className="sm:max-w-[432px] max-h-[80%] px-0 rounded-full overflow-scroll scrollbar-hide">
           <DialogHeader className="pb-[18.5px] border-b">
             <DialogTitle className="px-[16px] flex justify-between items-center">
-              <DialogTitle className="hidden"></DialogTitle>
               <DialogDescription className="hidden"></DialogDescription>
               <p className="font-medium"> Add Creator</p>
               <span
