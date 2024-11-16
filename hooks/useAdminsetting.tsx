@@ -54,7 +54,6 @@ import { AppDispatch, RootState } from "@/redux/store";
             email:email,
             status:"pending" 
         })
-        console.log(response);   
         } catch (error: any) {
           alert(error?.message);
           

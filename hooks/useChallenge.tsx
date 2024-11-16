@@ -75,7 +75,6 @@ const useChallenge = () => {
     const response = await axios.post(`${base_url}/challenge/delete`, {
       challengeId: id,
     });
-    console.log(response);
   };
   return {
     getAllChallenges,

@@ -28,7 +28,6 @@ const usePayment = () => {
         user_type: "creator",
       }
     );
-    console.log(response);
     dispatch(updateSubscriptioncreator(response.data.result));
   };
   const getSubscriptionFan = async () => {
@@ -40,7 +39,6 @@ const usePayment = () => {
         user_type: "fan",
       }
     );
-    console.log(response);
     dispatch(updateSubscriptionfan(response.data.result));
   };
   const getSubscriptionInvestor = async () => {
@@ -50,7 +48,6 @@ const usePayment = () => {
         user_type: "investor",
       }
     );
-    console.log(response);
     dispatch(updateSubscriptioninvestor(response.data.result));
   };
   const getPaymentHistory = async (
@@ -58,7 +55,6 @@ const usePayment = () => {
     payment_type: string[] | null = null,
     searchString: string = ""
   ) => {
-    console.log("im working");
 
     const response = await axios.post(
       `${base_url}/payment/get-admin-payment-history`,
@@ -74,7 +70,6 @@ const usePayment = () => {
 
     dispatch(updateStats(response?.data?.result?.stats));
     dispatch(updateHistory(response?.data?.result?.history?.docs));
-    console.log(response);
   };
 
   return {

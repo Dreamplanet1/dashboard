@@ -48,7 +48,6 @@ const useCampaign = () => {
       );
 
       dispatch(updateDonations(response?.data?.data?.docs));
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -63,7 +62,6 @@ const useCampaign = () => {
 
       // dispatch(updateCampaignActive(response?.data?.response?.campaigns?.docs));
 
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

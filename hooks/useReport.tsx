@@ -56,7 +56,6 @@ const useReport = () => {
       searchType: "users",
       searchString: searchString,
     });
-    console.log(response);
     dispatch(updateCreator(response?.data?.response));
   };
 
