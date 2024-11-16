@@ -342,7 +342,7 @@ const ReportOverview = () => {
                   </div>
                   {searchReport && creator?.length > 0 && (
                     <div className="bg-white p-3 rounded-md border mt-1 z-10">
-                      {creator.map((person) => (
+                      {creator?.map((person) => (
                         <div
                           key={person.userId}
                           className="p-2 cursor-pointer flex items-center space-x-[12px]"
@@ -416,7 +416,7 @@ const ReportOverview = () => {
                   </div>
                   {adminSearch && admin.length > 0 && (
                     <div className="bg-white p-3 rounded-md border mt-1 z-10">
-                      {admin.map((person) => (
+                      {admin?.map((person) => (
                         <div
                           key={person.id}
                           className="p-2 cursor-pointer flex items-center space-x-2"
