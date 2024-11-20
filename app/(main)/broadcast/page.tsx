@@ -20,6 +20,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { Input } from "@/components/ui/input";
 import { updateBroadcastEdit } from "@/redux/slices/broadcastslice";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import FadeLoader from 'react-spinners/FadeLoader';
 
 const BroadCast = () => {
   const router = useRouter();
@@ -36,7 +37,7 @@ const BroadCast = () => {
     broadcast?.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const { getAllBroadCast, deleteBroadcast } = useBroadcast();
+  const { getAllBroadCast, deleteBroadcast, allLoading, deleteLoading } = useBroadcast();
   useEffect(() => {
     getAllBroadCast();
   }, []);
@@ -193,7 +194,15 @@ const BroadCast = () => {
 
   return (
     <div className="flex flex-col space-y-7">
-      <div className="flex items-center justify-between">
+  {allLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
+       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl">Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">

@@ -11,10 +11,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateActiveUser } from "@/redux/slices/performanceslice";
 import { useRouter } from "next/navigation";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const UserAnalytics = () => {
   
-  const { getAllPerformanceCreator, getAllPerformanceFan, getAllPerformanceInvestor, getCreatorPerformance, getFanInvestorPerformance } = usePerformance();
+  const { getAllPerformanceCreator, getAllPerformanceFan, getAllPerformanceInvestor, getCreatorPerformance, getFanInvestorPerformance, performanceLoading } = usePerformance();
   const { allPerformanceCreator, allPerformanceFan, allPerformanceInvestor, stats } = useSelector((state: RootState) => state.performance);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -163,6 +164,14 @@ const UserAnalytics = () => {
   }, [])
   return (
     <div className="flex flex-col space-y-7">
+      {performanceLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <div>
         <h2 className="text-2xl"> User Analytics</h2>
         <p className="text-sm text-[#A8A8A8]">

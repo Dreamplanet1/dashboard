@@ -24,6 +24,7 @@ import {
 } from "./ui/dialog";
 import Image from "next/image";
 import useAdminsetting from "@/hooks/useAdminsetting";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const features = [
   "Broadcast",
@@ -54,11 +55,19 @@ const AddMemberForm = () => {
   const [lastName, setLastName] = useState<string> ('');
   const [phoneNumber, setPhoneNumber] = useState<string> ('');
   const [email, setEmail] = useState<string> ('');
-  const { createAdmin } = useAdminsetting();
+  const { createAdmin, adminLoading } = useAdminsetting();
 
 
   return (
     <>
+    {adminLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
     <form
       onSubmit={async(e) => { e.preventDefault();
         await createAdmin(firstName, lastName, selectedCountry,phoneNumber, email);

@@ -9,8 +9,9 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import useGetUsers from "@/hooks/useGetUsers";
+import FadeLoader from "react-spinners/FadeLoader";
 const Posts = () => {
-  const { updateUserPosts } = useGetUsers();
+  const { updateUserPosts, userLoading } = useGetUsers();
   const [isOpen, setisOpen] = useState(false);
   const closeDialog = () => setisOpen(false);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
@@ -109,6 +110,14 @@ const Posts = () => {
   }, [isOpen, setisOpen]);
   return (
     <div className="flex flex-col space-y-4">
+       {userLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <p
         onClick={() => {
           router.push("/members");

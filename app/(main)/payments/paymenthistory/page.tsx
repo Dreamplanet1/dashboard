@@ -27,6 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const PaymentHistory = () => {
   const { history, stats } = useSelector((state: RootState) => state.payment);
@@ -100,7 +101,7 @@ const PaymentHistory = () => {
     },
   ];
 
-  const { getPaymentHistory } = usePayment();
+  const { getPaymentHistory, paymentLoading } = usePayment();
 
   const paymentOptions = [
     "Wallet top-up",
@@ -150,6 +151,14 @@ const PaymentHistory = () => {
 
   return (
     <div className="flex flex-col space-y-7">
+      {paymentLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <div>
         <h2 className="text-2xl"> Payment history</h2>
         <p className="text-sm text-[#A8A8A8]">
@@ -212,7 +221,7 @@ const PaymentHistory = () => {
                   />
                 </div>
                 {isPaymentOpen && (
-                  <div className="absolute bg-white z-50 border rounded-md shadow-lg mt-3 w-full">
+                  <div className="absolute bg-white z-30 border rounded-md shadow-lg mt-3 w-full">
                     <div className="flex items-center p-1">
                       <div
                         onClick={() =>
@@ -284,7 +293,7 @@ const PaymentHistory = () => {
                   />
                 </div>
                 {isUserOpen && (
-                  <div className="absolute z-50 bg-white border rounded-md shadow-lg mt-3 w-full">
+                  <div className="absolute z-30 bg-white border rounded-md shadow-lg mt-3 w-full">
                     <div className="flex items-center p-1">
                       <div
                         onClick={() =>

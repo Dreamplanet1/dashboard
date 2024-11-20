@@ -47,6 +47,7 @@ import useAdminsetting from "@/hooks/useAdminsetting";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const features = [
   "Broadcast",
@@ -63,7 +64,7 @@ const features = [
 
 const AdminSetting = () => {
     const router = useRouter()
-    const {  getAdminAccepted, getAdminPending, createAdminRole, updateAdminStatus, deleteAdmin, updateAdminRole } = useAdminsetting();
+    const {  getAdminAccepted, getAdminPending, createAdminRole, updateAdminStatus, deleteAdmin, updateAdminRole, adminLoading } = useAdminsetting();
     const { adminRoles, pendingAdmin, acceptedAdmin } = useSelector((state: RootState) => state.adminsetting);
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -392,6 +393,14 @@ const AdminSetting = () => {
 
   return (
     <div className="grid grid-cols-8 space-x-4">
+       {adminLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <section className="col-span-6 flex flex-col space-y-7">
         <div className="flex items-center justify-between">
           <div>

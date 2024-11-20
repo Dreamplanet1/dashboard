@@ -36,6 +36,7 @@ import Image from "next/image";
 import useCampaign from "@/hooks/useCampaign";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const profile = {
   name: "Randall_Henn",
@@ -85,6 +86,7 @@ const Campaign = () => {
     getMostPerformedCampaigns,
     getAllDonations,
     stopCampaign,
+    campaignLoading
   } = useCampaign();
   useEffect(() => {
     getActiveCampaigns();
@@ -260,6 +262,14 @@ const Campaign = () => {
 
   return (
     <div className="w-full grid grid-cols-8 space-x-4">
+      {campaignLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <section className="col-span-6 flex flex-col space-y-7">
         <div>
           <h2 className="text-2xl">Campaign</h2>

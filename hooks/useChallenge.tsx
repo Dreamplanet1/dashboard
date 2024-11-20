@@ -5,23 +5,47 @@ import {
 import { updateChallengeAll } from "@/redux/slices/challengeslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { useState, useCallback } from "react";
+import { debounce } from "lodash";
 
 const useChallenge = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
   const challenge = useSelector((state: RootState) => state.challenge);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
 
-  const getAllChallenges = async (searchTerm?: string) => {
-    const response = await axios.post(`${base_url}/challenge/get/all`, {
-      page: 1,
-      perPage: 5,
-      searchString: searchTerm || "",
-    });
-    dispatch(updateChallengeAll(response?.data?.data?.docs));
+  // Single loading state
+  const [challengeLoading, setChallengeLoading] = useState(false);
+
+  const fetchChallenges = async (searchTerm?: string) => {
+    setChallengeLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/challenge/get/all`, {
+        page: 1,
+        perPage: 5,
+        searchString: searchTerm || "",
+      });
+      dispatch(updateChallengeAll(response?.data?.data?.docs));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setChallengeLoading(false);
+    }
   };
+
+  // Debounced search function
+  const debouncedFetchChallenges = useCallback(
+    debounce((searchTerm?: string) => {
+      fetchChallenges(searchTerm);
+    }, 500), // 500ms debounce delay
+    []
+  );
+
+  const getAllChallenges = (searchTerm?: string) => {
+    // Trigger the debounced function instead of fetching directly
+    debouncedFetchChallenges(searchTerm);
+  };
+
   const createChallenge = async (
     name: string,
     instructions: string,
@@ -33,19 +57,27 @@ const useChallenge = () => {
     delete_after_duration: boolean,
     hashtag: string
   ) => {
-    const response = await axios.post(`${base_url}/challenge/create`, {
-      name: name,
-      instructions: instructions,
-      price: price,
-      link: link,
-      media_url: media_url,
-      status: status,
-      duration: duration,
-      delete_after_duration: delete_after_duration,
-      hashtag: hashtag,
-    });
-    console.log(response);
+    setChallengeLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/challenge/create`, {
+        name,
+        instructions,
+        price,
+        link,
+        media_url,
+        status,
+        duration,
+        delete_after_duration,
+        hashtag,
+      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setChallengeLoading(false);
+    }
   };
+
   const updateChallenge = async (
     id: number,
     name: string,
@@ -58,29 +90,46 @@ const useChallenge = () => {
     delete_after_duration: boolean | undefined,
     hashtag: string
   ) => {
-    const response = await axios.post(`${base_url}/challenge/update`, {
-      id: id,
-      name: name,
-      instructions: instructions,
-      price: price,
-      link: link,
-      media_url: media_url,
-      status: status,
-      duration: duration,
-      delete_after_duration: delete_after_duration,
-      hashtag: hashtag,
-    });
+    setChallengeLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/challenge/update`, {
+        id,
+        name,
+        instructions,
+        price,
+        link,
+        media_url,
+        status,
+        duration,
+        delete_after_duration,
+        hashtag,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setChallengeLoading(false);
+    }
   };
+
   const deleteChallenge = async (id: number) => {
-    const response = await axios.post(`${base_url}/challenge/delete`, {
-      challengeId: id,
-    });
+    setChallengeLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/challenge/delete`, {
+        challengeId: id,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setChallengeLoading(false);
+    }
   };
+
   return {
     getAllChallenges,
     createChallenge,
     updateChallenge,
     deleteChallenge,
+    challengeLoading, // Expose the loading state
   };
 };
 

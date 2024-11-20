@@ -6,56 +6,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const SubmittedReport = () => {
-  const reportData = [
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-    {
-      name: "Shaun Dan",
-      date: "Sent 30 Jun 2024",
-    },
-  ];
+ 
   const { reports } = useSelector((state: RootState) => state.report);
-  const { getReports } = useReport();
+  const { getReports, reportLoading } = useReport();
   const router = useRouter();
 
   const dispatch = useDispatch();
@@ -85,6 +41,14 @@ const SubmittedReport = () => {
   };
   return (
     <div className="space-y-5">
+      {reportLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <div>
         <h2 className="text-2xl"> Submitted Report</h2>
         <p className="text-sm text-[#A8A8A8]">

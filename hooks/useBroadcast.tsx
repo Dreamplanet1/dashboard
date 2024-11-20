@@ -5,6 +5,7 @@ import {
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const useBroadcast = () => {
@@ -13,22 +14,42 @@ const useBroadcast = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
+  const [allLoading, setAllLoading] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   const getAllBroadCast = async () => {
-    const response = await axios.post(`${base_url}/broadcast/get-all`);
-    dispatch(updateBroadcastAll(response?.data?.response?.docs));
+    setAllLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/broadcast/get-all`);
+      dispatch(updateBroadcastAll(response?.data?.response?.docs));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setAllLoading(false);
+    }
   };
+
   const createBroadCast = async (
     title: string,
     admin_id: number | null,
     description: string,
     media_url: string[]
   ) => {
-    const response = await axios.post(`${base_url}/broadcast/create`, {
-      title: title,
-      admin_id: admin_id,
-      description: description,
-      media_url: media_url,
-    });
+    setCreateLoading(true);
+    try {
+      await axios.post(`${base_url}/broadcast/create`, {
+        title,
+        admin_id,
+        description,
+        media_url,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCreateLoading(false);
+    }
   };
 
   const updateBroadCast = async (
@@ -38,22 +59,31 @@ const useBroadcast = () => {
     description: string,
     media_url: string[]
   ) => {
-    const response = await axios.post(`${base_url}/broadcast/update`, {
-      id: id,
-      title: title,
-      admin_id: admin_id,
-      description: description,
-      media_url: media_url,
-    });
-  };
-  const deleteBroadcast = async (id: number) => {
+    setUpdateLoading(true);
     try {
-      const response = await axios.post(`${base_url}/feeds/delete`, {
-        feedId: id,
+      await axios.post(`${base_url}/broadcast/update`, {
+        id,
+        title,
+        admin_id,
+        description,
+        media_url,
       });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  const deleteBroadcast = async (id: number) => {
+    setDeleteLoading(true);
+    try {
+      await axios.post(`${base_url}/feeds/delete`, { feedId: id });
       await getAllBroadCast();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -62,6 +92,10 @@ const useBroadcast = () => {
     createBroadCast,
     updateBroadCast,
     deleteBroadcast,
+    allLoading,
+    createLoading,
+    updateLoading,
+    deleteLoading,
   };
 };
 

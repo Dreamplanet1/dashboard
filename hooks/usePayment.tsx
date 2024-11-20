@@ -1,8 +1,4 @@
 import {
-  updateBroadcastAll,
-  updateBroadcastEdit,
-} from "@/redux/slices/broadcastslice";
-import {
   updateHistory,
   updateStats,
   updateSubscriptioncreator,
@@ -12,64 +8,94 @@ import {
 
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
 const usePayment = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
   const challenge = useSelector((state: RootState) => state.challenge);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+
+  // Single loading state
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   const getSubscriptionCreator = async () => {
-    const response = await axios.post(
-      `${base_url}/payment/get-admin-subscription-and-campaign-prices`,
-      {
-        user_type: "creator",
-      }
-    );
-    dispatch(updateSubscriptioncreator(response.data.result));
+    setPaymentLoading(true);
+    try {
+      const response = await axios.post(
+        `${base_url}/payment/get-admin-subscription-and-campaign-prices`,
+        {
+          user_type: "creator",
+        }
+      );
+      dispatch(updateSubscriptioncreator(response.data.result));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setPaymentLoading(false);
+    }
   };
-  const getSubscriptionFan = async () => {
-    console.log("running");
 
-    const response = await axios.post(
-      `${base_url}/payment/get-admin-subscription-and-campaign-prices`,
-      {
-        user_type: "fan",
-      }
-    );
-    dispatch(updateSubscriptionfan(response.data.result));
+  const getSubscriptionFan = async () => {
+    setPaymentLoading(true);
+    try {
+      const response = await axios.post(
+        `${base_url}/payment/get-admin-subscription-and-campaign-prices`,
+        {
+          user_type: "fan",
+        }
+      );
+      dispatch(updateSubscriptionfan(response.data.result));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setPaymentLoading(false);
+    }
   };
+
   const getSubscriptionInvestor = async () => {
-    const response = await axios.post(
-      `${base_url}/payment/get-admin-subscription-and-campaign-prices`,
-      {
-        user_type: "investor",
-      }
-    );
-    dispatch(updateSubscriptioninvestor(response.data.result));
+    setPaymentLoading(true);
+    try {
+      const response = await axios.post(
+        `${base_url}/payment/get-admin-subscription-and-campaign-prices`,
+        {
+          user_type: "investor",
+        }
+      );
+      dispatch(updateSubscriptioninvestor(response.data.result));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setPaymentLoading(false);
+    }
   };
+
   const getPaymentHistory = async (
     user_type: string[] | null = null,
     payment_type: string[] | null = null,
     searchString: string = ""
   ) => {
+    setPaymentLoading(true);
+    try {
+      const response = await axios.post(
+        `${base_url}/payment/get-admin-payment-history`,
+        {
+          page: 1,
+          perPage: 20,
+          searchString,
+          user_type: user_type && user_type.length > 0 ? user_type : null,
+          payment_type:
+            payment_type && payment_type.length > 0 ? payment_type : null,
+        }
+      );
 
-    const response = await axios.post(
-      `${base_url}/payment/get-admin-payment-history`,
-      {
-        page: 1,
-        perPage: 20,
-        searchString,
-        user_type: user_type && user_type.length > 0 ? user_type : null,
-        payment_type:
-          payment_type && payment_type.length > 0 ? payment_type : null,
-      }
-    );
-
-    dispatch(updateStats(response?.data?.result?.stats));
-    dispatch(updateHistory(response?.data?.result?.history?.docs));
+      dispatch(updateStats(response?.data?.result?.stats));
+      dispatch(updateHistory(response?.data?.result?.history?.docs));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setPaymentLoading(false);
+    }
   };
 
   return {
@@ -77,6 +103,7 @@ const usePayment = () => {
     getSubscriptionFan,
     getSubscriptionInvestor,
     getPaymentHistory,
+    paymentLoading, // Expose the loading state
   };
 };
 

@@ -8,6 +8,8 @@ import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { useState, useCallback } from "react";
+import { debounce } from "lodash";
 
 const useReport = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
@@ -15,70 +17,144 @@ const useReport = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const getCreatorReport = async (searchString: string) => {
-    const response = await axios.post(
-      `${base_url}/report/get-all-creators-for-report`,
-      {
+  const [reportLoading, setReportLoading] = useState(false);
+
+  const fetchCreatorReport = async (searchString: string) => {
+    setReportLoading(true);
+    try {
+      const response = await axios.post(
+        `${base_url}/report/get-all-creators-for-report`,
+        {
+          page: 1,
+          perPage: 10,
+          searchString: searchString,
+        }
+      );
+      dispatch(updateCreatorReport(response?.data?.response?.docs));
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  const debouncedFetchCreatorReport = useCallback(
+    debounce((searchString: string) => {
+      fetchCreatorReport(searchString);
+    }, 500),
+    []
+  );
+
+  const getCreatorReport = (searchString: string) => {
+    debouncedFetchCreatorReport(searchString);
+  };
+
+  const fetchAdmin = async (searchString: string) => {
+    setReportLoading(true);
+    try {
+      const response = await axios.post(
+        `${base_url}/report/search-admin-by-name`,
+        { name: searchString }
+      );
+      dispatch(updateAdmin(response?.data?.response));
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  const debouncedFetchAdmin = useCallback(
+    debounce((searchString: string) => {
+      fetchAdmin(searchString);
+    }, 500),
+    []
+  );
+
+  const getAdmin = (searchString: string) => {
+    debouncedFetchAdmin(searchString);
+  };
+
+  const fetchCreator = async (searchString: string) => {
+    setReportLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/feeds/search`, {
+        searchType: "users",
+        searchString: searchString,
+      });
+      dispatch(updateCreator(response?.data?.response));
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  const debouncedFetchCreator = useCallback(
+    debounce((searchString: string) => {
+      fetchCreator(searchString);
+    }, 500),
+    []
+  );
+
+  const getCreator = (searchString: string) => {
+    debouncedFetchCreator(searchString);
+  };
+
+  const getReports = async () => {
+    setReportLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/report/get-all-reports`, {
         page: 1,
         perPage: 10,
-        searchString: searchString,
-      }
-    );
-    dispatch(updateCreatorReport(response?.data?.response?.docs));
+        searchString: "",
+      });
+      dispatch(updateReports(response?.data?.response?.docs));
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setReportLoading(false);
+    }
   };
+
   const createCreatorReport = async (
     adminId: number | undefined,
     creatorId: number | undefined,
     investorNumber: number | undefined
   ) => {
-    const response = await axios.post(
-      `${base_url}/report/create-creators-for-report`,
-      {
+    setReportLoading(true);
+    try {
+      await axios.post(`${base_url}/report/create-creators-for-report`, {
         admin_id: adminId,
         creator_id: creatorId,
         no_of_investors: investorNumber,
-      }
-    );
-    getCreatorReport("");
-    //  dispatch(updateCreatorReport(response?.data?.response?.docs));
-  };
-  const getAdmin = async (searchString?: string) => {
-    const response = await axios.post(
-      `${base_url}/report/search-admin-by-name`,
-      {
-        name: searchString,
-      }
-    );
-    dispatch(updateAdmin(response?.data?.response));
-  };
-  const getCreator = async (searchString?: string) => {
-    const response = await axios.post(`${base_url}/feeds/search`, {
-      searchType: "users",
-      searchString: searchString,
-    });
-    dispatch(updateCreator(response?.data?.response));
+      });
+      fetchCreatorReport("");
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setReportLoading(false);
+    }
   };
 
-  const getReports = async () => {
-    const response = await axios.post(`${base_url}/report/get-all-reports`, {
-      page: 1,
-      perPage: 10,
-      searchString: "",
-    });
-    dispatch(updateReports(response?.data?.response?.docs));
-  };
   const createReport = async (
     subject: string,
     description: string,
     media_url: string[]
   ) => {
-    const response = await axios.post(`${base_url}/report/create-report`, {
-      subject: subject,
-      description: description,
-      media_url: media_url,
-      creator_id: creatorData?.creator_id,
-    });
-    //  dispatch(updateCreatorReport(response?.data?.response?.docs));
+    setReportLoading(true);
+    try {
+      await axios.post(`${base_url}/report/create-report`, {
+        subject: subject,
+        description: description,
+        media_url: media_url,
+        creator_id: creatorData?.creator_id,
+      });
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setReportLoading(false);
+    }
   };
 
   return {
@@ -88,6 +164,7 @@ const useReport = () => {
     getCreator,
     getReports,
     createReport,
+    reportLoading, // Expose the loading state
   };
 };
 

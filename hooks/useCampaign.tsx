@@ -8,125 +8,118 @@ import {
 } from "@/redux/slices/campaignslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
 const useCampaign = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
   const campaign = useSelector((state: RootState) => state.campaign);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+
+  // Single loading state
+  const [campaignLoading, setCampaignLoading] = useState(false);
 
   const getActiveCampaigns = async () => {
+    setCampaignLoading(true);
     try {
-      const response = await axios.post(
-        `${base_url}/campaign/get/all-for-admin`,
-        {
-          page: 1,
-          perPage: 30,
-          status: "active", //u send in the status either active, or stopped, or completed, or most-performed
-        }
-      );
+      const response = await axios.post(`${base_url}/campaign/get/all-for-admin`, {
+        page: 1,
+        perPage: 30,
+        status: "active",
+      });
 
       dispatch(updateCampaignActive(response?.data?.response?.campaigns?.docs));
-      dispatch(
-        updategroupCampaigns(response?.data?.response?.groupedCampaigns)
-      );
+      dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
     }
   };
+
   const getAllDonations = async (id: number) => {
+    setCampaignLoading(true);
     try {
-      const response = await axios.post(
-        `${base_url}/campaign/get/all-donations`,
-        {
-          campaignId: id,
-          page: 1,
-          perPage: 10,
-        }
-      );
+      const response = await axios.post(`${base_url}/campaign/get/all-donations`, {
+        campaignId: id,
+        page: 1,
+        perPage: 10,
+      });
 
       dispatch(updateDonations(response?.data?.data?.docs));
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
     }
   };
 
   const stopCampaign = async (id: number) => {
+    setCampaignLoading(true);
     try {
-      const response = await axios.post(`${base_url}/campaign/update-status`, {
+      await axios.post(`${base_url}/campaign/update-status`, {
         campaignId: id,
         status: "stopped",
       });
-
-      // dispatch(updateCampaignActive(response?.data?.response?.campaigns?.docs));
-
+      // Add any additional logic if needed
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
     }
   };
+
   const getStoppedCampaigns = async () => {
+    setCampaignLoading(true);
     try {
-      const response = await axios.post(
-        `${base_url}/campaign/get/all-for-admin`,
-        {
-          page: 1,
-          perPage: 30,
-          status: "stopped", //u send in the status either active, or stopped, or completed, or most-performed
-        }
-      );
+      const response = await axios.post(`${base_url}/campaign/get/all-for-admin`, {
+        page: 1,
+        perPage: 30,
+        status: "stopped",
+      });
 
-      dispatch(
-        updateCampaignStopped(response?.data?.response?.campaigns?.docs)
-      );
-      dispatch(
-        updategroupCampaigns(response?.data?.response?.groupedCampaigns)
-      );
+      dispatch(updateCampaignStopped(response?.data?.response?.campaigns?.docs));
+      dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
     }
   };
+
   const getCompletedCampaigns = async () => {
+    setCampaignLoading(true);
     try {
-      const response = await axios.post(
-        `${base_url}/campaign/get/all-for-admin`,
-        {
-          page: 1,
-          perPage: 30,
-          status: "completed", //u send in the status either active, or stopped, or completed, or most-performed
-        }
-      );
+      const response = await axios.post(`${base_url}/campaign/get/all-for-admin`, {
+        page: 1,
+        perPage: 30,
+        status: "completed",
+      });
 
-      dispatch(
-        updateCampaignCompleted(response?.data?.response?.campaigns?.docs)
-      );
-      dispatch(
-        updategroupCampaigns(response?.data?.response?.groupedCampaigns)
-      );
+      dispatch(updateCampaignCompleted(response?.data?.response?.campaigns?.docs));
+      dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
     }
   };
-  const getMostPerformedCampaigns = async () => {
-    try {
-      const response = await axios.post(
-        `${base_url}/campaign/get/all-for-admin`,
-        {
-          page: 1,
-          perPage: 30,
-          status: "most-performed", //u send in the status either active, or stopped, or completed, or most-performed
-        }
-      );
 
-      dispatch(
-        updateCampaignMostPerformed(response?.data?.response?.campaigns?.docs)
-      );
-      dispatch(
-        updategroupCampaigns(response?.data?.response?.groupedCampaigns)
-      );
+  const getMostPerformedCampaigns = async () => {
+    setCampaignLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/campaign/get/all-for-admin`, {
+        page: 1,
+        perPage: 30,
+        status: "most-performed",
+      });
+
+      dispatch(updateCampaignMostPerformed(response?.data?.response?.campaigns?.docs));
+      dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
     }
   };
 
@@ -137,6 +130,7 @@ const useCampaign = () => {
     getMostPerformedCampaigns,
     getAllDonations,
     stopCampaign,
+    campaignLoading, // Expose the loading state
   };
 };
 

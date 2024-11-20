@@ -48,6 +48,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const Members = () => {
   const {
@@ -57,6 +58,7 @@ const Members = () => {
     getUsersInvestor,
     updateStatus,
     getUserPosts,
+    userLoading
   } = useGetUsers();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -299,6 +301,14 @@ const Members = () => {
 
   return (
     <div className="flex flex-col space-y-7">
+      {userLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <div>
         <h2 className=" text-2xl"> Onboarded Users</h2>
         <p className="text-sm text-[#A8A8A8]">

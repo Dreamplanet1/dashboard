@@ -27,12 +27,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const SubscriptionFee = () => {
   const {
     getSubscriptionCreator,
     getSubscriptionFan,
     getSubscriptionInvestor,
+    paymentLoading
   } = usePayment();
   const { subscriptioncreator, subscriptionfan, subscriptioninvestor } =
     useSelector((state: RootState) => state.payment);
@@ -44,6 +46,14 @@ const SubscriptionFee = () => {
 
   return (
     <div className="flex flex-col space-y-[24px]">
+      {paymentLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <div>
         <h2 className="text-2xl"> Our subscriptions pricing</h2>
         <p className="text-sm text-[#A8A8A8]">

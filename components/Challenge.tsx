@@ -32,6 +32,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "./ui/calendar";
 import { format } from "date-fns";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const Challenge = () => {
   const router = useRouter();
@@ -56,7 +57,7 @@ const Challenge = () => {
 
     return () => clearTimeout(timer);
   }, [isDeleteOpen, setisDeleteOpen]);
-  const { getAllChallenges, deleteChallenge } = useChallenge();
+  const { getAllChallenges, deleteChallenge, challengeLoading } = useChallenge();
   const [searchString, setSearchString] = useState<string>("");
 
   useEffect(() => {
@@ -170,6 +171,14 @@ const Challenge = () => {
 
   return (
     <div className="flex flex-col space-y-7">
+      {challengeLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <div className="flex items-center justify-between">
         <div>
           <h2 className=" text-2xl">Challenge</h2>
@@ -293,9 +302,9 @@ const Challenge = () => {
                 className="w-full shadow-md text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
                 type="submit"
                 onClick={async () => {
+                  closeDeleteDialog();
                   await deleteChallenge(challengeId);
                   getAllChallenges();
-                  closeDeleteDialog();
                 }}
               >
                 Delete

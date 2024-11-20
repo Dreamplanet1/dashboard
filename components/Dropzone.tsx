@@ -1,7 +1,8 @@
 "use client";
-import React, { Dispatch, SetStateAction, useCallback } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
+import FadeLoader from "react-spinners/FadeLoader";
 
 interface FileWithPreview {
   preview: string; // Cloudinary URL
@@ -18,7 +19,10 @@ export default function Dropzone({
   setFiles: Dispatch<SetStateAction<FileWithPreview[]>>;
   files: FileWithPreview[];
 }) {
+  const [loading, setLoading] = useState(false); // State for loading status
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
+    setLoading(true); // Set loading to true when file is dropped
     acceptedFiles.forEach(async (file) => {
       const formData = new FormData();
       formData.append("file", file);
@@ -27,25 +31,32 @@ export default function Dropzone({
         process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
       );
 
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-
-      if (data.secure_url) {
-        setFiles((prevFiles) => [
-          ...prevFiles,
+      try {
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
           {
-            preview: data.secure_url, // Cloudinary URL
-            name: file.name, // Original file name
-            size: file.size, // File size
-          },
-        ]);
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await res.json();
+
+        if (data.secure_url) {
+          setFiles((prevFiles) => [
+            ...prevFiles,
+            {
+              preview: data.secure_url, // Cloudinary URL
+              name: file.name, // Original file name
+              size: file.size, // File size
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("Upload failed:", error);
+        // Handle upload error (e.g., show an alert or message)
+      } finally {
+        setLoading(false); // Set loading to false when upload is complete
       }
     });
   }, []);
@@ -68,7 +79,14 @@ export default function Dropzone({
       })}
     >
       <input {...getInputProps()} />
-      {isDragActive ? (
+      {loading ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+          <FadeLoader color="#7E2D02" />
+          <p className="text-[#111810] text-[20px]">Processing...</p>
+        </div>
+      </div> 
+      ) : isDragActive ? (
         <p>Drop the files here ...</p>
       ) : (
         <div className="flex items-center flex-col">
