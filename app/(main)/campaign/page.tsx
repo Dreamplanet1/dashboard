@@ -86,19 +86,20 @@ const Campaign = () => {
     getMostPerformedCampaigns,
     getAllDonations,
     stopCampaign,
-    campaignLoading
+    campaignLoading,
+    getProcessingCampaigns,
+    campaignLoadingSheet,
+    activateCampaign
   } = useCampaign();
   useEffect(() => {
     getActiveCampaigns();
   }, []);
-  useEffect(() => {
-    console.log(detailsData);
-  }, [detailsData, setDetailsData]);
   const {
     campaignActive,
     campaignCompleted,
     campaignMostPerformed,
     campaignStopped,
+    campaignProcessing,
     groupedCampaigns,
     donations,
   } = useSelector((state: RootState) => state.campaign);
@@ -156,10 +157,10 @@ const Campaign = () => {
         const profile = row.original;
         return (
           <p className="text-[14px] space-x-1 flex text-[#373737]">
-            <span className="text-[14px] text-[#2BAC47]">
-              {profile?.amount_raised}
+            <span className="text-[14px] text-[#2BAC47] font-bold">
+              ${profile?.amount_raised}
             </span>
-            <p>of {profile?.goal_amount}</p>
+            <p>of ${profile?.goal_amount}</p>
           </p>
         );
       },
@@ -211,8 +212,9 @@ const Campaign = () => {
                 className="flex items-center space-x-2"
                 onClick={() => {
                   setDetailsData(profile);
-                  getAllDonations(profile?.id);
                   openSheet();
+                  getAllDonations(profile?.id);
+                 
                 }}
               >
                 <span>
@@ -227,7 +229,9 @@ const Campaign = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={openDialog}
+                onClick={async() => {
+                 await stopCampaign(profile?.id)
+                }}
               >
                 <span>
                   <Image
@@ -239,7 +243,7 @@ const Campaign = () => {
                 </span>
                 <p>Stop Campaign</p>
               </DropdownMenuItem>
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 className="flex items-center space-x-2"
                 onClick={openSheet}
               >
@@ -252,7 +256,149 @@ const Campaign = () => {
                   />
                 </span>
                 <p>Delete</p>
+              </DropdownMenuItem> */}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+  
+  const stoppedColumns: ColumnDef<any>[] = [
+    {
+      accessorKey: "creators_name",
+      header: "Creator",
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <div className="flex items-center space-x-1">
+            <Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={profile?.user_image}
+                alt="@shadcn"
+              />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-[14px] text-[#373737]">
+                {profile?.creators_name}
+              </p>
+              <p className="text-[14px] text-[#A4A4A4]">
+                @{profile?.user_username}
+              </p>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "goal_amount",
+      header: "Amount",
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <p className="text-[14px] space-x-1 flex text-[#373737]">
+            <span className="text-[14px] text-[#2BAC47] font-bold">
+              ${profile?.amount_raised}
+            </span>
+            <p>of ${profile?.goal_amount}</p>
+          </p>
+        );
+      },
+    },
+    {
+      accessorKey: "reason",
+      header: "Reason",
+      cell: ({ row }) => (
+        <p className="text-[14px] text-[#373737]">{row.getValue("reason")}</p>
+      ),
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: "Duration",
+      cell: ({ row }) => {
+        const createdAt = row.original.createdAt;
+
+        if (!createdAt) {
+          return <p className="text-[14px] text-[#373737]">Null</p>;
+        }
+
+        const daysDifference = Math.floor(
+          (new Date().getTime() - new Date(createdAt).getTime()) /
+            (1000 * 3600 * 24)
+        );
+
+        if (daysDifference === 0) {
+          return <p className="text-[14px] text-[#373737]">Today</p>;
+        }
+
+        return <p className="text-[14px] text-[#373737]">{daysDifference}d</p>;
+      },
+    },
+    {
+      accessorKey: "options",
+      header: "",
+      cell: ({ row }) => {
+        const profile = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <EllipsisVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="space-y-2">
+              <DropdownMenuItem
+                className="flex items-center space-x-2"
+                onClick={() => {
+                  setDetailsData(profile);
+                  openSheet();
+                  getAllDonations(profile?.id);
+                 
+                }}
+              >
+                <span>
+                  <Image
+                    src={"/icons/more.svg"}
+                    alt="moreIcon"
+                    width={16.25}
+                    height={16.25}
+                  />
+                </span>
+                <p>View info</p>
               </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center space-x-2"
+                onClick={async() => {
+                   await activateCampaign(profile?.id)
+                }}
+              >
+                <span>
+                  <Image
+                    src={"/icons/stop.svg"}
+                    alt="moreIcon"
+                    width={16.25}
+                    height={16.25}
+                  />
+                </span>
+                <p>Activate Campaign</p>
+              </DropdownMenuItem>
+              {/* <DropdownMenuItem
+                className="flex items-center space-x-2"
+                onClick={openSheet}
+              >
+                <span>
+                  <Image
+                    src={"/icons/delete.svg"}
+                    alt="moreIcon"
+                    width={16.25}
+                    height={16.25}
+                  />
+                </span>
+                <p>Delete</p>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -288,16 +434,16 @@ const Campaign = () => {
                 }}
                 value="active"
               >
-                Active (3)
+                Active ({campaignActive?.length})
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0  py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 onClick={() => {
-                  getActiveCampaigns();
+                  getProcessingCampaigns();
                 }}
                 value="processing"
               >
-                Processing
+                Processing ({campaignProcessing?.length})
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -306,7 +452,7 @@ const Campaign = () => {
                 }}
                 value="stopped"
               >
-                Stopped
+                Stopped ({campaignStopped?.length})
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -315,14 +461,14 @@ const Campaign = () => {
                 }}
                 value="performed"
               >
-                Most Performed
+                Most Performed ({campaignMostPerformed?.length})
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 onClick={() => getCompletedCampaigns()}
                 value="completed"
               >
-                Completed
+                Completed ({campaignCompleted?.length})
               </TabsTrigger>
             </TabsList>
             <TabsContent value="active">
@@ -335,7 +481,7 @@ const Campaign = () => {
             <TabsContent value="processing">
               <UserTable
                 placeholder="Search for creator"
-                data={campaignActive}
+                data={campaignProcessing}
                 columns={columns}
               />
             </TabsContent>
@@ -343,7 +489,7 @@ const Campaign = () => {
               <UserTable
                 placeholder="Search for creator"
                 data={campaignStopped}
-                columns={columns}
+                columns={stoppedColumns}
               />
             </TabsContent>
             <TabsContent value="performed">
@@ -421,8 +567,21 @@ const Campaign = () => {
       </section>
 
       <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
-        <SheetContent className="sm:max-w-[519px] overflow-y-auto scrollbar-hide">
+     
+        <SheetContent className=" sm:max-w-[519px] overflow-y-auto scrollbar-hide">
+        {campaignLoadingSheet && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div
+      className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px] animate-fadeIn"
+      style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+    >
+      <FadeLoader color="#7E2D02" />
+      <p className="text-[#111810] text-[20px]">Processing...</p>
+    </div>
+  </div>
+)}
           <SheetHeader>
+         
             <SheetTitle className="flex justify-between">
               <p className="text-[#111810] font-medium text-[20px]">Campaign</p>
               <Image
@@ -438,6 +597,7 @@ const Campaign = () => {
             </SheetTitle>
           </SheetHeader>
           <div className="grid gap-4 py-4">
+        
             <Tabs defaultValue="details" className="w-full">
               <TabsList className="grid w-full  grid-cols-3 mb-[32px]">
                 <TabsTrigger value="details">
@@ -551,14 +711,26 @@ const Campaign = () => {
                     </p>
                   </div>
                 </div>
-                <Button
+                {detailsData?.status === 'active' ? <Button
                   className="w-full bg-[#C83532] transition-all hover:bg-[#C83532] active:scale-95 text-white py-2 text-[14px]"
                   onClick={async () => {
                     await stopCampaign(detailsData?.id);
+                    closeSheet();
                   }}
                 >
                   Stop Campaign
-                </Button>
+                </Button> :
+                <Button
+                className="w-full bg-[#2BAC47] transition-all hover:bg-[#2BAC47] active:scale-95 text-white py-2 text-[14px]"
+                onClick={async () => {
+                  await activateCampaign(detailsData?.id);
+                  closeSheet()
+                }}
+              >
+                Activate Campaign
+              </Button>
+                }
+                
               </TabsContent>
               <TabsContent value="donation">
                 <div className="space-y-[20px]">

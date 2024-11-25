@@ -5,6 +5,7 @@ import {
   updateCampaignStopped,
   updategroupCampaigns,
   updateDonations,
+  updateCampaignProcessing,
 } from "@/redux/slices/campaignslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
@@ -18,6 +19,8 @@ const useCampaign = () => {
 
   // Single loading state
   const [campaignLoading, setCampaignLoading] = useState(false);
+  const [campaignLoadingSheet, setCampaignLoadingSheet] = useState(false);
+
 
   const getActiveCampaigns = async () => {
     setCampaignLoading(true);
@@ -38,7 +41,7 @@ const useCampaign = () => {
   };
 
   const getAllDonations = async (id: number) => {
-    setCampaignLoading(true);
+    setCampaignLoadingSheet(true);
     try {
       const response = await axios.post(`${base_url}/campaign/get/all-donations`, {
         campaignId: id,
@@ -50,22 +53,43 @@ const useCampaign = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setCampaignLoading(false);
+      setCampaignLoadingSheet(false);
     }
   };
 
   const stopCampaign = async (id: number) => {
-    setCampaignLoading(true);
+    setCampaignLoadingSheet(true);
     try {
-      await axios.post(`${base_url}/campaign/update-status`, {
+     const response = await axios.post(`${base_url}/campaign/update-status`, {
         campaignId: id,
         status: "stopped",
       });
+      await getActiveCampaigns();
+      await getStoppedCampaigns();
+      
       // Add any additional logic if needed
     } catch (error) {
       console.error(error);
     } finally {
-      setCampaignLoading(false);
+      setCampaignLoadingSheet(false);
+    }
+  };
+
+  const activateCampaign = async (id: number) => {
+    setCampaignLoadingSheet(true);
+    try {
+     const response = await axios.post(`${base_url}/campaign/update-status`, {
+        campaignId: id,
+        status: "active",
+      });
+      await getStoppedCampaigns();
+      await getActiveCampaigns();
+      
+      // Add any additional logic if needed
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCampaignLoadingSheet(false);
     }
   };
 
@@ -123,14 +147,35 @@ const useCampaign = () => {
     }
   };
 
+  const getProcessingCampaigns = async () => {
+    setCampaignLoading(true);
+    try {
+      const response = await axios.post(`${base_url}/campaign/get/all-for-admin`, {
+        page: 1,
+        perPage: 30,
+        status: "processing",
+      });
+
+      dispatch(updateCampaignProcessing(response?.data?.response?.campaigns?.docs));
+      dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCampaignLoading(false);
+    }
+  };
+
   return {
     getActiveCampaigns,
     getStoppedCampaigns,
     getCompletedCampaigns,
     getMostPerformedCampaigns,
     getAllDonations,
+    getProcessingCampaigns,
     stopCampaign,
-    campaignLoading, // Expose the loading state
+    campaignLoading,
+    campaignLoadingSheet,
+    activateCampaign // Expose the loading state
   };
 };
 

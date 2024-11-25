@@ -12,9 +12,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/redux/slices/adminslice";
 
 const Sidebar = () => {
   const path = usePathname();
+  const dispatch = useDispatch();
 
   return (
     <div className="flex flex-col items-center justify-between space-y-10 ">
@@ -89,7 +92,11 @@ const Sidebar = () => {
         })}
       </div>
       <hr />
-      <button className="flex items-center justify-center space-x-2 border rounded-md w-full my-2 py-2 font-medium transition-all hover:scale-105 ">
+      <button
+      onClick={() => {
+        dispatch(clearUser())
+      }}
+      className="flex items-center justify-center space-x-2 border rounded-md w-full my-2 py-2 font-medium transition-all active:scale-95 ">
         <span className="text-[14px]">Logout</span>
         <Image
           src={"/icons/logoutIcon.svg"}

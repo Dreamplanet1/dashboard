@@ -40,6 +40,7 @@ const ForumAnalytics = () => {
   const {allForums, forumMembers} = useSelector((state: RootState) => state.forum);
   const {getAllForums, getForumMembers, deleteForumMember, forumLoading} = useForum();
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchForum, setSearchForum] = useState('');
   const [forumId, setForumId] = useState(0);
 
   useEffect(() => {
@@ -62,8 +63,8 @@ const ForumAnalytics = () => {
   };
   
   useEffect(() => {
-   getAllForums()
-  },[])
+   getAllForums(searchForum)
+  },[searchForum])
 
   useEffect(() => {
     getForumMembers(forumId, searchTerm);
@@ -109,29 +110,12 @@ const ForumAnalytics = () => {
         // ),
     },
     {
-      accessorKey: "noOfmembers",
+      accessorKey: "noOfMembers",
       header: "No. of members",
     },
     {
       accessorKey: "adminName",
       header: "Admin",
-    },
-    {
-      accessorKey: "engagement",
-      header: "Engagement",
-      cell: ({ row }) => (
-        <p className="flex items-center text-[#2BAC47] ">
-          <span className="mr-2">
-            <Image
-              src={"/icons/engagementIcon.svg"}
-              height={10}
-              width={10}
-              alt="engagementIcon"
-            />
-          </span>
-          {row.getValue("engagement")}
-        </p>
-      ),
     },
     {
       accessorKey: "createdAt",
@@ -214,7 +198,7 @@ const ForumAnalytics = () => {
           Lorem ipsum dolor sit amet consectetur.
         </p>
       </div>
-      <div className="flex items-center space-x-[50px] w-full">
+      {/* <div className="flex items-center space-x-[50px] w-full">
         <div className="space-y-2">
           <p className="flex items-center text-sm  py-0 space-x-[4px]">
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
@@ -254,8 +238,25 @@ const ForumAnalytics = () => {
           </p>
           <p className="text-[32px] font-Recoleta font-medium">324k.3</p>
         </div>
-      </div>
+      </div> */}
       <div>
+        <div className="flex justify-between items-center">
+          <div></div>
+        <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Admin or Forum name..."
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                      value={searchForum}
+                      onChange={(e) => setSearchForum(e.target.value)}
+                    />
+                  </div>
+        </div>
         <UserTable
           
           data={allForums}

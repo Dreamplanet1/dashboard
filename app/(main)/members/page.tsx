@@ -66,6 +66,9 @@ const Members = () => {
     (state: RootState) => state.usersOnboarded
   );
   const [searchTermAll, setSearchTermAll] = useState("");
+  const [searchTermCreator, setSearchTermCreator] = useState("");
+  const [searchTermFan, setSearchTermFan] = useState("");
+  const [searchTermInvestor, setSearchTermInvestor] = useState("");
 
   const filteredUsersAll = usersAll?.filter(
     (user) =>
@@ -103,27 +106,47 @@ const Members = () => {
   }, [selectedStatus]);
 
   useEffect(() => {
+    const status = selectedStatus === "all" ? null : selectedStatus;
+    getUsersAll(status, searchTermAll)
+  }, [searchTermAll]);
+
+  useEffect(() => {
     if (hasMounted.current) {
       const status =
-        selectedStatusCreator === "all" ? null : selectedStatusCreator;
-      getUsersAll(status);
+        selectedStatusCreator === "all" ? null : selectedStatusCreator;        
+      getUsersCreator(status);
     }
   }, [selectedStatusCreator]);
 
   useEffect(() => {
+    const status = selectedStatusCreator === "all" ? null : selectedStatusCreator;
+    getUsersCreator(status, searchTermCreator)
+  }, [searchTermCreator]);
+
+  useEffect(() => {
     if (hasMounted.current) {
       const status = selectedStatusFan === "all" ? null : selectedStatusFan;
-      getUsersAll(status);
+      getUsersFan(status);
     }
   }, [selectedStatusFan]);
+
+  useEffect(() => {
+    const status = selectedStatusFan === "all" ? null : selectedStatusFan;
+    getUsersFan(status, searchTermFan)
+  }, [searchTermFan]);
 
   useEffect(() => {
     if (hasMounted.current) {
       const status =
         selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
-      getUsersAll(status);
+      getUsersInvestor(status);
     }
   }, [selectedStatusInvestor]);
+
+  useEffect(() => {
+    const status = selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
+    getUsersInvestor(status, searchTermInvestor)
+  }, [searchTermInvestor]);
 
   useEffect(() => {
     getUsersAll(null);
@@ -182,14 +205,14 @@ const Members = () => {
       accessorKey: "country",
       header: "Country",
       cell: ({ row }) => (
-        <p className="text-[#A4A4A4]">{row.getValue("country") || "Null"}</p>
+        <p className="text-[#373737]">{row.getValue("country") || "Null"}</p>
       ),
     },
     {
       accessorKey: "subscription_plan",
       header: "Subscription type",
       cell: ({ row }) => (
-        <p className="text-[#A4A4A4]">{row.getValue("subscription_plan")}</p>
+        <p className="text-[#373737]">{row.getValue("subscription_plan")}</p>
       ),
     },
     {
@@ -197,7 +220,7 @@ const Members = () => {
       header: "Date joined",
       cell: ({ row }) => {
         const dateJoined = String(row.getValue("createdAt")).slice(0, 10); // Cast to string
-        return <p className="text-[#A4A4A4]">{dateJoined}</p>;
+        return <p className="text-[#373737]">{dateJoined}</p>;
       },
     },
     {
@@ -325,7 +348,7 @@ const Members = () => {
               }}
               value="all"
             >
-              All (12,398)
+              All ({usersAll?.length})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -334,7 +357,7 @@ const Members = () => {
               }}
               value="investor"
             >
-              Investor
+              Investor ({usersInvestor?.length})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -343,7 +366,7 @@ const Members = () => {
               }}
               value="creator"
             >
-              Creator
+              Creator ({usersCreator?.length})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -352,12 +375,11 @@ const Members = () => {
               }}
               value="fan"
             >
-              Fan
+              Fan ({usersFan?.length})
             </TabsTrigger>
           </TabsList>
           <TabsContent value="all">
-            {usersAll?.length > 0 ? (
-              <>
+           
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
                     <Select>
@@ -366,9 +388,9 @@ const Members = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="all">All Country</SelectItem>
+                          {/* <SelectItem value="all">All Country</SelectItem>
                           <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem> */}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -440,18 +462,15 @@ const Members = () => {
                 </div>
 
                 <UserTable
-                  data={filteredUsersAll}
+                  data={usersAll}
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
-              </>
-            ) : (
-              <p>Currently none </p>
-            )}
+              
+            
           </TabsContent>
           <TabsContent value="investor">
-            {usersInvestor?.length > 0 ? (
-              <>
+           
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
                     <Select>
@@ -460,9 +479,9 @@ const Members = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="all">All Country</SelectItem>
+                          {/* <SelectItem value="all">All Country</SelectItem>
                           <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem> */}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -492,6 +511,8 @@ const Members = () => {
                     <Input
                       placeholder="Search Username, full name..."
                       className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                      value={searchTermInvestor}
+                      onChange={(e) => setSearchTermInvestor(e.target.value)}
                     />
                   </div>
                 </div>
@@ -501,14 +522,11 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
-              </>
-            ) : (
-              <p>Currently no Investors </p>
-            )}
+              
+           
           </TabsContent>
           <TabsContent value="creator">
-            {usersCreator?.length > 0 ? (
-              <>
+           
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
                     <Select>
@@ -517,9 +535,9 @@ const Members = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="all">All Country</SelectItem>
+                          {/* <SelectItem value="all">All Country</SelectItem>
                           <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem> */}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -549,6 +567,8 @@ const Members = () => {
                     <Input
                       placeholder="Search Username, full name..."
                       className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                      value={searchTermCreator}
+                      onChange={(e) => setSearchTermCreator(e.target.value)}
                     />
                   </div>
                 </div>
@@ -558,14 +578,10 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
-              </>
-            ) : (
-              <p>Currently no Creators </p>
-            )}
+            
           </TabsContent>
           <TabsContent value="fan">
-            {usersFan?.length > 0 ? (
-              <>
+           
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
                     <Select>
@@ -574,9 +590,9 @@ const Members = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="all">All Country</SelectItem>
+                          {/* <SelectItem value="all">All Country</SelectItem>
                           <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem> */}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -606,6 +622,8 @@ const Members = () => {
                     <Input
                       placeholder="Search Username, full name..."
                       className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                      value={searchTermFan}
+                      onChange={(e) => setSearchTermFan(e.target.value)}
                     />
                   </div>
                 </div>
@@ -615,10 +633,7 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
-              </>
-            ) : (
-              <p>Currently no Fans </p>
-            )}
+             
           </TabsContent>
         </Tabs>
       </div>

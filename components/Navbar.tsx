@@ -1,11 +1,15 @@
 "use client"
+import { RootState } from "@/redux/store";
 import { Bell, CircleUserRound } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const user = useSelector((state: RootState) => state.admin.loggedInUser);
+
   return (
     <div className="pt-[40px] pb-4 sticky  top-0 flex items-center bg-white justify-between border-b z-30">
       <div className="cursor-pointer" onClick={() => {
@@ -34,7 +38,7 @@ const Navbar = () => {
           />
         </div>
 
-        <h2 className="leading-[16.8px] text-[14px]">Human Resources</h2>
+        <h2 className="leading-[16.8px] text-[14px]">{user?.first_name} {user?.last_name}</h2>
       </div>
     </div>
   );

@@ -5,9 +5,9 @@ import { useDropzone } from "react-dropzone";
 import FadeLoader from "react-spinners/FadeLoader";
 
 interface FileWithPreview {
-  preview: string; // Cloudinary URL
-  name: string; // Original file name
-  size: number; // File size
+  preview: string;
+  name: string;
+  size: number;
 }
 
 export default function Dropzone({
@@ -19,10 +19,10 @@ export default function Dropzone({
   setFiles: Dispatch<SetStateAction<FileWithPreview[]>>;
   files: FileWithPreview[];
 }) {
-  const [loading, setLoading] = useState(false); // State for loading status
+  const [loading, setLoading] = useState(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setLoading(true); // Set loading to true when file is dropped
+    setLoading(true);
     acceptedFiles.forEach(async (file) => {
       const formData = new FormData();
       formData.append("file", file);
@@ -46,17 +46,16 @@ export default function Dropzone({
           setFiles((prevFiles) => [
             ...prevFiles,
             {
-              preview: data.secure_url, // Cloudinary URL
-              name: file.name, // Original file name
-              size: file.size, // File size
+              preview: data.secure_url,
+              name: file.name,
+              size: file.size,
             },
           ]);
         }
       } catch (error) {
         console.error("Upload failed:", error);
-        // Handle upload error (e.g., show an alert or message)
       } finally {
-        setLoading(false); // Set loading to false when upload is complete
+        setLoading(false);
       }
     });
   }, []);
@@ -68,24 +67,32 @@ export default function Dropzone({
       "video/mp4": [],
       "video/mov": [],
     },
-    maxSize: 1024 * 2000, // 2 MB limit
+    maxSize: 1024 * 1024 * 50, // 50 MB limit
     onDrop,
+    onDropRejected: (fileRejections) => {
+      setLoading(false);
+      fileRejections.forEach((file) => {
+        if (file.errors.some((err) => err.code === "file-too-large")) {
+          alert("File is too large. Maximum size is 50 MB.");
+        }
+      });
+    },
   });
 
   return (
     <div
       {...getRootProps({
-        className: className,
+        className: `${className} ${loading ? "pointer-events-none" : ""}`,
       })}
     >
-      <input {...getInputProps()} />
+      {!loading && <input {...getInputProps()} />}
       {loading ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
-          <FadeLoader color="#7E2D02" />
-          <p className="text-[#111810] text-[20px]">Processing...</p>
+          <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+            <FadeLoader color="#7E2D02" />
+            <p className="text-[#111810] text-[20px]">Processing...</p>
+          </div>
         </div>
-      </div> 
       ) : isDragActive ? (
         <p>Drop the files here ...</p>
       ) : (
@@ -102,7 +109,7 @@ export default function Dropzone({
             </span>{" "}
             or drag and drop
           </p>
-          <p className="text-[#808080] text-[12px]">Maximum file size 2 MB.</p>
+          <p className="text-[#808080] text-[12px]">Maximum file size 50 MB.</p>
         </div>
       )}
     </div>

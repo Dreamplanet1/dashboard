@@ -13,12 +13,16 @@ const useForum = () => {
 
   const fetchAllForums = async (searchTerm?: string) => {
     setForumLoading(true);
+    console.log(searchTerm);
+    
     try {
       const response = await axios.post(`${base_url}/forum/get/all`, {
         page: 1,
         perPage: 10,
         searchString: searchTerm || "",
       });
+      console.log(response);
+      
       dispatch(updateAllForums(response?.data?.response?.docs));
     } catch (error: any) {
       alert(error.message);
@@ -35,9 +39,28 @@ const useForum = () => {
     []
   );
 
-  const getAllForums = (searchTerm?: string) => {
+  const getAllForums = async(searchTerm?: string) => {
     // Trigger the debounced function
-    debouncedFetchAllForums(searchTerm);
+    // console.log(searchTerm);
+    
+    // debouncedFetchAllForums(searchTerm);
+    setForumLoading(true);
+    console.log(searchTerm);
+    
+    try {
+      const response = await axios.post(`${base_url}/forum/get/all`, {
+        page: 1,
+        perPage: 10,
+        searchString: searchTerm || "",
+      });
+      console.log(response);
+      
+      dispatch(updateAllForums(response?.data?.response?.docs));
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setForumLoading(false);
+    }
   };
 
   const getForumMembers = async (forumId: number, searchString: string) => {

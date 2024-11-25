@@ -5,8 +5,9 @@ import {
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { debounce } from "lodash";
 
 const useBroadcast = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
@@ -19,16 +20,31 @@ const useBroadcast = () => {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const getAllBroadCast = async () => {
+  const fetchBroadcasts = async (searchTerm?: string) => {
     setAllLoading(true);
     try {
-      const response = await axios.post(`${base_url}/broadcast/get-all`);
+      const response = await axios.post(`${base_url}/broadcast/get-all`, {
+        searchString: searchTerm || "",
+      });
       dispatch(updateBroadcastAll(response?.data?.response?.docs));
     } catch (error) {
       console.error(error);
     } finally {
       setAllLoading(false);
     }
+  };
+
+  // Debounced search function
+  const debouncedFetchBroadcasts = useCallback(
+    debounce((searchTerm?: string) => {
+      fetchBroadcasts(searchTerm);
+    }, 500),
+    []
+  );
+
+  const getAllBroadCast = (searchTerm?: string) => {
+    // Use the debounced function
+    debouncedFetchBroadcasts(searchTerm);
   };
 
   const createBroadCast = async (
@@ -78,8 +94,8 @@ const useBroadcast = () => {
   const deleteBroadcast = async (id: number) => {
     setDeleteLoading(true);
     try {
-      await axios.post(`${base_url}/feeds/delete`, { feedId: id });
-      await getAllBroadCast();
+      await axios.post(`${base_url}/broadcast/delete`, { broadcastId: id });
+      await fetchBroadcasts(); // Refresh the list after deletion
     } catch (error) {
       console.error(error);
     } finally {

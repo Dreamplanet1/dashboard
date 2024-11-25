@@ -54,23 +54,6 @@ const UserAnalytics = () => {
       header: "Subscription type",
     },
     {
-      accessorKey: "engagement",
-      header: "Engagement",
-      cell: ({ row }) => (
-        <p className="flex items-center text-[#2BAC47] ">
-          <span className="mr-2">
-            <Image
-              src={"/icons/engagementIcon.svg"}
-              height={10}
-              width={10}
-              alt="engagementIcon"
-            />
-          </span>
-          {row.getValue("engagement")}
-        </p>
-      ),
-    },
-    {
       accessorKey: "analytics",
       header: "",
       cell: ({ row }) => {
@@ -121,23 +104,6 @@ const UserAnalytics = () => {
     {
       accessorKey: "subscription_plan",
       header: "Subscription type",
-    },
-    {
-      accessorKey: "engagement",
-      header: "Engagement",
-      cell: ({ row }) => (
-        <p className="flex items-center text-[#2BAC47] ">
-          <span className="mr-2">
-            <Image
-              src={"/icons/engagementIcon.svg"}
-              height={10}
-              width={10}
-              alt="engagementIcon"
-            />
-          </span>
-          {row.getValue("engagement")}
-        </p>
-      ),
     },
     {
       accessorKey: "analytics",

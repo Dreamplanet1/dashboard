@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { toast } from "./use-toast";
 
 const useAdminsetting = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
@@ -127,6 +128,24 @@ const useAdminsetting = () => {
     }
   };
 
+  const sendLink = async (email: string) => {
+    setadminLoading(true);
+    try {
+      await axios.post(`${base_url}/admin-settings/send-link`, {
+      "email": email,
+      "link": "www.dreamplanet.org"
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.response?.data?.message || 'An unexpected error occurred.', 
+      })
+    } finally {
+      setadminLoading(false);
+    }
+  };
+
   return {
     getAdminAccepted,
     getAdminPending,
@@ -135,6 +154,7 @@ const useAdminsetting = () => {
     updateAdminStatus,
     deleteAdmin,
     updateAdminRole,
+    sendLink,
     adminLoading, // Expose adminLoading state
   };
 };

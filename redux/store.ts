@@ -18,6 +18,7 @@ import { reportslice } from "./slices/reportslice";
 import { adminsettingslice } from "./slices/adminsettingslice";
 import { performanceslice } from "./slices/performanceslice";
 import { forumslice } from "./slices/forumslice";
+import { adminslice } from "./slices/adminslice";
 // Import your slice correctly
 
 // Combine all reducers
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   adminsetting: adminsettingslice.reducer,
   performance: performanceslice.reducer,
   forum: forumslice.reducer,
+  admin: adminslice.reducer,
 });
 
 // Persist configuration

@@ -59,30 +59,14 @@ const Forum = () => {
         // ),
     },
     {
-      accessorKey: "noOfmembers",
+      accessorKey: "noOfMembers",
       header: "No. of members",
     },
     {
       accessorKey: "adminName",
       header: "Admin",
     },
-    {
-      accessorKey: "engagement",
-      header: "Engagement",
-      cell: ({ row }) => (
-        <p className="flex items-center text-[#2BAC47] ">
-          <span className="mr-2">
-            <Image
-              src={"/icons/engagementIcon.svg"}
-              height={10}
-              width={10}
-              alt="engagementIcon"
-            />
-          </span>
-          {row.getValue("engagement")}
-        </p>
-      ),
-    },
+    
     {
       accessorKey: "createdAt",
       header: "Created date",

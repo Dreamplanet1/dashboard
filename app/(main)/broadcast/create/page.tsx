@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useBroadcast from "@/hooks/useBroadcast";
 import FadeLoader from "react-spinners/FadeLoader";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 interface FileWithPreview {
   preview: string; // Cloudinary URL
@@ -29,7 +31,7 @@ const BroadcastCreate = () => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
   const { createBroadCast, createLoading } = useBroadcast();
-
+  const router = useRouter();
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
@@ -60,7 +62,18 @@ const BroadcastCreate = () => {
       </div>
     </div> 
   )}
+    
       <div className="flex w-3/6 flex-col space-y-[24px]">
+      <div
+            onClick={() => {
+              router.push("/broadcast");
+            }}
+            className=" cursor-pointer flex items-center transition-all active:scale-95"
+          >
+          <ArrowLeft width={20} height={20} className="mr-[8px]" />
+
+            <span className="">Return back</span>
+          </div>
         <div>
           <h2 className=" text-2xl">Create Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">

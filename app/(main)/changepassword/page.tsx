@@ -15,9 +15,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import useLogin from "@/hooks/login";
+import { toast } from "@/hooks/use-toast";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const changePassword = () => {
-  const [isOpen, setisOpen] = useState(false);
+  const { changePassword, isOpen, setisOpen, loading } = useLogin();
+   const [password, setPassword] = useState('');
+   const [newpassword, setNewPassword] = useState('')
+   const [renewpassword, setRenewPassword] = useState('')
   const closeDialog = () => setisOpen(false);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -32,8 +38,31 @@ const changePassword = () => {
 
     return () => clearTimeout(timer);
   }, [isOpen, setisOpen]);
+
+  const handleChangePassword = async () => {
+    if (newpassword !== renewpassword) {
+      toast({
+        variant: "destructive",
+        description: "Your new passwords don't match",
+      });
+      return;
+    }
+
+    await changePassword(password, newpassword);
+    setPassword('');
+    setNewPassword('');
+    setRenewPassword('');
+  };
   return (
     <div>
+     { loading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
       <div className="flex w-3/6 flex-col space-y-[32px]">
         <div>
           <h2 className="text-2xl">Change Password</h2>
@@ -48,6 +77,10 @@ const changePassword = () => {
               <Input
                 className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                 type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                }}
                 placeholder="Enter Password"
               />
               <Image
@@ -65,6 +98,10 @@ const changePassword = () => {
               <Input
                 className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                 type="password"
+                value={newpassword}
+                onChange={(e) => {
+                  setNewPassword(e.target.value)
+                }}
                 placeholder="Enter Password"
               />
               <Image
@@ -82,6 +119,10 @@ const changePassword = () => {
               <Input
                 className="focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8] placeholder:text-[14px]"
                 type="password"
+                value={renewpassword}
+                onChange={(e) => {
+                  setRenewPassword(e.target.value)
+                }}
                 placeholder="Enter Password"
               />
               <Image
@@ -94,15 +135,36 @@ const changePassword = () => {
             </div>
           </div>
           <div className="flex justify-end  space-x-2">
-            <Button className=" btnPlainInactive">Cancel</Button>
+            {newpassword && password && renewpassword ?
+            <>
+             <Button 
+            onClick={() => {
+              setPassword('');
+              setNewPassword('');
+              setRenewPassword('');
+            }}
+            className=" btnPlain">Cancel</Button>
             <Button
-              className="btnColoredInactive"
-              onClick={() => {
-                setisOpen(true);
-              }}
+              className="btnColored"
+              onClick={handleChangePassword}
             >
               Set New Password
             </Button>
+            </>
+            :  
+            <>
+             <Button 
+            
+            className=" btnPlainInactive">Cancel</Button>
+            <Button
+              className="btnColoredInactive"
+            
+            >
+              Set New Password
+            </Button>
+            </>
+            }
+           
           </div>
         </div>
       </div>
@@ -112,7 +174,7 @@ const changePassword = () => {
             <Image
               src={"/icons/passwordchanged.svg"}
               height={72}
-              width={47.61}
+              width={90}
               alt="passwordIcon"
             />
             <p className="text-[20px]">Password Changed</p>

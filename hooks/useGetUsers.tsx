@@ -21,14 +21,16 @@ const useGetUsers = () => {
   // Single loading state
   const [userLoading, setUserLoading] = useState(false);
 
-  const getUsersAll = async (status: string | null) => {
+  const getUsersAll = async (status: string | null, searchString?: string) => {
     setUserLoading(true);
     try {
+      
       const response = await axios.post(`${base_url}/user/get-all`, {
         page: 1,
         perPage: 20,
         user_type: null,
         status,
+        searchString
       });
       dispatch(updateUsersAll(response.data.response.docs));
     } catch (error) {
@@ -38,15 +40,18 @@ const useGetUsers = () => {
     }
   };
 
-  const getUsersCreator = async (status: string | null) => {
+  const getUsersCreator = async (status: string | null, searchString?: string) => {
     setUserLoading(true);
+    
     try {
       const response = await axios.post(`${base_url}/user/get-all`, {
         page: 1,
         perPage: 20,
-        user_type: "user",
+        user_type: "creator",
         status,
+        searchString
       });
+      
       dispatch(updateUsersCreator(response.data.response.docs));
     } catch (error) {
       console.error(error);
@@ -55,7 +60,7 @@ const useGetUsers = () => {
     }
   };
 
-  const getUsersInvestor = async (status: string | null) => {
+  const getUsersInvestor = async (status: string | null, searchString?: string) => {
     setUserLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/get-all`, {
@@ -63,7 +68,9 @@ const useGetUsers = () => {
         perPage: 20,
         user_type: "investor",
         status,
+        searchString
       });
+
       dispatch(updateUsersInvestor(response.data.response.docs));
     } catch (error) {
       console.error(error);
@@ -72,7 +79,7 @@ const useGetUsers = () => {
     }
   };
 
-  const getUsersFan = async (status: string | null) => {
+  const getUsersFan = async (status: string | null, searchString?: string) => {
     setUserLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/get-all`, {
@@ -80,6 +87,8 @@ const useGetUsers = () => {
         perPage: 20,
         user_type: "fan",
         status,
+        searchString
+
       });
       dispatch(updateUsersFan(response.data.response.docs));
     } catch (error) {

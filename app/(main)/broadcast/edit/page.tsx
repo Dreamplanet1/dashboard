@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import FadeLoader from "react-spinners/FadeLoader";
+import { ArrowLeft } from "lucide-react";
 
 interface FileWithPreview {
   preview: string; // Cloudinary URL
@@ -81,6 +82,16 @@ const BroadcastEdit = () => {
     </div> 
   )}
       <div className="flex w-3/6 flex-col space-y-[24px]">
+      <div
+            onClick={() => {
+              router.push("/broadcast");
+            }}
+            className=" cursor-pointer flex items-center transition-all active:scale-95"
+          >
+          <ArrowLeft width={20} height={20} className="mr-[8px]" />
+
+            <span className="">Return back</span>
+          </div>
         <div>
           <h2 className=" text-2xl">Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">

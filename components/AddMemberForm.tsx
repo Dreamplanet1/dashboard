@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronDown, ChevronUp, Copy, XIcon } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Copy, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import {
   Dialog,
@@ -25,6 +25,7 @@ import {
 import Image from "next/image";
 import useAdminsetting from "@/hooks/useAdminsetting";
 import FadeLoader from "react-spinners/FadeLoader";
+import { useRouter } from "next/navigation";
 
 const features = [
   "Broadcast",
@@ -37,6 +38,7 @@ const features = [
 const AddMemberForm = () => {
   const [isOpen, setisOpen] = useState(false);
   const closeOpenDialog = () => setisOpen(false);
+  const router = useRouter();
   useEffect(() => {
     const timer = setTimeout(() => {
       const closeButton = document.querySelector(
@@ -55,7 +57,8 @@ const AddMemberForm = () => {
   const [lastName, setLastName] = useState<string> ('');
   const [phoneNumber, setPhoneNumber] = useState<string> ('');
   const [email, setEmail] = useState<string> ('');
-  const { createAdmin, adminLoading } = useAdminsetting();
+  const [linkMail, setLinkMail] = useState<string> ('');
+  const { createAdmin, adminLoading, sendLink } = useAdminsetting();
 
 
   return (
@@ -68,6 +71,9 @@ const AddMemberForm = () => {
       </div>
     </div> 
   )}
+     
+    
+    <div>
     <form
       onSubmit={async(e) => { e.preventDefault();
         await createAdmin(firstName, lastName, selectedCountry,phoneNumber, email);
@@ -77,8 +83,19 @@ const AddMemberForm = () => {
         setEmail('');
         setPhoneNumber('')
        }}
-      className="mx-auto bg-white form-background max-w-[500px] border-t-[#547AFF] border-t-8"
+      className="mx-auto max-w-[500px]"
     >
+        <div
+        onClick={() => {
+          router.push("/adminsetting");
+        }}
+        className="flex items-center cursor-pointer transition-all active:scale-95 text-[14px] mb-[20px]"
+      >
+        <ArrowLeft width={20} height={20} className="mr-2" />
+        <p>Return to dashboard</p>
+      </div>
+
+      <div className=" bg-white form-background  border-t-[#547AFF] border-t-8">
       <div className="w-full py-4 px-7  border-b flex items-center justify-between">
         <h2 className="text-[20px] font-normal">Add Admin</h2>
         <div className="space-x-2">
@@ -183,7 +200,11 @@ const AddMemberForm = () => {
           </div>
         
       </div>
+      </div>
+      
     </form>
+    </div>
+    
         <Dialog open={isOpen} onOpenChange={closeOpenDialog}>
            
             <DialogContent className="sm:max-w-md px-0">
@@ -216,6 +237,10 @@ const AddMemberForm = () => {
               id="email"
               placeholder="Email"
               className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
+              value={linkMail}
+              onChange={(e) => {
+                setLinkMail(e.target.value)
+              }}
             />
           </div>
               <DialogFooter className="sm:justify-end px-4">
@@ -224,10 +249,21 @@ const AddMemberForm = () => {
                     Cancel
                   </Button>
                 </DialogClose>
-
-                <Button className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95 text-white">
+              {
+                linkMail ?  <Button className="bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95 text-white"
+                onClick={async() => {
+                  closeOpenDialog();
+                 await sendLink(linkMail);
+                }}
+                >
+                  Send
+                </Button> :  <Button className="btnColoredInactive"
+                
+                >
                   Send
                 </Button>
+              }
+               
               </DialogFooter>
             </DialogContent>
           </Dialog>

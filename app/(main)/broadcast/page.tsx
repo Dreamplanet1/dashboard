@@ -33,14 +33,11 @@ const BroadCast = () => {
   const [broadcastId, setBroadcastId] = useState<number>(1);
   const closeDeleteDialog = () => setisDeleteOpen(false);
 
-  const filteredBroadcast = broadcast?.filter((broadcast) =>
-    broadcast?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  
   const { getAllBroadCast, deleteBroadcast, allLoading, deleteLoading } = useBroadcast();
   useEffect(() => {
-    getAllBroadCast();
-  }, []);
+    getAllBroadCast(searchTerm);
+  }, [searchTerm]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -140,17 +137,7 @@ const BroadCast = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="space-y-2" align="end">
-              <DropdownMenuItem className="flex items-center space-x-2">
-                <span>
-                  <Image
-                    src={"/DASHBOARDASSETS/ICONS/INFO.svg"}
-                    alt="InfoIcon"
-                    width={16.25}
-                    height={16.25}
-                  />
-                </span>
-                <p className="text-[14px]">More info</p>
-              </DropdownMenuItem>
+             
               <DropdownMenuItem
                 className="flex items-center space-x-2"
                 onClick={() => {
@@ -243,9 +230,8 @@ const BroadCast = () => {
           </div>
         </div>
         <UserTable
-          placeholder="Search for Broadcast title"
           columns={columns}
-          data={filteredBroadcast}
+          data={broadcast}
         />
       </div>
       <Dialog open={isDeleteOpen} onOpenChange={closeDeleteDialog}>
@@ -279,8 +265,8 @@ const BroadCast = () => {
                 className="w-full shadow-md text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
                 type="submit"
                 onClick={async () => {
-                  await deleteBroadcast(broadcastId);
                   closeDeleteDialog();
+                  await deleteBroadcast(broadcastId);
                 }}
               >
                 Delete

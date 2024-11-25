@@ -48,6 +48,7 @@ const initialState = {
   campaignActive: [] as campaignProps[],
   campaignStopped: [] as campaignProps[],
   campaignCompleted: [] as campaignProps[],
+  campaignProcessing: [] as campaignProps[],
   campaignMostPerformed: [] as campaignProps[],
   groupedCampaigns: [] as groupProps[],
   donations: [] as donationProps[],
@@ -82,6 +83,12 @@ export const campaignslice = createSlice({
     ) => {
       state.campaignCompleted = action.payload;
     },
+    updateCampaignProcessing: (
+      state,
+      action: PayloadAction<any[]> // Incoming array of users
+    ) => {
+      state.campaignProcessing = action.payload;
+    },
     updateCampaignMostPerformed: (
       state,
       action: PayloadAction<campaignProps[]> // Incoming array of users
@@ -105,6 +112,7 @@ export const {
   updateCampaignStopped,
   updategroupCampaigns,
   updateDonations,
+  updateCampaignProcessing
 } = campaignslice.actions;
 
 // Export the reducer

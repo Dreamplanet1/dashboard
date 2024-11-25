@@ -55,7 +55,7 @@ export const usersOnboardedSlice = createSlice({
       state,
       action: PayloadAction<userProps[]> // Incoming array of users
     ) => {
-      state.usersAll = action.payload.map((user) => ({
+      state.usersInvestor = action.payload.map((user) => ({
         ...user, // Spread the incoming user data
         name: user.full_name, // Set 'name' as 'full_name'
       }));
@@ -64,7 +64,7 @@ export const usersOnboardedSlice = createSlice({
       state,
       action: PayloadAction<userProps[]> // Incoming array of users
     ) => {
-      state.usersAll = action.payload.map((user) => ({
+      state.usersFan = action.payload.map((user) => ({
         ...user, // Spread the incoming user data
         name: user.full_name, // Set 'name' as 'full_name'
       }));
@@ -73,7 +73,7 @@ export const usersOnboardedSlice = createSlice({
       state,
       action: PayloadAction<userProps[]> // Incoming array of users
     ) => {
-      state.usersAll = action.payload.map((user) => ({
+      state.usersCreator = action.payload.map((user) => ({
         ...user, // Spread the incoming user data
         name: user.full_name, // Set 'name' as 'full_name'
       }));

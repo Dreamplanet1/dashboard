@@ -93,16 +93,6 @@ const Challenge = () => {
       },
     },
     {
-      accessorKey: "engagement",
-      header: "Engagement",
-      cell: ({ row }) => (
-        <p className="text-[14px] text-[#373737]">
-          {row.getValue("engagement")}
-        </p>
-      ),
-    },
-
-    {
       accessorKey: "createdAt",
       header: "Date Created",
       cell: ({ row }) => {

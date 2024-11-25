@@ -1,8 +1,22 @@
+"use client"
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
+import { RootState } from "@/redux/store";
 import { AeonikFont, RecoletaFont } from "@/utils/customFonts";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const user = useSelector((state: RootState) => state.admin.loggedInUser);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user?.id) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
   return (
     <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
       <div className="px-4 min-h-screen flex flex-col">
