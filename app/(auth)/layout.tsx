@@ -1,5 +1,6 @@
 "use client"
 
+import { Toaster } from "@/components/ui/toaster";
 import { RootState } from "@/redux/store";
 import { AeonikFont, RecoletaFont } from "@/utils/customFonts";
 import { useRouter } from "next/navigation";
@@ -21,7 +22,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
       
           {children}
-        
+          <Toaster />
     </body>
   );
 };
