@@ -93,7 +93,7 @@ const BroadcastEdit = () => {
             <span className="">Return back</span>
           </div>
         <div>
-          <h2 className=" text-2xl">Broadcast</h2>
+          <h2 className=" text-2xl">Edit Broadcast</h2>
           <p className="text-sm text-[#A8A8A8]">
             Lorem ipsum dolor sit amet consectetur.
           </p>
@@ -243,6 +243,7 @@ const BroadcastEdit = () => {
                 className="w-full shadow-md text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
                 type="submit"
                 onClick={async () => {
+                  closeDeleteDialog();
                   await deleteBroadcast(broadcastEdit.id);
                   router.push("/broadcast");
                 }}

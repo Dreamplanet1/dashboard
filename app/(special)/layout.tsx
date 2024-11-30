@@ -1,5 +1,6 @@
 "use client"
 import Navbar from "@/components/Navbar";
+import { Toaster } from "@/components/ui/toaster";
 import { RootState } from "@/redux/store";
 import { AeonikFont, RecoletaFont } from "@/utils/customFonts";
 import { useRouter } from "next/navigation";
@@ -27,6 +28,8 @@ export default function RootLayout({
         </div>
 
         <div className=" bg-gray-100 min-h-[90vh]">{children}</div>
+        <Toaster />
+
       </body>
     </html>
   );

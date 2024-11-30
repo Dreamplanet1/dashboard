@@ -1,6 +1,7 @@
 "use client"
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
+import { Toaster } from "@/components/ui/toaster";
 import { RootState } from "@/redux/store";
 import { AeonikFont, RecoletaFont } from "@/utils/customFonts";
 import { useRouter } from "next/navigation";
@@ -30,6 +31,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="p-5 w-full">{children}</div>
         </div>
       </div>
+      <Toaster />
+
     </body>
   );
 };

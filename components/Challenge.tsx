@@ -270,9 +270,9 @@ const Challenge = () => {
               width={69.68}
               alt="trashIcon"
             />
-            <p className="text-[20px] font-medium">Delete this Broadcast?</p>
+            <p className="text-[20px] font-medium">Delete this Challege?</p>
             <p className="text-[14px] text-center text-[#808080]">
-              Are you sure you want to delete this broadcast? This action is
+              Are you sure you want to delete this challenge? This action is
               irreversible.
             </p>
           </div>

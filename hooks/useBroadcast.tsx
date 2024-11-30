@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "lodash";
+import { toast } from "./use-toast";
 
 const useBroadcast = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
@@ -61,8 +62,16 @@ const useBroadcast = () => {
         description,
         media_url,
       });
+      toast({
+        variant: "default",
+        title: "Broadcast Created Successfully",
+      })
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      })
     } finally {
       setCreateLoading(false);
     }
@@ -84,8 +93,16 @@ const useBroadcast = () => {
         description,
         media_url,
       });
+      toast({
+        variant: "default",
+        title: "Broadcast Updated Successfully",
+      })
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      })
     } finally {
       setUpdateLoading(false);
     }
@@ -94,10 +111,20 @@ const useBroadcast = () => {
   const deleteBroadcast = async (id: number) => {
     setDeleteLoading(true);
     try {
-      await axios.post(`${base_url}/broadcast/delete`, { broadcastId: id });
-      await fetchBroadcasts(); // Refresh the list after deletion
+      console.log('working');
+      
+     const response = await axios.post(`${base_url}/feeds/delete`, { feedId: id });
+     toast({
+      variant: "default",
+      title: "Broadcast Deleted Successfully",
+    })      
+     await fetchBroadcasts(); // Refresh the list after deletion
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+      })
     } finally {
       setDeleteLoading(false);
     }
