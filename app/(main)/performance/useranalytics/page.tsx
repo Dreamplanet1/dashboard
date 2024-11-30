@@ -54,6 +54,36 @@ const UserAnalytics = () => {
       header: "Subscription type",
     },
     {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) =>
+        row.getValue("status") === "active" ? (
+          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+            <span>
+              <Image
+                src={"/icons/ActivateIcon.svg"}
+                width={10}
+                height={10}
+                alt="activateIcon"
+              />
+            </span>
+            <p>Activated</p>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+            <span>
+              <Image
+                src={"/icons/DeactivateIcon.svg"}
+                width={10}
+                height={10}
+                alt="deactivateIcon"
+              />
+            </span>
+            <p>Deactivated</p>
+          </div>
+        ),
+    },
+    {
       accessorKey: "analytics",
       header: "",
       cell: ({ row }) => {
@@ -106,6 +136,36 @@ const UserAnalytics = () => {
       header: "Subscription type",
     },
     {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) =>
+        row.getValue("status") === "active" ? (
+          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+            <span>
+              <Image
+                src={"/icons/ActivateIcon.svg"}
+                width={10}
+                height={10}
+                alt="activateIcon"
+              />
+            </span>
+            <p>Activated</p>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+            <span>
+              <Image
+                src={"/icons/DeactivateIcon.svg"}
+                width={10}
+                height={10}
+                alt="deactivateIcon"
+              />
+            </span>
+            <p>Deactivated</p>
+          </div>
+        ),
+    },
+    {
       accessorKey: "analytics",
       header: "",
       cell: ({ row }) => {
@@ -139,6 +199,7 @@ const UserAnalytics = () => {
     </div> 
   )}
       <div>
+        
         <h2 className="text-2xl"> User Analytics</h2>
         <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.

@@ -38,7 +38,7 @@ import FadeLoader from "react-spinners/FadeLoader";
 const ForumAnalytics = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const {allForums, forumMembers} = useSelector((state: RootState) => state.forum);
-  const {getAllForums, getForumMembers, deleteForumMember, forumLoading} = useForum();
+  const {getAllForums, getForumMembers, deleteForumMember, forumLoading, forumSheetLoading} = useForum();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchForum, setSearchForum] = useState('');
   const [forumId, setForumId] = useState(0);
@@ -78,36 +78,32 @@ const ForumAnalytics = () => {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
-        <p>{row.getValue("status")}</p>
-
-      )
-
-        // row.getValue("status") === "Activated" ? (
-        //   <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
-        //     <span>
-        //       <Image
-        //         src={"/icons/ActivateIcon.svg"}
-        //         width={10}
-        //         height={10}
-        //         alt="activateIcon"
-        //       />
-        //     </span>
-        //     <p>{row.getValue("status")}</p>
-        //   </div>
-        // ) : (
-        //   <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
-        //     <span>
-        //       <Image
-        //         src={"/icons/DeactivateIcon.svg"}
-        //         width={10}
-        //         height={10}
-        //         alt="deactivateIcon"
-        //       />
-        //     </span>
-        //     <p>{row.getValue("status")}</p>
-        //   </div>
-        // ),
+      cell: ({ row }) =>
+        row.getValue("status") === "active" ? (
+          <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+            <span>
+              <Image
+                src={"/icons/ActivateIcon.svg"}
+                width={10}
+                height={10}
+                alt="activateIcon"
+              />
+            </span>
+            <p>Activated</p>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-1 border border-[#C83532] bg-red-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+            <span>
+              <Image
+                src={"/icons/DeactivateIcon.svg"}
+                width={10}
+                height={10}
+                alt="deactivateIcon"
+              />
+            </span>
+            <p>Deactivated</p>
+          </div>
+        ),
     },
     {
       accessorKey: "noOfMembers",
@@ -148,8 +144,8 @@ const ForumAnalytics = () => {
                 className="flex items-center space-x-2"
                 onClick={async() => {
                   setForumId(profile?.id);
+                  setIsSheetOpen(true);
                  await getForumMembers(profile?.id, searchTerm);
-                  setIsSheetOpen(true)
                 }}
               >
                 <span>
@@ -266,6 +262,14 @@ const ForumAnalytics = () => {
 
       <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
         <SheetContent className="sm:max-w-[519px] overflow-y-auto scrollbar-hide">
+        {forumSheetLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
           <SheetHeader>
             <SheetTitle className="flex justify-between mb-[40px]">
               <p className="text-[#111810] font-medium text-[20px]">

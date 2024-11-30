@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Heart, MessageCircle } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Heart, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -14,15 +14,27 @@ import { Calendar } from "@/components/ui/calendar";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 
 const CreatorDetails = () => {
   const [date, setDate] = useState<Date>();
   const { activeUser, creatorPerformance } = useSelector((state: RootState) => state.performance);
   const mediaUrl = creatorPerformance?.result?.feed?.media_url[0];
   const isVideo = mediaUrl && mediaUrl.endsWith('.mp4');
+  const router = useRouter();
 
   return (
     <div className="space-y-10">
+       <div
+            onClick={() => {
+              router.push("/performance/useranalytics");
+            }}
+            className=" cursor-pointer flex items-center transition-all active:scale-95"
+          >
+          <ArrowLeft width={20} height={20} className="mr-[8px]" />
+
+            <span className="">Return back</span>
+          </div>
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Avatar>

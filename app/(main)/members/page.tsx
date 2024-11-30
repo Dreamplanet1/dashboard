@@ -58,7 +58,8 @@ const Members = () => {
     getUsersInvestor,
     updateStatus,
     getUserPosts,
-    userLoading
+    userLoading,
+    sheetLoading
   } = useGetUsers();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -173,7 +174,10 @@ const Members = () => {
   }, [isSheetOpen, setIsSheetOpen]);
 
   const openSheet = () => setIsSheetOpen(true);
-  const closeSheet = () => setIsSheetOpen(false);
+  const closeSheet = async() => {setIsSheetOpen(false);
+    await getUsersAll(null);
+
+  };
 
   const columns: ColumnDef<any>[] = [
     {
@@ -639,7 +643,16 @@ const Members = () => {
       </div>
 
       <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
+     
         <SheetContent className="sm:max-w-[519px] overflow-y-auto scrollbar-hide">
+        {sheetLoading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+        <FadeLoader color="#7E2D02" />
+        <p className="text-[#111810] text-[20px]">Processing...</p>
+      </div>
+    </div> 
+  )}
           <SheetHeader>
             <SheetTitle className="flex justify-between">
               <p className="text-[#111810] font-medium text-[20px]">
@@ -768,7 +781,6 @@ const Members = () => {
                     );
 
                     setprofileData(data);
-                    await getUsersAll(null);
                   } catch (error) {
                     console.error("Error updating status:", error);
                   }
@@ -783,7 +795,6 @@ const Members = () => {
                   try {
                     const data = await updateStatus(profileData?.id, "active");
                     setprofileData(data);
-                    await getUsersAll(null);
                   } catch (error) {
                     console.error("Error updating status:", error);
                   }

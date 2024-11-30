@@ -20,7 +20,7 @@ const useGetUsers = () => {
 
   // Single loading state
   const [userLoading, setUserLoading] = useState(false);
-
+  const [sheetLoading, setSheetLoading] = useState(false);
   const getUsersAll = async (status: string | null, searchString?: string) => {
     setUserLoading(true);
     try {
@@ -99,7 +99,7 @@ const useGetUsers = () => {
   };
 
   const updateStatus = async (id: number, status: string) => {
-    setUserLoading(true);
+    setSheetLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/update-status`, {
         user_id: id,
@@ -109,7 +109,7 @@ const useGetUsers = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setUserLoading(false);
+      setSheetLoading(false);
     }
   };
 
@@ -165,7 +165,8 @@ const useGetUsers = () => {
     updateStatus,
     getUserPosts,
     updateUserPosts,
-    userLoading, // Expose single loading state
+    userLoading, 
+    sheetLoading
   };
 };
 

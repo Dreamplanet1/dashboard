@@ -4,16 +4,17 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useState, useCallback } from "react";
 import { debounce } from "lodash";
+import { toast } from "./use-toast";
 
 const useForum = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
   const dispatch = useDispatch<AppDispatch>();
 
   const [forumLoading, setForumLoading] = useState(false);
+  const [forumSheetLoading, setForumSheetLoading] = useState(false);
 
   const fetchAllForums = async (searchTerm?: string) => {
     setForumLoading(true);
-    console.log(searchTerm);
     
     try {
       const response = await axios.post(`${base_url}/forum/get/all`, {
@@ -21,7 +22,6 @@ const useForum = () => {
         perPage: 10,
         searchString: searchTerm || "",
       });
-      console.log(response);
       
       dispatch(updateAllForums(response?.data?.response?.docs));
     } catch (error: any) {
@@ -45,7 +45,6 @@ const useForum = () => {
     
     // debouncedFetchAllForums(searchTerm);
     setForumLoading(true);
-    console.log(searchTerm);
     
     try {
       const response = await axios.post(`${base_url}/forum/get/all`, {
@@ -53,7 +52,6 @@ const useForum = () => {
         perPage: 10,
         searchString: searchTerm || "",
       });
-      console.log(response);
       
       dispatch(updateAllForums(response?.data?.response?.docs));
     } catch (error: any) {
@@ -64,7 +62,7 @@ const useForum = () => {
   };
 
   const getForumMembers = async (forumId: number, searchString: string) => {
-    setForumLoading(true);
+    setForumSheetLoading(true);
     try {
       const response = await axios.post(`${base_url}/forum/get/members`, {
         forumId,
@@ -76,21 +74,26 @@ const useForum = () => {
     } catch (error: any) {
       alert(error.message);
     } finally {
-      setForumLoading(false);
+      setForumSheetLoading(false);
     }
   };
 
   const deleteForumMember = async (forumId: number, userId: number) => {
-    setForumLoading(true);
+    setForumSheetLoading(true);
     try {
       await axios.post(`${base_url}/forum/remove`, {
         forumId,
         userId,
       });
+
     } catch (error: any) {
-      alert(error.message);
+      toast({
+        variant: "destructive",
+        title: 'Delete Action Failed',
+        description: "Something went wrong",
+      })
     } finally {
-      setForumLoading(false);
+      setForumSheetLoading(false);
     }
   };
 
@@ -99,6 +102,7 @@ const useForum = () => {
     getForumMembers,
     deleteForumMember,
     forumLoading,
+    forumSheetLoading
   };
 };
 
