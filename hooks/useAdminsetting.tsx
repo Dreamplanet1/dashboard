@@ -60,8 +60,15 @@ const useAdminsetting = () => {
         name,
         features,
       });
+      toast({
+        variant: "default",
+        description: "Role Created successfully",
+      })
     } catch (error: any) {
-      alert(error?.message);
+      toast({
+        variant: "destructive",
+        description: "Something went wrong",
+      })
     } finally {
       setadminLoading(false);
     }
@@ -78,8 +85,15 @@ const useAdminsetting = () => {
         email,
         status: "pending",
       });
+      toast({
+        variant: "default",
+        description: "Admin Created successfully",
+      })
     } catch (error: any) {
-      alert(error?.message);
+      toast({
+        variant: "destructive",
+        description: "Couldn't create Admin",
+      })
     } finally {
       setadminLoading(false);
     }
@@ -92,8 +106,15 @@ const useAdminsetting = () => {
         admin_id: id,
         status: "accepted",
       });
+      toast({
+        variant: "default",
+        description: "Admin Updated successfully",
+      })
     } catch (error: any) {
-      alert(error?.message);
+      toast({
+        variant: "destructive",
+        description: "Status Update Failed",
+      })
     } finally {
       setadminLoading(false);
     }
@@ -120,9 +141,16 @@ const useAdminsetting = () => {
         role_id: roleId,
         role_name: roleName,
       });
+      toast({
+        variant: "default",
+        description: "Admin Role Updated successfully",
+      })
       await getAdminAccepted();
     } catch (error: any) {
-      alert(error?.message);
+      toast({
+        variant: "destructive",
+        description: "Admin Role Update Failed",
+      })
     } finally {
       setadminLoading(false);
     }
@@ -135,6 +163,10 @@ const useAdminsetting = () => {
       "email": email,
       "link": "www.dreamplanet.org"
       });
+      toast({
+        variant: "default",
+        description: "Link Sent Successfully",
+      })
     } catch (error: any) {
       toast({
         variant: "destructive",

@@ -525,7 +525,7 @@ const AdminSetting = () => {
                 Role
               </Label>
 
-              <Select onValueChange={(value) => setSelectedRole(value)}>
+              {/* <Select onValueChange={(value) => setSelectedRole(value)}>
                 <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0">
                   <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
@@ -535,14 +535,17 @@ const AdminSetting = () => {
                     <SelectItem value="Sub-admin">Sub-Admin</SelectItem>
                   </SelectGroup>
                 </SelectContent>
-              </Select>
+              </Select> */}
+              <Input placeholder="Select Role" value={selectedRole} onChange={(e) => {
+                setSelectedRole(e.target.value)
+              }} className="focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-0 p-[12px] placeholder:text-[#111810] rounded-[8px] border-[#C8C8C8]"/>
             </div>
             <div className="flex flex-col space-y-2">
               <Label htmlFor="features" className="font-medium">
                 Features
               </Label>
               <button
-                className="w-full border p-2 text-left flex justify-between items-center"
+                className="w-full border p-2 text-left flex justify-between items-center rounded-[8px] border-[#C8C8C8]"
                 onClick={() => setIsExpanded(!isExpanded)}
               >
                 <div className="flex space-x-2 flex-wrap items-center">
@@ -705,8 +708,8 @@ const AdminSetting = () => {
               Cancel
             </Button>
            {selectedMoveRole !== null ?  <Button onClick={async() => {
+                          closeMoveDialog()
               await updateAdminRole(adminId, selectedMoveRole.id, selectedMoveRole.name)
-              closeMoveDialog()
             }} className="bg-[#F75803] hover:bg-[#F75803] transition hover:scale-105 active:scale-95">
               Move
             </Button>:  <Button disabled={true} className="bgColoredInactive">
