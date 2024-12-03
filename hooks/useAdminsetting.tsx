@@ -90,9 +90,11 @@ const useAdminsetting = () => {
         description: "Admin Created successfully",
       })
     } catch (error: any) {
+      console.log(error);
+      
       toast({
         variant: "destructive",
-        description: "Couldn't create Admin",
+        description: error.response.data.message ||"Couldn't create Admin",
       })
     } finally {
       setadminLoading(false);

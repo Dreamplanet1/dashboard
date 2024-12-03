@@ -26,6 +26,7 @@ import Image from "next/image";
 import useAdminsetting from "@/hooks/useAdminsetting";
 import FadeLoader from "react-spinners/FadeLoader";
 import { useRouter } from "next/navigation";
+import { countries } from "@/assets/country";
 
 const features = [
   "Broadcast",
@@ -151,17 +152,24 @@ const AddMemberForm = () => {
           >
             Country
           </Label>
-          <Select value={selectedCountry} onValueChange={(value) => setSelectedCountry(value)}>
-                <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0 border-[#C8C8C8] placeholder:text-[#C8C8C8]">
-                  <SelectValue className="" placeholder="Select Country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="Nigeria">Nigeria</SelectItem>
-                    <SelectItem value="Ghana">Ghana</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+          <Select
+  value={selectedCountry}
+  onValueChange={(value) => setSelectedCountry(value)}
+>
+  <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0 border-[#C8C8C8] placeholder:text-[#C8C8C8]">
+    <SelectValue placeholder="Select Country" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      {countries.map((country) => (
+        <SelectItem key={country} value={country}>
+          {country}
+        </SelectItem>
+      ))}
+    </SelectGroup>
+  </SelectContent>
+</Select>
+
         </div>
           <div className="grid w-full  items-center gap-[8px]">
             <Label
