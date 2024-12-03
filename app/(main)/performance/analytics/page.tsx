@@ -78,8 +78,18 @@ const ForumAnalytics = () => {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) =>
-        row.getValue("status") === "active" ? (
+      cell: ({ row }) => {
+        const status = row.getValue("status");
+    
+        if (status === null || status === undefined) {
+          return (
+            <div className="flex items-center space-x-1 border border-gray-400 bg-gray-100 text-xs font-medium w-max rounded-xl py-1 px-2">
+              <p>Null</p>
+            </div>
+          );
+        }
+    
+        return status === "active" ? (
           <div className="flex items-center space-x-1 border border-[#2BAC47] bg-green-100 text-xs font-medium w-max rounded-xl py-1 px-2">
             <span>
               <Image
@@ -103,8 +113,10 @@ const ForumAnalytics = () => {
             </span>
             <p>Deactivated</p>
           </div>
-        ),
+        );
+      },
     },
+    
     {
       accessorKey: "noOfMembers",
       header: "No. of members",
