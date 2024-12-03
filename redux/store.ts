@@ -21,6 +21,7 @@ import { forumslice } from "./slices/forumslice";
 import { adminslice } from "./slices/adminslice";
 // Import your slice correctly
 
+
 // Combine all reducers
 const rootReducer = combineReducers({
   usersOnboarded: usersOnboardedSlice.reducer,
