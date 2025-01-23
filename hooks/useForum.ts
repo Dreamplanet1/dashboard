@@ -40,7 +40,7 @@ const useForum = () => {
   );
 
   const getAllForums = async(searchTerm?: string) => {
-    // Trigger the debounced function
+    // Trigger the debounced functions
     // console.log(searchTerm);
     
     // debouncedFetchAllForums(searchTerm);
@@ -52,7 +52,7 @@ const useForum = () => {
         perPage: 10,
         searchString: searchTerm || "",
       });
-      
+        // console.log(response)
       dispatch(updateAllForums(response?.data?.response?.docs));
     } catch (error: any) {
       alert(error.message);

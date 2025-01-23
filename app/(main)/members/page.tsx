@@ -82,6 +82,9 @@ const Members = () => {
   const [selectedStatusFan, setSelectedStatusFan] = useState<string>("all");
   const [profileData, setprofileData] = useState<any>({});
   const [date, setDate] = useState<Date>();
+  
+  console.log(profileData);
+  
 
   const [selectedStatusInvestor, setSelectedStatusInvestor] =
     useState<string>("all");
@@ -175,7 +178,7 @@ const Members = () => {
 
   const openSheet = () => setIsSheetOpen(true);
   const closeSheet = async() => {setIsSheetOpen(false);
-    await getUsersAll(null);
+    // await getUsersAll(null);
 
   };
 
@@ -307,7 +310,7 @@ const Members = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={openSheet}
+                // onClick={openSheet}
               >
                 <span>
                   <Image
@@ -672,14 +675,15 @@ const Members = () => {
           </SheetHeader>
           <div className="flex flex-col">
             <div className="flex items-center space-x-[12px] mt-[40px] mb-[28px]">
-              <Avatar>
-                <AvatarImage
-                  className="object-contain"
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+            <Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={profileData?.image}
+                alt="@shadcn"
+              />
+              <AvatarFallback className="bg-gray-200 text-black">
+              {profileData?.name?.[0] || ""}              </AvatarFallback>
+            </Avatar>
               <div>
                 <p className="text-[20px] font-medium text-[#111810]">
                   {profileData?.full_name}
@@ -750,7 +754,7 @@ const Members = () => {
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Interested Creators</p>
-                <p className="">interested creators</p>
+                <p className="">___</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Active Camapaigns</p>
@@ -762,7 +766,7 @@ const Members = () => {
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">No Of Investor</p>
-                <p className="">investor</p>
+                <p className="">___</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Verification</p>

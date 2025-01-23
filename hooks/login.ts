@@ -26,6 +26,8 @@ import { updateUser } from "@/redux/slices/adminslice";
           "email": email,
           "password": password
       });
+      console.log(response);
+      
       dispatch(updateUser(response?.data?.response?.admin));
       router.push('/broadcast')      
       } catch (error: any) {
@@ -50,6 +52,7 @@ import { updateUser } from "@/redux/slices/adminslice";
       });
       setisOpen(true);
       } catch (error: any) {
+        
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
