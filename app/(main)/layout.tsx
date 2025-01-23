@@ -12,11 +12,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const user = useSelector((state: RootState) => state.admin.loggedInUser);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (!user?.id) {
-  //     router.push("/login");
-  //   }
-  // }, [user, router]);
+  useEffect(() => {
+    if (!user?.id) {
+      router.push("/login");
+    }
+  }, [user, router]);
 
   return (
     <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>

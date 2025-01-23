@@ -47,8 +47,8 @@ import { updateUser } from "@/redux/slices/adminslice";
       setLoading(true);
       try {
         const response = await axios.post(`${base_url}/admin-settings/change-admin-password`, {
-          "email": oldPassword,
-          "password": newPassword,
+          "oldPassword": oldPassword,
+          "newPassword": newPassword,
       });
       setisOpen(true);
       } catch (error: any) {

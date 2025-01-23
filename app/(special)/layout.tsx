@@ -15,11 +15,11 @@ export default function RootLayout({
   const user = useSelector((state: RootState) => state.admin.loggedInUser);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (!user?.id) {
-  //     router.push("/login");
-  //   }
-  // }, [user, router]);
+  useEffect(() => {
+    if (!user?.id) {
+      router.push("/login");
+    }
+  }, [user, router]);
   return (
     <html lang="en">
       <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
