@@ -186,7 +186,9 @@ const changePassword = () => {
 
           <DialogFooter>
             <div className="flex w-full justify-center items-center space-x-2">
-              <Button className="w-full text-[14px] text-white bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95">
+              <Button 
+              onClick={closeDialog}
+              className="w-full text-[14px] text-white bg-[#F75803] hover:bg-[#F75803] transition-all hover:scale-105 active:scale-95">
                 Okay
               </Button>
             </div>

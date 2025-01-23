@@ -13,6 +13,8 @@ import { updateUser } from "@/redux/slices/adminslice";
   const useLogin = () => {
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
     const broadcast = useSelector((state: RootState) => state.broadcast);
+      const {id} = useSelector((state: RootState) => state.admin.loggedInUser);
+  
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
   
@@ -47,6 +49,7 @@ import { updateUser } from "@/redux/slices/adminslice";
       setLoading(true);
       try {
         const response = await axios.post(`${base_url}/admin-settings/change-admin-password`, {
+          "admin_id": id,
           "oldPassword": oldPassword,
           "newPassword": newPassword,
       });
