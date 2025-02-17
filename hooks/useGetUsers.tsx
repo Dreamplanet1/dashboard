@@ -3,6 +3,7 @@ import {
   updateCreatorCount,
   updateFanCount,
   updateInvestorCount,
+  updatePaginationOtherUsers,
   updatePaginationUsers,
   updatePost,
   updateUserProfile,
@@ -81,7 +82,7 @@ const useGetUsers = () => {
       
       dispatch(updateUsersCreator(response.data.response.docs));
       dispatch(
-        updatePaginationUsers({
+        updatePaginationOtherUsers({
           hasNextPage: response.data.response.hasNextPage,
           hasPrevPage: response.data.response.hasPrevPage,
           limit: response.data.response.limit,
@@ -115,7 +116,7 @@ const useGetUsers = () => {
 
       dispatch(updateUsersInvestor(response.data.response.docs));
       dispatch(
-        updatePaginationUsers({
+        updatePaginationOtherUsers({
           hasNextPage: response.data.response.hasNextPage,
           hasPrevPage: response.data.response.hasPrevPage,
           limit: response.data.response.limit,
@@ -149,7 +150,7 @@ const useGetUsers = () => {
       });
       dispatch(updateUsersFan(response.data.response.docs));
       dispatch(
-        updatePaginationUsers({
+        updatePaginationOtherUsers({
           hasNextPage: response.data.response.hasNextPage,
           hasPrevPage: response.data.response.hasPrevPage,
           limit: response.data.response.limit,

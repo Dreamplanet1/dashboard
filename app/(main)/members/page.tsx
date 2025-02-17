@@ -66,8 +66,8 @@ const Members = () => {
   const { usersAll, usersCreator, usersFan, usersInvestor, fanCount, creatorCount, investorCount, allCount } = useSelector(
     (state: RootState) => state.usersOnboarded
   );
-  const { hasNextPage, hasPrevPage, limit, nextPage, offset, page, pagingCounter, prevPage, totalDocs, totalPages } = useSelector(
-    (state: RootState) => state.usersOnboarded.pagination
+  const { pagination, paginationOther} = useSelector(
+    (state: RootState) => state.usersOnboarded
   );
   const [searchTermAll, setSearchTermAll] = useState("");
   const [searchTermCreator, setSearchTermCreator] = useState("");
@@ -483,19 +483,19 @@ const Members = () => {
                  <div className="flex items-center justify-start space-x-2 px-4 py-4">
         <div>
           <p className="text-[14px]">
-          {(page - 1) * limit + 1} -{" "}
-          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          {(pagination?.page - 1) * pagination?.limit + 1} -{" "}
+          {Math.min(pagination?.page * pagination?.limit, pagination?.totalDocs)} of {pagination?.totalDocs}
           </p>
         </div>
         <Button
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasPrevPage) {
+            if (pagination?.hasPrevPage) {
               setAllPage((prevPage) => prevPage - 1); 
             }
           }}
-          disabled={page <= 1}
+          disabled={pagination?.page <= 1}
         >
           <Image
             src={"/icons/backbutton.svg"}
@@ -508,12 +508,12 @@ const Members = () => {
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasNextPage) {
+            if (pagination?.hasNextPage) {
               setAllPage((prevPage) => prevPage + 1); 
             }
           }}
-          disabled={page * limit >=
-          totalDocs
+          disabled={pagination?.page * pagination?.limit >=
+            pagination?.totalDocs
           }
         >
           <Image
@@ -584,19 +584,19 @@ const Members = () => {
                   <div className="flex items-center justify-start space-x-2 px-4 py-4">
         <div>
           <p className="text-[14px]">
-          {(page - 1) * limit + 1} -{" "}
-          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+          {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
           </p>
         </div>
         <Button
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasPrevPage) {
+            if (paginationOther?.hasPrevPage) {
               setInvestorPage((prevPage) => prevPage - 1); 
             }
           }}
-          disabled={page <= 1}
+          disabled={paginationOther?.page <= 1}
         >
           <Image
             src={"/icons/backbutton.svg"}
@@ -609,12 +609,12 @@ const Members = () => {
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasNextPage) {
+            if (paginationOther?.hasNextPage) {
               setInvestorPage((prevPage) => prevPage + 1); 
             }
           }}
-          disabled={page * limit >=
-          totalDocs
+          disabled={paginationOther?.page * paginationOther?.limit >=
+            paginationOther?.totalDocs
           }
         >
           <Image
@@ -684,19 +684,19 @@ const Members = () => {
                  <div className="flex items-center justify-start space-x-2 px-4 py-4">
         <div>
           <p className="text-[14px]">
-          {(page - 1) * limit + 1} -{" "}
-          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+          {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
           </p>
         </div>
         <Button
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasPrevPage) {
+            if (paginationOther?.hasPrevPage) {
               setCreatorPage((prevPage) => prevPage - 1); 
             }
           }}
-          disabled={page <= 1}
+          disabled={paginationOther?.page <= 1}
         >
           <Image
             src={"/icons/backbutton.svg"}
@@ -709,12 +709,12 @@ const Members = () => {
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasNextPage) {
+            if (paginationOther?.hasNextPage) {
               setCreatorPage((prevPage) => prevPage + 1); 
             }
           }}
-          disabled={page * limit >=
-          totalDocs
+          disabled={paginationOther?.page * paginationOther?.limit >=
+            paginationOther?.totalDocs
           }
         >
           <Image
@@ -782,19 +782,19 @@ const Members = () => {
                   <div className="flex items-center justify-start space-x-2 px-4 py-4">
         <div>
           <p className="text-[14px]">
-          {(page - 1) * limit + 1} -{" "}
-          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+          {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
           </p>
         </div>
         <Button
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasPrevPage) {
+            if (paginationOther?.hasPrevPage) {
               setFanPage((prevPage) => prevPage - 1); 
             }
           }}
-          disabled={page <= 1}
+          disabled={paginationOther?.page <= 1}
         >
           <Image
             src={"/icons/backbutton.svg"}
@@ -807,12 +807,12 @@ const Members = () => {
           className="p-0 bg-transparent hover:bg-transparent"
           size="sm"
           onClick={() => {
-            if (hasNextPage) {
+            if (paginationOther?.hasNextPage) {
               setFanPage((prevPage) => prevPage + 1); 
             }
           }}
-          disabled={page * limit >=
-          totalDocs
+          disabled={paginationOther?.page * paginationOther?.limit >=
+            paginationOther?.totalDocs
           }
         >
           <Image

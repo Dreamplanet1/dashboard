@@ -65,6 +65,18 @@ const initialState = {
     totalDocs: 0 as number,
     totalPages: 0 as number,
   },
+  paginationOther: {
+    hasNextPage: false as boolean,
+    hasPrevPage: false as boolean,
+    limit: 0 as number,
+    nextPage: null as number | null,
+    offset: 0 as number,
+    page: 1 as number,
+    pagingCounter: 0 as number,
+    prevPage: null as number | null,
+    totalDocs: 0 as number,
+    totalPages: 0 as number,
+  },
 };
 
 
@@ -118,6 +130,9 @@ export const usersOnboardedSlice = createSlice({
     updatePaginationUsers: (state, action: PayloadAction<PaginationProps>) => {
       state.pagination = { ...state.pagination, ...action.payload };
     },
+    updatePaginationOtherUsers: (state, action: PayloadAction<PaginationProps>) => {
+      state.paginationOther = { ...state.pagination, ...action.payload };
+    },
     updateAllCount: (state, action: PayloadAction<number>) => {
      state.allCount = action.payload;
     },
@@ -142,7 +157,7 @@ export const {
   updatePost,
   updateUserProfile,
   updatePaginationUsers,
-  updateAllCount, updateCreatorCount, updateFanCount, updateInvestorCount
+  updateAllCount, updateCreatorCount, updateFanCount, updateInvestorCount, updatePaginationOtherUsers
 } = usersOnboardedSlice.actions;
 
 // Export the reducer
