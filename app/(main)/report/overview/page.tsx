@@ -79,12 +79,12 @@ const ReportOverview = () => {
       ),
     },
     {
-      accessorKey: "adminrole",
+      accessorKey: "admin_role",
       header: "Assignee's Role",
       cell: ({ row }) => (
         <div className="flex items-center space-x-1 border  text-xs font-medium w-max rounded-xl py-1 px-2">
           <span className="h-1 w-1 rounded-full bg-[#BF3100]"></span>
-          {/* <p>{row.getValue("admin.role")}</p> */}
+          <p>{row.getValue("admin_role")}</p>
         </div>
       ),
     },
@@ -166,8 +166,11 @@ const ReportOverview = () => {
 
   const [isOpen, setisOpen] = useState(false);
   const closeOpenDialog = () => setisOpen(false);
-  const { getCreatorReport, getAdmin, getCreator, createCreatorReport, reportLoading } =
+  const { getCreatorReport, getAdmin, getCreator, createCreatorReport, reportLoading, reportPage, setReportPage } =
     useReport();
+    const { hasNextPage, hasPrevPage, limit, page, totalDocs } = useSelector(
+      (state: RootState) => state.report.pagination
+    );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -202,8 +205,13 @@ const ReportOverview = () => {
   }, [adminSearch]);
 
   useEffect(() => {
+    setReportPage(1);
     getCreatorReport(searchCreatorReport);
   }, [searchCreatorReport]);
+
+  useEffect(() => {
+    getCreatorReport(searchCreatorReport);
+  }, [reportPage]);
 
   useEffect(() => {
     getCreator(searchReport);
@@ -275,6 +283,52 @@ const ReportOverview = () => {
           />
         </div>
         <UserTable columns={columns} data={creatorReport} />
+         {totalDocs !== 0 && 
+                   <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                   <div>
+                   <p className="text-[14px]">
+                  {(page - 1) * limit + 1} -{" "}
+                  {Math.min(page * limit, totalDocs)} of {totalDocs}
+                  </p>
+                   </div>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasPrevPage) {
+                         setReportPage((prevPage) => prevPage - 1); 
+                       }
+                     }}
+                     disabled={page <= 1}
+                   >
+                     <Image
+                       src={"/icons/backbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="backbutton"
+                     />
+                   </Button>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasNextPage) {
+                         setReportPage((prevPage) => prevPage + 1); 
+                       }
+                     }}
+                     disabled={page * limit >=
+                     totalDocs
+                     }
+                   >
+                     <Image
+                       src={"/icons/forwardbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="forwardbutton"
+                     />
+                   </Button>
+                 </div>
+                }
       </div>
       <Dialog open={isOpen} onOpenChange={closeOpenDialog}>
         <DialogContent className="sm:max-w-[432px] max-h-[80%] px-0 rounded-full overflow-scroll scrollbar-hide">

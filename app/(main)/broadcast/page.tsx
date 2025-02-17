@@ -23,6 +23,9 @@ import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import FadeLoader from 'react-spinners/FadeLoader';
 
 const BroadCast = () => {
+  const { hasNextPage, hasPrevPage, limit, page, totalDocs } = useSelector(
+    (state: RootState) => state.broadcast.pagination
+  );
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const broadcast = useSelector(
@@ -34,10 +37,15 @@ const BroadCast = () => {
   const closeDeleteDialog = () => setisDeleteOpen(false);
 
   
-  const { getAllBroadCast, deleteBroadcast, allLoading, deleteLoading } = useBroadcast();
+  const { getAllBroadCast, deleteBroadcast, allLoading, deleteLoading, broadcastPage, setBroadcastPage } = useBroadcast();
   useEffect(() => {
+    setBroadcastPage(1);
     getAllBroadCast(searchTerm);
   }, [searchTerm]);
+
+  useEffect(() => {
+    getAllBroadCast(searchTerm);
+  }, [broadcastPage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -233,6 +241,53 @@ const BroadCast = () => {
           columns={columns}
           data={broadcast}
         />
+        {totalDocs !== 0 && 
+           <div className="flex items-center justify-start space-x-2 px-4 py-4">
+           <div>
+           <p className="text-[14px]">
+          {(page - 1) * limit + 1} -{" "}
+          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          </p>
+           </div>
+           <Button
+             className="p-0 bg-transparent hover:bg-transparent"
+             size="sm"
+             onClick={() => {
+               if (hasPrevPage) {
+                 setBroadcastPage((prevPage) => prevPage - 1); 
+               }
+             }}
+             disabled={page <= 1}
+           >
+             <Image
+               src={"/icons/backbutton.svg"}
+               height={20}
+               width={20}
+               alt="backbutton"
+             />
+           </Button>
+           <Button
+             className="p-0 bg-transparent hover:bg-transparent"
+             size="sm"
+             onClick={() => {
+               if (hasNextPage) {
+                 setBroadcastPage((prevPage) => prevPage + 1); 
+               }
+             }}
+             disabled={page * limit >=
+             totalDocs
+             }
+           >
+             <Image
+               src={"/icons/forwardbutton.svg"}
+               height={20}
+               width={20}
+               alt="forwardbutton"
+             />
+           </Button>
+         </div>
+        }
+       
       </div>
       <Dialog open={isDeleteOpen} onOpenChange={closeDeleteDialog}>
         <DialogContent className="sm:max-w-[384px]">

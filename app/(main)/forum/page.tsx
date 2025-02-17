@@ -10,17 +10,35 @@ import { EllipsisVertical } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import useForum from "@/hooks/useForum";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import FadeLoader from "react-spinners/FadeLoader";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 
 
 const Forum = () => {
   const {allForums} = useSelector((state: RootState) => state.forum);
-  const {getAllForums, forumLoading} = useForum();
+  const {getAllForums, forumLoading, setForumPage, forumPage} = useForum();
+  const {hasNextPage, hasPrevPage, limit, page, totalDocs} = useSelector(
+    (state: RootState) => state.forum.pagination
+  );
+  const [searchForum, setSearchForum] = useState('');
+  
   useEffect(() => {
+    setForumPage(1);
+   getAllForums(searchForum)
+  },[searchForum])
+
+  useEffect(() => {
+    setForumPage(1);
     getAllForums()
    },[])
+
+  useEffect(() => {
+    getAllForums(searchForum)
+   },[forumPage])
+
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "name",
@@ -110,11 +128,74 @@ const Forum = () => {
         </p>
       </div>
       <div>
+        <div className="flex justify-between items-center">
+          <div></div>
+        <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Admin or Forum name..."
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                      value={searchForum}
+                      onChange={(e) => setSearchForum(e.target.value)}
+                    />
+                  </div>
+        </div>
         <UserTable
           
           data={allForums}
           columns={columns}
         />
+         {totalDocs !== 0 && 
+                   <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                   <div>
+                   <p className="text-[14px]">
+                  {(page - 1) * limit + 1} -{" "}
+                  {Math.min(page * limit, totalDocs)} of {totalDocs}
+                  </p>
+                   </div>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasPrevPage) {
+                         setForumPage((prevPage) => prevPage - 1); 
+                       }
+                     }}
+                     disabled={page <= 1}
+                   >
+                     <Image
+                       src={"/icons/backbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="backbutton"
+                     />
+                   </Button>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasNextPage) {
+                         setForumPage((prevPage) => prevPage + 1); 
+                       }
+                     }}
+                     disabled={page * limit >=
+                     totalDocs
+                     }
+                   >
+                     <Image
+                       src={"/icons/forwardbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="forwardbutton"
+                     />
+                   </Button>
+                 </div>
+                }
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import FadeLoader from "react-spinners/FadeLoader";
+import { toast } from "@/hooks/use-toast";
 
 interface FileWithPreview {
   preview: string;
@@ -39,9 +40,14 @@ export default function Dropzone({
             body: formData,
           }
         );
-
+      
+        if (!res.ok) {
+          const errorData = await res.json(); 
+          throw new Error(errorData?.error?.message || "Upload failed");
+        }
+      
         const data = await res.json();
-
+      
         if (data.secure_url) {
           setFiles((prevFiles) => [
             ...prevFiles,
@@ -52,11 +58,16 @@ export default function Dropzone({
             },
           ]);
         }
-      } catch (error) {
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          description: error?.message || "Something went wrong",
+        });
         console.error("Upload failed:", error);
       } finally {
         setLoading(false);
       }
+      
     });
   }, []);
 

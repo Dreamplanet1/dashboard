@@ -32,6 +32,9 @@ import FadeLoader from "react-spinners/FadeLoader";
 const PaymentHistory = () => {
   const { history, stats } = useSelector((state: RootState) => state.payment);
   const [date, setDate] = useState<Date>();
+  const { hasNextPage, hasPrevPage, limit, page, totalDocs } = useSelector(
+    (state: RootState) => state.payment.pagination
+  );
   const [searchString, setSearchString] = useState<string>("");
 
   const columns: ColumnDef<any>[] = [
@@ -101,7 +104,7 @@ const PaymentHistory = () => {
     },
   ];
 
-  const { getPaymentHistory, paymentLoading } = usePayment();
+  const { getPaymentHistory, paymentLoading, paymentPage,setPaymentPage } = usePayment();
 
   const paymentOptions = [
     "Wallet top-up",
@@ -142,12 +145,22 @@ const PaymentHistory = () => {
     });
   };
   useEffect(() => {
+    setPaymentPage(1);
     getPaymentHistory(
       selectedUserTypes.length ? selectedUserTypes : null,
       selectedPaymentTypes.length ? selectedPaymentTypes : null,
       searchString
     );
   }, [selectedPaymentTypes, selectedUserTypes, searchString]);
+
+  useEffect(() => {
+    getPaymentHistory(
+      selectedUserTypes.length ? selectedUserTypes : null,
+      selectedPaymentTypes.length ? selectedPaymentTypes : null,
+      searchString
+    );
+  }, [paymentPage]);
+
 
   return (
     <div className="flex flex-col space-y-7">
@@ -395,6 +408,52 @@ const PaymentHistory = () => {
           </div>
         </div>
         <UserTable data={history} columns={columns} />
+         {totalDocs !== 0 && 
+                   <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                   <div>
+                   <p className="text-[14px]">
+                  {(page - 1) * limit + 1} -{" "}
+                  {Math.min(page * limit, totalDocs)} of {totalDocs}
+                  </p>
+                   </div>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasPrevPage) {
+                         setPaymentPage((prevPage) => prevPage - 1); 
+                       }
+                     }}
+                     disabled={page <= 1}
+                   >
+                     <Image
+                       src={"/icons/backbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="backbutton"
+                     />
+                   </Button>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasNextPage) {
+                         setPaymentPage((prevPage) => prevPage + 1); 
+                       }
+                     }}
+                     disabled={page * limit >=
+                     totalDocs
+                     }
+                   >
+                     <Image
+                       src={"/icons/forwardbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="forwardbutton"
+                     />
+                   </Button>
+                 </div>
+                }
       </div>
     </div>
   );

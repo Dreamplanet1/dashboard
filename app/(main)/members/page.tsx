@@ -59,23 +59,21 @@ const Members = () => {
     updateStatus,
     getUserPosts,
     userLoading,
-    sheetLoading
+    sheetLoading, allPage, setAllPage, creatorPage, setCreatorPage, fanPage, setFanPage, investorPage, setInvestorPage
   } = useGetUsers();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const { usersAll, usersCreator, usersFan, usersInvestor } = useSelector(
+  const { usersAll, usersCreator, usersFan, usersInvestor, fanCount, creatorCount, investorCount, allCount } = useSelector(
     (state: RootState) => state.usersOnboarded
+  );
+  const { hasNextPage, hasPrevPage, limit, nextPage, offset, page, pagingCounter, prevPage, totalDocs, totalPages } = useSelector(
+    (state: RootState) => state.usersOnboarded.pagination
   );
   const [searchTermAll, setSearchTermAll] = useState("");
   const [searchTermCreator, setSearchTermCreator] = useState("");
   const [searchTermFan, setSearchTermFan] = useState("");
   const [searchTermInvestor, setSearchTermInvestor] = useState("");
 
-  const filteredUsersAll = usersAll?.filter(
-    (user) =>
-      user.full_name?.toLowerCase().includes(searchTermAll.toLowerCase()) ||
-      user.username?.toLowerCase().includes(searchTermAll.toLowerCase())
-  );
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedStatusCreator, setSelectedStatusCreator] =
     useState<string>("all");
@@ -83,7 +81,6 @@ const Members = () => {
   const [profileData, setprofileData] = useState<any>({});
   const [date, setDate] = useState<Date>();
   
-  console.log(profileData);
   
 
   const [selectedStatusInvestor, setSelectedStatusInvestor] =
@@ -102,55 +99,65 @@ const Members = () => {
     setSelectedStatusInvestor(value);
   };
   const hasMounted = useRef(false);
+ 
   useEffect(() => {
     if (hasMounted.current) {
-      const status = selectedStatus === "all" ? null : selectedStatus;
-      getUsersAll(status);
-    }
-  }, [selectedStatus]);
-
-  useEffect(() => {
-    const status = selectedStatus === "all" ? null : selectedStatus;
-    getUsersAll(status, searchTermAll)
-  }, [searchTermAll]);
-
-  useEffect(() => {
-    if (hasMounted.current) {
+      setCreatorPage(1);
       const status =
         selectedStatusCreator === "all" ? null : selectedStatusCreator;        
-      getUsersCreator(status);
+      getUsersCreator(status, searchTermCreator);
     }
-  }, [selectedStatusCreator]);
+  }, [selectedStatusCreator, searchTermCreator]);
 
   useEffect(() => {
     const status = selectedStatusCreator === "all" ? null : selectedStatusCreator;
     getUsersCreator(status, searchTermCreator)
-  }, [searchTermCreator]);
+  }, [creatorPage]);
 
   useEffect(() => {
     if (hasMounted.current) {
+      setFanPage(1);
       const status = selectedStatusFan === "all" ? null : selectedStatusFan;
-      getUsersFan(status);
+      getUsersFan(status, searchTermFan);
     }
-  }, [selectedStatusFan]);
+  }, [selectedStatusFan, searchTermFan]);
 
   useEffect(() => {
     const status = selectedStatusFan === "all" ? null : selectedStatusFan;
     getUsersFan(status, searchTermFan)
-  }, [searchTermFan]);
+  }, [fanPage]);
 
   useEffect(() => {
     if (hasMounted.current) {
+      setInvestorPage(1);
       const status =
         selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
-      getUsersInvestor(status);
+      getUsersInvestor(status, searchTermInvestor);
     }
-  }, [selectedStatusInvestor]);
+  }, [selectedStatusInvestor, searchTermInvestor]);
+  
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status =
+      selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
+    getUsersInvestor(status, searchTermInvestor);
+    }
+  }, [investorPage]);
 
   useEffect(() => {
-    const status = selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
-    getUsersInvestor(status, searchTermInvestor)
-  }, [searchTermInvestor]);
+    if (hasMounted.current) {
+      setAllPage(1);
+      const status = selectedStatus === "all" ? null : selectedStatus;
+      getUsersAll(status, searchTermAll);
+    }
+  }, [selectedStatus, searchTermAll]);
+  
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status = selectedStatus === "all" ? null : selectedStatus;
+      getUsersAll(status, searchTermAll);
+    }
+  }, [allPage]);
 
   useEffect(() => {
     getUsersAll(null);
@@ -355,7 +362,7 @@ const Members = () => {
               }}
               value="all"
             >
-              All ({usersAll?.length})
+              All ({allCount})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -364,7 +371,7 @@ const Members = () => {
               }}
               value="investor"
             >
-              Investor ({usersInvestor?.length})
+              Investor ({investorCount})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -373,7 +380,7 @@ const Members = () => {
               }}
               value="creator"
             >
-              Creator ({usersCreator?.length})
+              Creator ({creatorCount})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -382,7 +389,7 @@ const Members = () => {
               }}
               value="fan"
             >
-              Fan ({usersFan?.length})
+              Fan ({fanCount})
             </TabsTrigger>
           </TabsList>
           <TabsContent value="all">
@@ -473,7 +480,52 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
+                 <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(page - 1) * limit + 1} -{" "}
+          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasPrevPage) {
+              setAllPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasNextPage) {
+              setAllPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={page * limit >=
+          totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
               
+
             
           </TabsContent>
           <TabsContent value="investor">
@@ -529,6 +581,50 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
+                  <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(page - 1) * limit + 1} -{" "}
+          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasPrevPage) {
+              setInvestorPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasNextPage) {
+              setInvestorPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={page * limit >=
+          totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
               
            
           </TabsContent>
@@ -585,7 +681,50 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
-            
+                 <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(page - 1) * limit + 1} -{" "}
+          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasPrevPage) {
+              setCreatorPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasNextPage) {
+              setCreatorPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={page * limit >=
+          totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
           </TabsContent>
           <TabsContent value="fan">
            
@@ -640,6 +779,50 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
+                  <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(page - 1) * limit + 1} -{" "}
+          {Math.min(page * limit, totalDocs)} of {totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasPrevPage) {
+              setFanPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (hasNextPage) {
+              setFanPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={page * limit >=
+          totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
              
           </TabsContent>
         </Tabs>

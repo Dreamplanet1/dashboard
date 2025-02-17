@@ -1,6 +1,7 @@
 import {
   updateBroadcastAll,
   updateBroadcastEdit,
+  updatePaginationBroadcast,
 } from "@/redux/slices/broadcastslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
@@ -15,7 +16,7 @@ const useBroadcast = () => {
   const broadcast = useSelector((state: RootState) => state.broadcast);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
+  const [broadcastPage, setBroadcastPage] = useState(1);
   const [allLoading, setAllLoading] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
@@ -26,8 +27,25 @@ const useBroadcast = () => {
     try {
       const response = await axios.post(`${base_url}/broadcast/get-all`, {
         searchString: searchTerm || "",
+        page: broadcastPage,
+        perPage: 20,
       });
+      
       dispatch(updateBroadcastAll(response?.data?.response?.docs));
+      dispatch(
+              updatePaginationBroadcast({
+                hasNextPage: response.data.response.hasNextPage,
+                hasPrevPage: response.data.response.hasPrevPage,
+                limit: response.data.response.limit,
+                nextPage: response.data.response.nextPage,
+                offset: response.data.response.offset,
+                page: response.data.response.page,
+                pagingCounter: response.data.response.pagingCounter,
+                prevPage: response.data.response.prevPage,
+                totalDocs: response.data.response.totalDocs,
+                totalPages: response.data.response.totalPages,
+              })
+            );
     } catch (error) {
       console.error(error);
     } finally {
@@ -139,6 +157,8 @@ const useBroadcast = () => {
     createLoading,
     updateLoading,
     deleteLoading,
+    broadcastPage,
+    setBroadcastPage
   };
 };
 

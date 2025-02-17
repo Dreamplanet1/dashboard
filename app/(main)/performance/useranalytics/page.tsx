@@ -6,19 +6,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import usePerformance from "@/hooks/usePerformance";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateActiveUser } from "@/redux/slices/performanceslice";
 import { useRouter } from "next/navigation";
 import FadeLoader from "react-spinners/FadeLoader";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const UserAnalytics = () => {
   
-  const { getAllPerformanceCreator, getAllPerformanceFan, getAllPerformanceInvestor, getCreatorPerformance, getFanInvestorPerformance, performanceLoading } = usePerformance();
+  const { getAllPerformanceCreator, getAllPerformanceFan, getAllPerformanceInvestor, getCreatorPerformance, getFanInvestorPerformance, performanceLoading, setCreatorPage, creatorPage, fanPage, investorPage, setFanPage, setInvestorPage } = usePerformance();
   const { allPerformanceCreator, allPerformanceFan, allPerformanceInvestor, stats } = useSelector((state: RootState) => state.performance);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const { hasNextPage, hasPrevPage, limit, page, totalDocs } = useSelector(
+    (state: RootState) => state.performance.pagination
+  );
+  const [searchCreator, setSearchCreator] = useState('')
    
   const columns: ColumnDef<any>[] = [
     {
@@ -187,7 +193,31 @@ const UserAnalytics = () => {
   
   useEffect(() => {
   getAllPerformanceCreator();
-  }, [])
+  }, []);
+
+  // useEffect(() => {
+     
+  //     getAllPerformanceCreator(searchCreator);
+
+  // }, [searchCreator]);
+
+  useEffect(() => {
+    
+    getAllPerformanceInvestor();
+  
+}, [investorPage]);
+useEffect(() => {
+    
+  getAllPerformanceFan();
+
+}, [fanPage]);
+
+useEffect(() => {
+    
+  getAllPerformanceCreator();
+
+}, [creatorPage]);
+
   return (
     <div className="flex flex-col space-y-7">
       {performanceLoading && (
@@ -264,11 +294,71 @@ const UserAnalytics = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="creators">
+          {/* <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md shadow-sm mt-[20px]">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Here"
+                      value={searchCreator}
+                      onChange={(e) => setSearchCreator(e.target.value)}
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div> */}
             <UserTable
              
               data={allPerformanceCreator}
               columns={columns}
             />
+            {totalDocs !== 0 && 
+                     <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                     <div>
+                     <p className="text-[14px]">
+                    {(page - 1) * limit + 1} -{" "}
+                    {Math.min(page * limit, totalDocs)} of {totalDocs}
+                    </p>
+                     </div>
+                     <Button
+                       className="p-0 bg-transparent hover:bg-transparent"
+                       size="sm"
+                       onClick={() => {
+                         if (hasPrevPage) {
+                           setCreatorPage((prevPage) => prevPage - 1); 
+                         }
+                       }}
+                       disabled={page <= 1}
+                     >
+                       <Image
+                         src={"/icons/backbutton.svg"}
+                         height={20}
+                         width={20}
+                         alt="backbutton"
+                       />
+                     </Button>
+                     <Button
+                       className="p-0 bg-transparent hover:bg-transparent"
+                       size="sm"
+                       onClick={() => {
+                         if (hasNextPage) {
+                           setCreatorPage((prevPage) => prevPage + 1); 
+                         }
+                       }}
+                       disabled={page * limit >=
+                       totalDocs
+                       }
+                     >
+                       <Image
+                         src={"/icons/forwardbutton.svg"}
+                         height={20}
+                         width={20}
+                         alt="forwardbutton"
+                       />
+                     </Button>
+                   </div>
+                  }
           </TabsContent>
           <TabsContent value="fans">
             <UserTable
@@ -276,6 +366,52 @@ const UserAnalytics = () => {
               data={allPerformanceFan}
               columns={columnsFan}
             />
+               {totalDocs !== 0 && 
+                        <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                        <div>
+                        <p className="text-[14px]">
+                       {(page - 1) * limit + 1} -{" "}
+                       {Math.min(page * limit, totalDocs)} of {totalDocs}
+                       </p>
+                        </div>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (hasPrevPage) {
+                              setFanPage((prevPage) => prevPage - 1); 
+                            }
+                          }}
+                          disabled={page <= 1}
+                        >
+                          <Image
+                            src={"/icons/backbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="backbutton"
+                          />
+                        </Button>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (hasNextPage) {
+                              setFanPage((prevPage) => prevPage + 1); 
+                            }
+                          }}
+                          disabled={page * limit >=
+                          totalDocs
+                          }
+                        >
+                          <Image
+                            src={"/icons/forwardbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="forwardbutton"
+                          />
+                        </Button>
+                      </div>
+                     }
           </TabsContent>
           <TabsContent value="investors">
             <UserTable
@@ -283,7 +419,52 @@ const UserAnalytics = () => {
               data={allPerformanceInvestor}
               columns={columnsFan}
             />
-            Investor
+               {totalDocs !== 0 && 
+                        <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                        <div>
+                        <p className="text-[14px]">
+                       {(page - 1) * limit + 1} -{" "}
+                       {Math.min(page * limit, totalDocs)} of {totalDocs}
+                       </p>
+                        </div>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (hasPrevPage) {
+                              setInvestorPage((prevPage) => prevPage - 1); 
+                            }
+                          }}
+                          disabled={page <= 1}
+                        >
+                          <Image
+                            src={"/icons/backbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="backbutton"
+                          />
+                        </Button>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (hasNextPage) {
+                              setInvestorPage((prevPage) => prevPage + 1); 
+                            }
+                          }}
+                          disabled={page * limit >=
+                          totalDocs
+                          }
+                        >
+                          <Image
+                            src={"/icons/forwardbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="forwardbutton"
+                          />
+                        </Button>
+                      </div>
+                     }
           </TabsContent>
         </Tabs>
       </div>

@@ -4,6 +4,7 @@ import {
   updateAllPerformanceInvestor,
   updateCreatorPerformance,
   updateFanInvestorPerformance,
+  updatePaginationPerformance,
   updateStats,
 } from "@/redux/slices/performanceslice";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -15,20 +16,39 @@ const usePerformance = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
   const users = useSelector((state: RootState) => state.usersOnboarded);
   const dispatch = useDispatch<AppDispatch>();
+  const [creatorPage, setCreatorPage] = useState(1);
+  const [fanPage, setFanPage] = useState(1);
+  const [investorPage, setInvestorPage] = useState(1);
 
   // Single loading state
   const [performanceLoading, setPerformanceLoading] = useState(false);
 
-  const getAllPerformanceCreator = async () => {
+  const getAllPerformanceCreator = async (searchString?: string) => {
     setPerformanceLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/get-all-user-performance`, {
         user_type: "creator",
-        page: 1,
+        page: creatorPage,
         perPage: 20,
       });
+      
       dispatch(updateAllPerformanceCreator(response?.data?.data?.users?.docs));
       dispatch(updateStats(response?.data?.data?.stats));
+
+       dispatch(
+              updatePaginationPerformance({
+                hasNextPage: response.data.data.users.hasNextPage,
+                hasPrevPage: response.data.data.users.hasPrevPage,
+                limit: response.data.data.users.limit,
+                nextPage: response.data.data.users.nextPage,
+                offset: response.data.data.users.offset,
+                page: response.data.data.users.page,
+                pagingCounter: response.data.data.users.pagingCounter,
+                prevPage: response.data.data.users.prevPage,
+                totalDocs: response.data.data.users.totalDocs,
+                totalPages: response.data.data.users.totalPages,
+              })
+            );
     } catch (error) {
       console.error(error);
     } finally {
@@ -41,11 +61,25 @@ const usePerformance = () => {
     try {
       const response = await axios.post(`${base_url}/user/get-all-user-performance`, {
         user_type: "fan",
-        page: 1,
+        page: fanPage,
         perPage: 20,
       });
       dispatch(updateAllPerformanceFan(response?.data?.data?.users?.docs));
       dispatch(updateStats(response?.data?.data?.stats));
+      dispatch(
+        updatePaginationPerformance({
+          hasNextPage: response.data.data.users.hasNextPage,
+          hasPrevPage: response.data.data.users.hasPrevPage,
+          limit: response.data.data.users.limit,
+          nextPage: response.data.data.users.nextPage,
+          offset: response.data.data.users.offset,
+          page: response.data.data.users.page,
+          pagingCounter: response.data.data.users.pagingCounter,
+          prevPage: response.data.data.users.prevPage,
+          totalDocs: response.data.data.users.totalDocs,
+          totalPages: response.data.data.users.totalPages,
+        })
+      );
     } catch (error) {
       console.error(error);
     } finally {
@@ -58,11 +92,25 @@ const usePerformance = () => {
     try {
       const response = await axios.post(`${base_url}/user/get-all-user-performance`, {
         user_type: "investor",
-        page: 1,
+        page: investorPage,
         perPage: 20,
       });
       dispatch(updateAllPerformanceInvestor(response?.data?.data?.users?.docs));
       dispatch(updateStats(response?.data?.data?.stats));
+      dispatch(
+        updatePaginationPerformance({
+          hasNextPage: response.data.data.users.hasNextPage,
+          hasPrevPage: response.data.data.users.hasPrevPage,
+          limit: response.data.data.users.limit,
+          nextPage: response.data.data.users.nextPage,
+          offset: response.data.data.users.offset,
+          page: response.data.data.users.page,
+          pagingCounter: response.data.data.users.pagingCounter,
+          prevPage: response.data.data.users.prevPage,
+          totalDocs: response.data.data.users.totalDocs,
+          totalPages: response.data.data.users.totalPages,
+        })
+      );
     } catch (error) {
       console.error(error);
     } finally {
@@ -104,7 +152,10 @@ const usePerformance = () => {
     getAllPerformanceInvestor,
     getCreatorPerformance,
     getFanInvestorPerformance,
-    performanceLoading, // Expose the loading state
+    performanceLoading, 
+    setCreatorPage,
+    setInvestorPage,
+    setFanPage, creatorPage, fanPage, investorPage
   };
 };
 

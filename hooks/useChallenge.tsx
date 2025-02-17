@@ -2,7 +2,7 @@ import {
   updateBroadcastAll,
   updateBroadcastEdit,
 } from "@/redux/slices/broadcastslice";
-import { updateChallengeAll } from "@/redux/slices/challengeslice";
+import { updateChallengeAll, updatePaginationChallenge } from "@/redux/slices/challengeslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +13,7 @@ const useChallenge = () => {
   const base_url = process.env.NEXT_PUBLIC_BASE_URL;
   const challenge = useSelector((state: RootState) => state.challenge);
   const dispatch = useDispatch<AppDispatch>();
+  const [challengePage, setChallengePage] = useState(1);
 
   // Single loading state
   const [challengeLoading, setChallengeLoading] = useState(false);
@@ -21,11 +22,26 @@ const useChallenge = () => {
     setChallengeLoading(true);
     try {
       const response = await axios.post(`${base_url}/challenge/get/all`, {
-        page: 1,
-        perPage: 5,
+        page: challengePage,
+        perPage: 20,
         searchString: searchTerm || "",
       });
+      
       dispatch(updateChallengeAll(response?.data?.data?.docs));
+      dispatch(
+                updatePaginationChallenge({
+                            hasNextPage: response.data.data.hasNextPage,
+                            hasPrevPage: response.data.data.hasPrevPage,
+                            limit: response.data.data.limit,
+                            nextPage: response.data.data.nextPage,
+                            offset: response.data.data.offset,
+                            page: response.data.data.page,
+                            pagingCounter: response.data.data.pagingCounter,
+                            prevPage: response.data.data.prevPage,
+                            totalDocs: response.data.data.totalDocs,
+                            totalPages: response.data.data.totalPages,
+                          })
+                        );
     } catch (error) {
       console.error(error);
     } finally {
@@ -129,7 +145,8 @@ const useChallenge = () => {
     createChallenge,
     updateChallenge,
     deleteChallenge,
-    challengeLoading, // Expose the loading state
+    challengeLoading, 
+    challengePage, setChallengePage
   };
 };
 

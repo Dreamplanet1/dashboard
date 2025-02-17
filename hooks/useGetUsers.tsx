@@ -1,4 +1,9 @@
 import {
+  updateAllCount,
+  updateCreatorCount,
+  updateFanCount,
+  updateInvestorCount,
+  updatePaginationUsers,
   updatePost,
   updateUserProfile,
   updateUsersAll,
@@ -17,8 +22,14 @@ const useGetUsers = () => {
   const users = useSelector((state: RootState) => state.usersOnboarded);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const [allPage, setAllPage] = useState(1);
+  const [creatorPage, setCreatorPage] = useState(1);
+  const [investorPage, setInvestorPage] = useState(1);
+  const [fanPage, setFanPage] = useState(1);
 
-  // Single loading state
+
+
+
   const [userLoading, setUserLoading] = useState(false);
   const [sheetLoading, setSheetLoading] = useState(false);
   const getUsersAll = async (status: string | null, searchString?: string) => {
@@ -26,13 +37,29 @@ const useGetUsers = () => {
     try {
       
       const response = await axios.post(`${base_url}/user/get-all`, {
-        page: 1,
+        page: allPage,
         perPage: 20,
         user_type: null,
         status,
         searchString
       });
+      
       dispatch(updateUsersAll(response.data.response.docs));
+      dispatch(
+        updatePaginationUsers({
+          hasNextPage: response.data.response.hasNextPage,
+          hasPrevPage: response.data.response.hasPrevPage,
+          limit: response.data.response.limit,
+          nextPage: response.data.response.nextPage,
+          offset: response.data.response.offset,
+          page: response.data.response.page,
+          pagingCounter: response.data.response.pagingCounter,
+          prevPage: response.data.response.prevPage,
+          totalDocs: response.data.response.totalDocs,
+          totalPages: response.data.response.totalPages,
+        })
+      );
+      dispatch(updateAllCount(response.data.response.totalDocs))
     } catch (error) {
       console.error(error);
     } finally {
@@ -45,7 +72,7 @@ const useGetUsers = () => {
     
     try {
       const response = await axios.post(`${base_url}/user/get-all`, {
-        page: 1,
+        page: creatorPage,
         perPage: 20,
         user_type: "creator",
         status,
@@ -53,6 +80,21 @@ const useGetUsers = () => {
       });
       
       dispatch(updateUsersCreator(response.data.response.docs));
+      dispatch(
+        updatePaginationUsers({
+          hasNextPage: response.data.response.hasNextPage,
+          hasPrevPage: response.data.response.hasPrevPage,
+          limit: response.data.response.limit,
+          nextPage: response.data.response.nextPage,
+          offset: response.data.response.offset,
+          page: response.data.response.page,
+          pagingCounter: response.data.response.pagingCounter,
+          prevPage: response.data.response.prevPage,
+          totalDocs: response.data.response.totalDocs,
+          totalPages: response.data.response.totalPages,
+        })
+      );
+      dispatch(updateCreatorCount(response.data.response.totalDocs))
     } catch (error) {
       console.error(error);
     } finally {
@@ -64,7 +106,7 @@ const useGetUsers = () => {
     setUserLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/get-all`, {
-        page: 1,
+        page: investorPage,
         perPage: 20,
         user_type: "investor",
         status,
@@ -72,6 +114,21 @@ const useGetUsers = () => {
       });
 
       dispatch(updateUsersInvestor(response.data.response.docs));
+      dispatch(
+        updatePaginationUsers({
+          hasNextPage: response.data.response.hasNextPage,
+          hasPrevPage: response.data.response.hasPrevPage,
+          limit: response.data.response.limit,
+          nextPage: response.data.response.nextPage,
+          offset: response.data.response.offset,
+          page: response.data.response.page,
+          pagingCounter: response.data.response.pagingCounter,
+          prevPage: response.data.response.prevPage,
+          totalDocs: response.data.response.totalDocs,
+          totalPages: response.data.response.totalPages,
+        })
+      );
+      dispatch(updateInvestorCount(response.data.response.totalDocs))
     } catch (error) {
       console.error(error);
     } finally {
@@ -83,7 +140,7 @@ const useGetUsers = () => {
     setUserLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/get-all`, {
-        page: 1,
+        page: fanPage,
         perPage: 20,
         user_type: "fan",
         status,
@@ -91,6 +148,21 @@ const useGetUsers = () => {
 
       });
       dispatch(updateUsersFan(response.data.response.docs));
+      dispatch(
+        updatePaginationUsers({
+          hasNextPage: response.data.response.hasNextPage,
+          hasPrevPage: response.data.response.hasPrevPage,
+          limit: response.data.response.limit,
+          nextPage: response.data.response.nextPage,
+          offset: response.data.response.offset,
+          page: response.data.response.page,
+          pagingCounter: response.data.response.pagingCounter,
+          prevPage: response.data.response.prevPage,
+          totalDocs: response.data.response.totalDocs,
+          totalPages: response.data.response.totalPages,
+        })
+      );
+      dispatch(updateFanCount(response.data.response.totalDocs))
     } catch (error) {
       console.error(error);
     } finally {
@@ -166,7 +238,7 @@ const useGetUsers = () => {
     getUserPosts,
     updateUserPosts,
     userLoading, 
-    sheetLoading
+    sheetLoading, allPage, setAllPage, creatorPage, setCreatorPage, fanPage, setFanPage, investorPage, setInvestorPage
   };
 };
 

@@ -1,3 +1,4 @@
+import { PaginationProps } from "@/utils/interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the interface for a single user object
@@ -52,6 +53,30 @@ const initialState = {
   campaignMostPerformed: [] as campaignProps[],
   groupedCampaigns: [] as groupProps[],
   donations: [] as donationProps[],
+  paginationActive: {
+    hasNextPage: false as boolean,
+    hasPrevPage: false as boolean,
+    limit: 0 as number,
+    nextPage: null as number | null,
+    offset: 0 as number,
+    page: 1 as number,
+    pagingCounter: 0 as number,
+    prevPage: null as number | null,
+    totalDocs: 0 as number,
+    totalPages: 0 as number,
+  },
+  paginationOther: {
+    hasNextPage: false as boolean,
+    hasPrevPage: false as boolean,
+    limit: 0 as number,
+    nextPage: null as number | null,
+    offset: 0 as number,
+    page: 1 as number,
+    pagingCounter: 0 as number,
+    prevPage: null as number | null,
+    totalDocs: 0 as number,
+    totalPages: 0 as number,
+  },
 };
 
 // Redux slice
@@ -101,6 +126,13 @@ export const campaignslice = createSlice({
     ) => {
       state.groupedCampaigns = action.payload;
     },
+     updatePaginationActive: (state, action: PayloadAction<PaginationProps>) => {
+        state.paginationActive = { ...state.paginationActive, ...action.payload };
+        },
+        updatePaginationOther: (state, action: PayloadAction<PaginationProps>) => {
+          state.paginationOther = { ...state.paginationOther, ...action.payload };
+          },
+    
   },
 });
 
@@ -112,7 +144,8 @@ export const {
   updateCampaignStopped,
   updategroupCampaigns,
   updateDonations,
-  updateCampaignProcessing
+  updateCampaignProcessing,
+  updatePaginationActive, updatePaginationOther
 } = campaignslice.actions;
 
 // Export the reducer

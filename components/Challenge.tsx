@@ -41,6 +41,9 @@ const Challenge = () => {
   const { challengeAll, challengeEdit } = useSelector(
     (state: RootState) => state.challenge
   );
+  const { hasNextPage, hasPrevPage, limit, page, totalDocs } = useSelector(
+    (state: RootState) => state.challenge.pagination
+  );
   const [date, setDate] = useState<Date>();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -57,12 +60,17 @@ const Challenge = () => {
 
     return () => clearTimeout(timer);
   }, [isDeleteOpen, setisDeleteOpen]);
-  const { getAllChallenges, deleteChallenge, challengeLoading } = useChallenge();
+  const { getAllChallenges, deleteChallenge, challengeLoading, challengePage, setChallengePage } = useChallenge();
   const [searchString, setSearchString] = useState<string>("");
 
   useEffect(() => {
+    setChallengePage(1);
     getAllChallenges(searchString);
   }, [searchString]);
+
+  useEffect(() => {
+    getAllChallenges(searchString);
+  }, [challengePage]);
   const [challengeId, setChallengeId] = useState<number>(1);
 
   const columns: ColumnDef<any>[] = [
@@ -259,6 +267,52 @@ const Challenge = () => {
           </div>
         </div>
         <UserTable columns={columns} data={challengeAll} />
+         {totalDocs !== 0 && 
+                   <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                   <div>
+                   <p className="text-[14px]">
+                  {(page - 1) * limit + 1} -{" "}
+                  {Math.min(page * limit, totalDocs)} of {totalDocs}
+                  </p>
+                   </div>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasPrevPage) {
+                         setChallengePage((prevPage) => prevPage - 1); 
+                       }
+                     }}
+                     disabled={page <= 1}
+                   >
+                     <Image
+                       src={"/icons/backbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="backbutton"
+                     />
+                   </Button>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasNextPage) {
+                         setChallengePage((prevPage) => prevPage + 1); 
+                       }
+                     }}
+                     disabled={page * limit >=
+                     totalDocs
+                     }
+                   >
+                     <Image
+                       src={"/icons/forwardbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="forwardbutton"
+                     />
+                   </Button>
+                 </div>
+                }
       </div>
 
       <Dialog open={isDeleteOpen} onOpenChange={closeDeleteDialog}>

@@ -1,4 +1,4 @@
-import { updateacceptedAdmin, updatependingAdmin, updateRoles } from "@/redux/slices/adminsettingslice";
+import { updateacceptedAdmin, updatePaginationAdminSetting, updatePaginationPendingAdminSetting, updatependingAdmin, updateRoles } from "@/redux/slices/adminsettingslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,8 @@ const useAdminsetting = () => {
   const challenge = useSelector((state: RootState) => state.challenge);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const [acceptedPage, setAcceptedPage] = useState(1);
+  const [pendingPage, setPendingPage] = useState(1);
   const [adminLoading, setadminLoading] = useState(false);
 
   const getAdminAccepted = async () => {
@@ -19,12 +21,27 @@ const useAdminsetting = () => {
       const response = await axios.post(
         `${base_url}/admin-settings/get-all-admins`,
         {
-          page: 1,
+          page: acceptedPage,
           perPage: 20,
-          status: "accepted", // Can be "pending" or "active"
+          status: "accepted", 
         }
       );
+      
       dispatch(updateacceptedAdmin(response?.data?.response?.admin?.docs));
+      dispatch(
+                updatePaginationAdminSetting({
+                            hasNextPage: response.data.response.admin.hasNextPage,
+                            hasPrevPage: response.data.response.admin.hasPrevPage,
+                            limit: response.data.response.admin.limit,
+                            nextPage: response.data.response.admin.nextPage,
+                            offset: response.data.response.admin.offset,
+                            page: response.data.response.admin.page,
+                            pagingCounter: response.data.response.admin.pagingCounter,
+                            prevPage: response.data.response.admin.prevPage,
+                            totalDocs: response.data.response.admin.totalDocs,
+                            totalPages: response.data.response.admin.totalPages,
+                          })
+                        );
       dispatch(updateRoles(response?.data?.response?.roles));
     } catch (error: any) {
       alert(error?.message);
@@ -39,12 +56,27 @@ const useAdminsetting = () => {
       const response = await axios.post(
         `${base_url}/admin-settings/get-all-admins`,
         {
-          page: 1,
+          page: pendingPage,
           perPage: 20,
-          status: "pending", // Can be "pending" or "active"
+          status: "pending", 
         }
       );
+      
       dispatch(updatependingAdmin(response?.data?.response?.admin?.docs));
+      dispatch(
+        updatePaginationPendingAdminSetting({
+                    hasNextPage: response.data.response.admin.hasNextPage,
+                    hasPrevPage: response.data.response.admin.hasPrevPage,
+                    limit: response.data.response.admin.limit,
+                    nextPage: response.data.response.admin.nextPage,
+                    offset: response.data.response.admin.offset,
+                    page: response.data.response.admin.page,
+                    pagingCounter: response.data.response.admin.pagingCounter,
+                    prevPage: response.data.response.admin.prevPage,
+                    totalDocs: response.data.response.admin.totalDocs,
+                    totalPages: response.data.response.admin.totalPages,
+                  })
+                );
       dispatch(updateRoles(response?.data?.response?.roles));
     } catch (error: any) {
       alert(error?.message);
@@ -189,7 +221,8 @@ const useAdminsetting = () => {
     deleteAdmin,
     updateAdminRole,
     sendLink,
-    adminLoading, // Expose adminLoading state
+    adminLoading, 
+    pendingPage, setPendingPage, acceptedPage, setAcceptedPage
   };
 };
 
