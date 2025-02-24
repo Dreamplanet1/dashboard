@@ -1003,7 +1003,7 @@ const handleInvestorCountryChange = (value: string) => {
                 alt="cancelIcon"
                 className="cursor-pointer transition-all active:scale-95 "
                 onClick={() => {
-                  setIsSheetOpen(false);
+                  closeSheet()
                 }}
                 width={26}
                 height={26}
