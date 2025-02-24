@@ -123,7 +123,7 @@ const usePerformance = () => {
     try {
       const response = await axios.post(`${base_url}/user/get-creator-performance`, {
         creatorId: id,
-      });
+      });      
       dispatch(updateCreatorPerformance(response?.data?.data));
     } catch (error) {
       console.error(error);

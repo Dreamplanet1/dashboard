@@ -18,13 +18,16 @@ const useChallenge = () => {
   // Single loading state
   const [challengeLoading, setChallengeLoading] = useState(false);
 
-  const fetchChallenges = async (searchTerm?: string) => {
+  
+
+  const getAllChallenges = async(searchTerm?: string, date?:string | null) => {
     setChallengeLoading(true);
     try {
       const response = await axios.post(`${base_url}/challenge/get/all`, {
         page: challengePage,
         perPage: 20,
         searchString: searchTerm || "",
+        date_filter: date,
       });
       
       dispatch(updateChallengeAll(response?.data?.data?.docs));
@@ -47,19 +50,6 @@ const useChallenge = () => {
     } finally {
       setChallengeLoading(false);
     }
-  };
-
-  // Debounced search function
-  const debouncedFetchChallenges = useCallback(
-    debounce((searchTerm?: string) => {
-      fetchChallenges(searchTerm);
-    }, 500), // 500ms debounce delay
-    []
-  );
-
-  const getAllChallenges = (searchTerm?: string) => {
-    // Trigger the debounced function instead of fetching directly
-    debouncedFetchChallenges(searchTerm);
   };
 
   const createChallenge = async (

@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import FadeLoader from "react-spinners/FadeLoader";
+import { dateOptions } from "@/utils/interface";
 
 const PaymentHistory = () => {
   const { history, stats } = useSelector((state: RootState) => state.payment);
@@ -112,7 +113,10 @@ const PaymentHistory = () => {
     "subscription plan update",
   ];
   const userOptions = ["creator", "fan", "investor"];
-
+  const [selectedDate, setSelectedDate] = useState<any>("All Date");
+  const handleDateChange = (value: any) => {
+    setSelectedDate(value);
+  };
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
   const [selectedPaymentTypes, setSelectedPaymentTypes] = useState<string[]>(
@@ -146,18 +150,22 @@ const PaymentHistory = () => {
   };
   useEffect(() => {
     setPaymentPage(1);
+    const date = selectedDate === 'All Date' ? null : selectedDate;
     getPaymentHistory(
       selectedUserTypes.length ? selectedUserTypes : null,
       selectedPaymentTypes.length ? selectedPaymentTypes : null,
-      searchString
+      searchString,
+      date
     );
-  }, [selectedPaymentTypes, selectedUserTypes, searchString]);
+  }, [selectedPaymentTypes, selectedUserTypes, searchString, selectedDate]);
 
   useEffect(() => {
+    const date = selectedDate === 'All Date' ? null : selectedDate;
     getPaymentHistory(
       selectedUserTypes.length ? selectedUserTypes : null,
       selectedPaymentTypes.length ? selectedPaymentTypes : null,
-      searchString
+      searchString,
+      date
     );
   }, [paymentPage]);
 
@@ -358,39 +366,20 @@ const PaymentHistory = () => {
                 )}
               </div>
             </div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <div className="flex justify-center space-x-[12px] items-center min-w-[96px] w-max border border-[#E4E4E4] rounded-md shadow-sm">
-                  <Button
-                    variant="ghost"
-                    className={cn(
-                      "w-max text-black justify-end hover:bg-transparent space-x-2 text-left px-2 font-normal border-transparent",
-                      !date && "text-muted-foreground text-black "
-                    )}
-                  >
-                    {date ? (
-                      format(date, "PPP")
-                    ) : (
-                      <span className="text-black text-[14px]">Date</span>
-                    )}
-                    <Image
-                      src="/icons/calendarIcon.svg"
-                      height={15}
-                      width={16.25}
-                      alt="calendarIcon"
-                    />
-                  </Button>
-                </div>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <Select onValueChange={handleDateChange} value={selectedDate}>
+                 <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+                   <SelectValue placeholder="Select Date" />
+                 </SelectTrigger>
+                 <SelectContent>
+                   <SelectGroup>
+                     {dateOptions.map((option) => (
+                       <SelectItem key={option.name} value={option.value ?? 'null'}>
+                         {option.name}
+                       </SelectItem>
+                     ))}
+                   </SelectGroup>
+                 </SelectContent>
+               </Select>
           </div>
           <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md shadow-sm">
             <Image

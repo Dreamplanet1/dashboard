@@ -394,8 +394,10 @@ const ForumAnalytics = () => {
                       <p className="text-[#A4A4A4]">@{member.username}</p>
                     </div>
                   </div>
-                  <button onClick={() => {
-                    deleteForumMember(forumId, member?.id)
+                  <button onClick={async() => {
+                    await deleteForumMember(forumId, member?.id);
+                    setSearchTerm('');
+                    await getForumMembers(forumId);
                   }} className="text-[#C83532]">Delete</button>
                 </div>
               ))}

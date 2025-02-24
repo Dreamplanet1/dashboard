@@ -20,7 +20,7 @@ const CreatorDetails = () => {
   const [date, setDate] = useState<Date>();
   const { activeUser, creatorPerformance } = useSelector((state: RootState) => state.performance);
   const mediaUrl = creatorPerformance?.result?.feed?.media_url[0];
-  const isVideo = mediaUrl && mediaUrl.endsWith('.mp4');
+  const isVideo = mediaUrl && mediaUrl.endsWith('.mp4') || mediaUrl && mediaUrl.endsWith('.mov');
   const router = useRouter();
 
   return (

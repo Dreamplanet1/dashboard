@@ -93,7 +93,8 @@ const usePayment = () => {
   const getPaymentHistory = async (
     user_type: string[] | null = null,
     payment_type: string[] | null = null,
-    searchString: string = ""
+    searchString: string = "",
+    date?: string | null,
   ) => {
     setPaymentLoading(true);
     try {
@@ -104,6 +105,7 @@ const usePayment = () => {
           perPage: 20,
           searchString,
           user_type: user_type && user_type.length > 0 ? user_type : null,
+          date_filter: date,
           payment_type:
             payment_type && payment_type.length > 0 ? payment_type : null,
         }

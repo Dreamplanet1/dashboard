@@ -76,13 +76,13 @@ const useForum = () => {
     }
   };
 
-  const getForumMembers = async (forumId: number, searchString: string) => {
+  const getForumMembers = async (forumId: number, searchString?: string) => {
     setForumSheetLoading(true);
     try {
       const response = await axios.post(`${base_url}/forum/get/members`, {
         forumId,
         page: 1,
-        perPage: 30,
+        perPage: 500,
         searchString,
       });
       dispatch(updateForumMembers(response?.data?.response?.docs[0]?.users));
