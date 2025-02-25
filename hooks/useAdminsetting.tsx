@@ -44,7 +44,7 @@ const useAdminsetting = () => {
                         );
       dispatch(updateRoles(response?.data?.response?.roles));
     } catch (error: any) {
-      alert(error?.message);
+      // alert(error?.message);
     } finally {
       setadminLoading(false);
     }
@@ -79,7 +79,7 @@ const useAdminsetting = () => {
                 );
       dispatch(updateRoles(response?.data?.response?.roles));
     } catch (error: any) {
-      alert(error?.message);
+      // alert(error?.message);
     } finally {
       setadminLoading(false);
     }
@@ -161,7 +161,7 @@ const useAdminsetting = () => {
         admin_id: id,
       });
     } catch (error: any) {
-      alert(error?.message);
+      // alert(error?.message);
     } finally {
       setadminLoading(false);
     }

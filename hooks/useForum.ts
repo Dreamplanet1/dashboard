@@ -26,7 +26,7 @@ const useForum = () => {
       
       dispatch(updateAllForums(response?.data?.response?.docs));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setForumLoading(false);
     }
@@ -70,7 +70,7 @@ const useForum = () => {
                           })
                         );
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setForumLoading(false);
     }
@@ -87,7 +87,7 @@ const useForum = () => {
       });
       dispatch(updateForumMembers(response?.data?.response?.docs[0]?.users));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setForumSheetLoading(false);
     }

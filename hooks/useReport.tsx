@@ -49,7 +49,7 @@ const useReport = () => {
                     })
                   );
     } catch (error: any) {
-      alert(error.message);
+      // (error.message);
     } finally {
       setReportLoading(false);
     }
@@ -75,7 +75,7 @@ const useReport = () => {
       );
       dispatch(updateAdmin(response?.data?.response));
     } catch (error: any) {
-      alert(error.message);
+      // (error.message);
     } finally {
       setReportLoading(false);
     }
@@ -101,7 +101,7 @@ const useReport = () => {
       });
       dispatch(updateCreator(response?.data?.response));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
@@ -128,7 +128,7 @@ const useReport = () => {
       });
       dispatch(updateReports(response?.data?.response?.docs));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
@@ -148,7 +148,7 @@ const useReport = () => {
       });
       fetchCreatorReport("");
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
@@ -168,7 +168,7 @@ const useReport = () => {
         creator_id: creatorData?.creator_id,
       });
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
