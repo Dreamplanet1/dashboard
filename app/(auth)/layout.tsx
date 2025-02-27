@@ -19,11 +19,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     }, [user, router]);
 
   return (
-    <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
+    <div className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
       
           {children}
           <Toaster />
-    </body>
+    </div>
   );
 };
 

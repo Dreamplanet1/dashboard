@@ -76,15 +76,19 @@ const useForum = () => {
     }
   };
 
-  const getForumMembers = async (forumId: number, searchString?: string) => {
+  const getForumMembers = async (forumId: number, searchTerm?: string) => {
     setForumSheetLoading(true);
+    // console.log(forumId);
+    
     try {
       const response = await axios.post(`${base_url}/forum/get/members`, {
         forumId,
         page: 1,
         perPage: 500,
-        searchString,
+        searchString: searchTerm,
       });
+      // console.log(response.data);
+      
       dispatch(updateForumMembers(response?.data?.response?.docs[0]?.users));
     } catch (error: any) {
       // alert(error.message);

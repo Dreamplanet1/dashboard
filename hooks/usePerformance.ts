@@ -4,6 +4,7 @@ import {
   updateAllPerformanceInvestor,
   updateCreatorPerformance,
   updateFanInvestorPerformance,
+  updatePaginationCreator,
   updatePaginationPerformance,
   updateStats,
 } from "@/redux/slices/performanceslice";
@@ -30,13 +31,14 @@ const usePerformance = () => {
         user_type: "creator",
         page: creatorPage,
         perPage: 20,
+        searchString: searchString,
       });
       
       dispatch(updateAllPerformanceCreator(response?.data?.data?.users?.docs));
       dispatch(updateStats(response?.data?.data?.stats));
 
        dispatch(
-              updatePaginationPerformance({
+              updatePaginationCreator({
                 hasNextPage: response.data.data.users.hasNextPage,
                 hasPrevPage: response.data.data.users.hasPrevPage,
                 limit: response.data.data.users.limit,
@@ -56,12 +58,13 @@ const usePerformance = () => {
     }
   };
 
-  const getAllPerformanceFan = async () => {
+  const getAllPerformanceFan = async (searchString?: string) => {
     setPerformanceLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/get-all-user-performance`, {
         user_type: "fan",
         page: fanPage,
+        searchString: searchString,
         perPage: 20,
       });
       dispatch(updateAllPerformanceFan(response?.data?.data?.users?.docs));
@@ -87,12 +90,13 @@ const usePerformance = () => {
     }
   };
 
-  const getAllPerformanceInvestor = async () => {
+  const getAllPerformanceInvestor = async (searchString?: string) => {
     setPerformanceLoading(true);
     try {
       const response = await axios.post(`${base_url}/user/get-all-user-performance`, {
         user_type: "investor",
         page: investorPage,
+        searchString: searchString,
         perPage: 20,
       });
       dispatch(updateAllPerformanceInvestor(response?.data?.data?.users?.docs));

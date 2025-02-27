@@ -81,7 +81,7 @@ const ForumAnalytics = () => {
 
   useEffect(() => {
     getForumMembers(forumId, searchTerm);
-  },[searchTerm, setSearchTerm])
+  },[searchTerm])
 
   const columns: ColumnDef<any>[] = [
     {
