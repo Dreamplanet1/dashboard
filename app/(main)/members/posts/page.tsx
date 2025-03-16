@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import useGetUsers from "@/hooks/useGetUsers";
 import FadeLoader from "react-spinners/FadeLoader";
+import MediaCarousel from "@/components/MediaCarousel";
 const Posts = () => {
   const { updateUserPosts, userLoading, deletePost } = useGetUsers();
   const [isOpen, setisOpen] = useState(false);
@@ -226,38 +227,7 @@ const Posts = () => {
                 >
                   <div className="relative w-full h-[201px]">
   {post?.feed?.media_url?.length > 0 ? (
-    (() => {
-      const mediaUrl = post?.feed?.media_url[0];
-      const isVideo = mediaUrl?.endsWith(".mp4") || mediaUrl.endsWith(".mov");
-      const isAudio = mediaUrl?.endsWith(".mp3");
-
-      if (isVideo) {
-        return (
-          <video className="w-full h-full object-contain" controls>
-            <source src={mediaUrl} />
-            Your browser does not support the video tag.
-          </video>
-        );
-      }
-
-      if (isAudio) {
-        return (
-          <audio className="w-full h-full bg-black" controls>
-            <source src={mediaUrl} />
-            Your browser does not support the audio tag.
-          </audio>
-        );
-      }
-
-      return (
-        <Image
-          src={mediaUrl}
-          layout="fill"
-          objectFit="contain"
-          alt="userpost"
-        />
-      );
-    })()
+    <MediaCarousel mediaUrls={post.feed.media_url} />
   ) : (
     <div className="w-full bg-black flex items-center justify-center h-full">
       <Avatar className="w-[72px] h-[72px]">
@@ -385,38 +355,7 @@ const Posts = () => {
           <div className=" rounded-md transition-all ">
           <div className="relative w-full h-[170px]">
   {postdetail?.feed?.media_url?.length > 0 ? (
-    (() => {
-      const mediaUrl = postdetail?.feed?.media_url[0];
-      const isVideo = mediaUrl?.endsWith(".mp4") || mediaUrl?.endsWith(".mov");
-      const isAudio = mediaUrl?.endsWith(".mp3");
-
-      if (isVideo) {
-        return (
-          <video className="w-full h-full object-contain" controls>
-            <source src={mediaUrl} />
-            Your browser does not support the video tag.
-          </video>
-        );
-      }
-
-      if (isAudio) {
-        return (
-          <audio className="w-full h-full bg-black" controls>
-            <source src={mediaUrl} />
-            Your browser does not support the audio tag.
-          </audio>
-        );
-      }
-
-      return (
-        <Image
-          src={mediaUrl}
-          layout="fill"
-          objectFit="contain"
-          alt="userpost"
-        />
-      );
-    })()
+   <MediaCarousel mediaUrls={postdetail?.feed?.media_url} />
   ) : (
     <div className="w-full bg-black flex items-center justify-center h-full">
       <Avatar className="w-[72px] h-[72px] bg-white z-20">

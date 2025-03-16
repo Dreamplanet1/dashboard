@@ -15,13 +15,15 @@ import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
+import MediaCarousel from "@/components/MediaCarousel";
 
 const CreatorDetails = () => {
   const [date, setDate] = useState<Date>();
   const { activeUser, creatorPerformance } = useSelector((state: RootState) => state.performance);
-  const mediaUrl = creatorPerformance?.result?.feed?.media_url[0];
-  const isVideo = mediaUrl && mediaUrl.endsWith('.mp4') || mediaUrl && mediaUrl.endsWith('.mov');
+  
   const router = useRouter();
+  console.log(creatorPerformance?.result?.feed?.media_url);
+  
 
   return (
     <div className="space-y-10">
@@ -89,21 +91,11 @@ const CreatorDetails = () => {
 
           <div className="space-y-3">
              <>
-    {isVideo ? (
-     <video 
-     src={mediaUrl} 
-     className="w-[592px] h-[331px] object-contain" 
-     controls 
-   />
-    ) : (
-      <Image
-        src={mediaUrl}
-        height={331}
-        width={592}
-        className="object-contain"
-        alt="creatorImage"
-      />
-    )}
+             <div className="relative w-full h-[259px]">
+             <MediaCarousel mediaUrls={creatorPerformance?.result?.feed?.media_url} />
+             </div>
+             
+
   </>
          
             <p className="text-[#5B5B5B] w-[592px]">
