@@ -46,7 +46,7 @@ const useChallenge = () => {
                           })
                         );
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setChallengeLoading(false);
     }
@@ -76,9 +76,8 @@ const useChallenge = () => {
         delete_after_duration,
         hashtag,
       });
-      console.log(response);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setChallengeLoading(false);
     }
@@ -111,7 +110,7 @@ const useChallenge = () => {
         hashtag,
       });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setChallengeLoading(false);
     }
@@ -124,7 +123,7 @@ const useChallenge = () => {
         challengeId: id,
       });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setChallengeLoading(false);
     }

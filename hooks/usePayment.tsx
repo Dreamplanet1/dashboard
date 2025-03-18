@@ -33,7 +33,7 @@ const usePayment = () => {
       );
       dispatch(updateSubscriptioncreator(response.data.result));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPaymentLoading(false);
     }
@@ -50,7 +50,7 @@ const usePayment = () => {
       );
       dispatch(updateSubscriptionfan(response.data.result));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPaymentLoading(false);
     }
@@ -67,7 +67,7 @@ const usePayment = () => {
       );
       dispatch(updateSubscriptioninvestor(response.data.result));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPaymentLoading(false);
     }
@@ -84,7 +84,7 @@ const usePayment = () => {
       );
       dispatch(updateSubscriptioninvestor(response.data.result));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPaymentLoading(false);
     }
@@ -110,7 +110,6 @@ const usePayment = () => {
             payment_type && payment_type.length > 0 ? payment_type : null,
         }
       );
-      console.log(response);
       
 
       dispatch(updateStats(response?.data?.result?.stats));
@@ -130,7 +129,7 @@ const usePayment = () => {
                         );
       dispatch(updateHistory(response?.data?.result?.history?.docs));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPaymentLoading(false);
     }

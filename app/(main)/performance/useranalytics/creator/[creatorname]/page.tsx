@@ -22,7 +22,6 @@ const CreatorDetails = () => {
   const { activeUser, creatorPerformance } = useSelector((state: RootState) => state.performance);
   
   const router = useRouter();
-  console.log(creatorPerformance?.result?.feed?.media_url);
   
 
   return (

@@ -63,7 +63,6 @@ export default function Dropzone({
           variant: "destructive",
           description: error?.message || "Something went wrong",
         });
-        console.error("Upload failed:", error);
       } finally {
         setLoading(false);
       }

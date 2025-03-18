@@ -61,7 +61,7 @@ const useGetUsers = () => {
       );
       dispatch(updateAllCount(response.data.response.totalDocs))
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUserLoading(false);
     }
@@ -98,7 +98,7 @@ const useGetUsers = () => {
       );
       dispatch(updateCreatorCount(response.data.response.totalDocs))
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUserLoading(false);
     }
@@ -134,7 +134,7 @@ const useGetUsers = () => {
       );
       dispatch(updateInvestorCount(response.data.response.totalDocs))
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUserLoading(false);
     }
@@ -170,7 +170,7 @@ const useGetUsers = () => {
       );
       dispatch(updateFanCount(response.data.response.totalDocs))
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUserLoading(false);
     }
@@ -185,7 +185,7 @@ const useGetUsers = () => {
       });
       return response.data.response;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setSheetLoading(false);
     }
@@ -208,7 +208,7 @@ const useGetUsers = () => {
         dispatch(updatePost(posts));
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUserLoading(false);
     }
@@ -222,7 +222,7 @@ const useGetUsers = () => {
       });
       await getUserPosts(userProfile?.id, selected);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUserLoading(false);
     }
@@ -243,7 +243,7 @@ const useGetUsers = () => {
         dispatch(updatePost(posts));
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setUserLoading(false);
     }

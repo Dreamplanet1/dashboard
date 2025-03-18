@@ -28,7 +28,6 @@ import { updateUser } from "@/redux/slices/adminslice";
           "email": email,
           "password": password
       });
-      console.log(response);
       
       dispatch(updateUser(response?.data?.response?.admin));
       router.push('/broadcast')      
@@ -38,7 +37,6 @@ import { updateUser } from "@/redux/slices/adminslice";
           title: "Uh oh! Something went wrong.",
           description: error.response?.data?.message || 'An unexpected error occurred.', 
         })
-        console.error(error);
        
       } finally {
         setLoading(false);

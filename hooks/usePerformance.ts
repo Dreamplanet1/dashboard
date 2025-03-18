@@ -52,7 +52,7 @@ const usePerformance = () => {
               })
             );
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPerformanceLoading(false);
     }
@@ -84,7 +84,7 @@ const usePerformance = () => {
         })
       );
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPerformanceLoading(false);
     }
@@ -116,7 +116,7 @@ const usePerformance = () => {
         })
       );
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPerformanceLoading(false);
     }
@@ -130,7 +130,7 @@ const usePerformance = () => {
       });      
       dispatch(updateCreatorPerformance(response?.data?.data));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPerformanceLoading(false);
     }
@@ -144,7 +144,7 @@ const usePerformance = () => {
       });
       dispatch(updateFanInvestorPerformance(response?.data?.data));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setPerformanceLoading(false);
     }

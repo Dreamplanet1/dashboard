@@ -1123,7 +1123,6 @@ const handleInvestorCountryChange = (value: string) => {
 
                     setprofileData(data);
                   } catch (error) {
-                    console.error("Error updating status:", error);
                   }
                 }}
                 className="w-full bg-[#C83532] text-white hover:bg-[#C83532] transition-all active:scale-95"
@@ -1137,7 +1136,6 @@ const handleInvestorCountryChange = (value: string) => {
                     const data = await updateStatus(profileData?.id, "active");
                     setprofileData(data);
                   } catch (error) {
-                    console.error("Error updating status:", error);
                   }
                 }}
                 className="w-full bg-[#2BAC47] text-white hover:bg-[#2BAC47] transition-all active:scale-95"

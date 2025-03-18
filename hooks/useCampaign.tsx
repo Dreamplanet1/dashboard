@@ -57,7 +57,6 @@ const useCampaign = () => {
 
       dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.error(error);
     } finally {
       setCampaignLoading(false);
     }
@@ -74,7 +73,7 @@ const useCampaign = () => {
 
       dispatch(updateDonations(response?.data?.data?.docs));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setCampaignLoadingSheet(false);
     }
@@ -92,7 +91,7 @@ const useCampaign = () => {
       
       // Add any additional logic if needed
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setCampaignLoadingSheet(false);
     }
@@ -110,7 +109,7 @@ const useCampaign = () => {
       
       // Add any additional logic if needed
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setCampaignLoadingSheet(false);
     }
@@ -143,7 +142,7 @@ const useCampaign = () => {
       );
       dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setCampaignLoading(false);
     }
@@ -175,7 +174,7 @@ const useCampaign = () => {
       );
       dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setCampaignLoading(false);
     }
@@ -207,7 +206,7 @@ const useCampaign = () => {
       );
       dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setCampaignLoading(false);
     }
@@ -239,7 +238,7 @@ const useCampaign = () => {
       );
       dispatch(updategroupCampaigns(response?.data?.response?.groupedCampaigns));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       setCampaignLoading(false);
     }

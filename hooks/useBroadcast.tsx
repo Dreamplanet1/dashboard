@@ -47,7 +47,7 @@ const useBroadcast = () => {
               })
             );
     } catch (error) {
-      console.error(error);
+      (error);
     } finally {
       setAllLoading(false);
     }
@@ -85,7 +85,6 @@ const useBroadcast = () => {
         title: "Broadcast Created Successfully",
       })
     } catch (error) {
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Something went wrong",
@@ -116,7 +115,6 @@ const useBroadcast = () => {
         title: "Broadcast Updated Successfully",
       })
     } catch (error) {
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Something went wrong",
@@ -129,7 +127,6 @@ const useBroadcast = () => {
   const deleteBroadcast = async (id: number) => {
     setDeleteLoading(true);
     try {
-      console.log('working');
       
      const response = await axios.post(`${base_url}/feeds/delete`, { feedId: id });
      toast({
@@ -138,7 +135,6 @@ const useBroadcast = () => {
     })      
      await fetchBroadcasts(); // Refresh the list after deletion
     } catch (error) {
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Something went wrong",

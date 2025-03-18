@@ -122,7 +122,6 @@ const useAdminsetting = () => {
         description: "Admin Created successfully",
       })
     } catch (error: any) {
-      console.log(error);
       
       toast({
         variant: "destructive",

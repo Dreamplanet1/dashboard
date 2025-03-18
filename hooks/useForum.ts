@@ -41,10 +41,7 @@ const useForum = () => {
   );
 
   const getAllForums = async(searchTerm?: string) => {
-    // Trigger the debounced functions
-    // console.log(searchTerm);
     
-    // debouncedFetchAllForums(searchTerm);
     setForumLoading(true);
     
     try {
@@ -70,7 +67,6 @@ const useForum = () => {
                           })
                         );
     } catch (error: any) {
-      // alert(error.message);
     } finally {
       setForumLoading(false);
     }
@@ -78,7 +74,6 @@ const useForum = () => {
 
   const getForumMembers = async (forumId: number, searchTerm?: string) => {
     setForumSheetLoading(true);
-    // console.log(forumId);
     
     try {
       const response = await axios.post(`${base_url}/forum/get/members`, {
@@ -87,7 +82,6 @@ const useForum = () => {
         perPage: 500,
         searchString: searchTerm,
       });
-      // console.log(response.data);
       
       dispatch(updateForumMembers(response?.data?.response?.docs[0]?.users));
     } catch (error: any) {
