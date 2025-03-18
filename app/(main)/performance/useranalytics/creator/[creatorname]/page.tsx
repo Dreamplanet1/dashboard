@@ -60,7 +60,7 @@ const CreatorDetails = () => {
             <div className="w-[3px] h-[12px] rounded-[32px] bg-[#F79203] "></div>
             <p className="text-[#373737] text-[14px]">No. of Post</p>
           </div>
-          <p className="text-[32px] font-Recoleta font-medium">{creatorPerformance?.result?.total_posts}</p>
+          <p className="text-[32px] font-Recoleta font-medium">{creatorPerformance?.result?.total_posts || '-'}</p>
         </div>
         <div className="border-l space-y-2 pl-2">
           <div className="flex items-center text-sm  py-0 space-x-[4px]">
@@ -83,10 +83,13 @@ const CreatorDetails = () => {
       </div>
       <section className="grid grid-cols-8  space-x-7 ">
         <div className="col-span-5">
-          <div className="text-[16px] flex items-center space-x-2 border-b pb-4 mb-4 ">
+          {creatorPerformance?.result ? 
+          <>
+           <div className="text-[16px] flex items-center space-x-2 border-b pb-4 mb-4 ">
             <p>Top Engagement</p>
             <div className="bg-[#C8C8C8] w-[6px] h-[6px] rounded-full"></div>
-            <p className="text-[#F75803] ml-3">{creatorPerformance?.result?.likes_count + creatorPerformance?.result?.comments_count}</p>
+            <p className="text-[#F75803] ml-3">
+            {creatorPerformance?.result?.likes_count + creatorPerformance?.result?.comments_count}</p>
           </div>
 
           <div className="space-y-3">
@@ -117,6 +120,13 @@ const CreatorDetails = () => {
               {creatorPerformance?.result?.comments_count}
             </p>
           </div>
+          </>
+          :
+          <>
+          <p>No Available Post</p>
+          </>
+          }
+         
         </div>
         <div className="col-span-3">
           <p className="font-medium mb-4 pb-4 border-b">Forums Joined</p>
