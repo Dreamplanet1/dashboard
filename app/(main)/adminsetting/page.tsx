@@ -63,8 +63,11 @@ const features = [
 ];
 
 const AdminSetting = () => {
-    const router = useRouter()
-    const {  getAdminAccepted, getAdminPending, createAdminRole, updateAdminStatus, deleteAdmin, updateAdminRole, adminLoading } = useAdminsetting();
+    const router = useRouter();
+    const { pagination, paginationPending } = useSelector(
+      (state: RootState) => state.adminsetting
+    );
+    const {  getAdminAccepted, getAdminPending, createAdminRole, updateAdminStatus, deleteAdmin, updateAdminRole, adminLoading, pendingPage, setPendingPage, acceptedPage, setAcceptedPage } = useAdminsetting();
     const { adminRoles, pendingAdmin, acceptedAdmin } = useSelector((state: RootState) => state.adminsetting);
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -88,8 +91,15 @@ const AdminSetting = () => {
     return () => clearTimeout(timer);
   }, [isMoveDialogOpen]);
   useEffect(() => {
-    getAdminAccepted();
-  }, [])
+    getAdminPending();
+  }, [pendingPage])
+
+  useEffect(() => {
+      getAdminAccepted();
+  
+  }, [acceptedPage]);
+
+
   useEffect(() => {
     const hideChevronsInTrigger = () => {
       // Select all AccordionTrigger elements
@@ -453,6 +463,52 @@ const AdminSetting = () => {
                 data={acceptedAdmin}
                 columns={columns}
               />
+              {pagination?.totalDocs !== 0 && 
+                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                         <div>
+                         <p className="text-[14px]">
+                        {(pagination?.page - 1) * pagination?.limit + 1} -{" "}
+                        {Math.min(pagination?.page * pagination?.limit, pagination?.totalDocs)} of {pagination?.totalDocs}
+                        </p>
+                         </div>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (pagination?.hasPrevPage) {
+                               setAcceptedPage((prevPage) => prevPage - 1); 
+                             }
+                           }}
+                           disabled={pagination?.page <= 1}
+                         >
+                           <Image
+                             src={"/icons/backbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="backbutton"
+                           />
+                         </Button>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (pagination?.hasNextPage) {
+                               setAcceptedPage((prevPage) => prevPage + 1); 
+                             }
+                           }}
+                           disabled={pagination?.page * pagination?.limit >=
+                           pagination?.totalDocs
+                           }
+                         >
+                           <Image
+                             src={"/icons/forwardbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="forwardbutton"
+                           />
+                         </Button>
+                       </div>
+                      }
             </TabsContent>
             <TabsContent value="pending">
               <UserTable
@@ -460,6 +516,52 @@ const AdminSetting = () => {
                 data={pendingAdmin}
                 columns={moveColumns}
               />
+              {paginationPending?.totalDocs !== 0 && 
+                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                         <div>
+                         <p className="text-[14px]">
+                        {(paginationPending?.page - 1) * paginationPending?.limit + 1} -{" "}
+                        {Math.min(paginationPending?.page * paginationPending?.limit, paginationPending?.totalDocs)} of {paginationPending?.totalDocs}
+                        </p>
+                         </div>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationPending?.hasPrevPage) {
+                               setPendingPage((prevPage) => prevPage - 1); 
+                             }
+                           }}
+                           disabled={paginationPending?.page <= 1}
+                         >
+                           <Image
+                             src={"/icons/backbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="backbutton"
+                           />
+                         </Button>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationPending?.hasNextPage) {
+                               setPendingPage((prevPage) => prevPage + 1); 
+                             }
+                           }}
+                           disabled={paginationPending?.page * paginationPending?.limit >=
+                          paginationPending?.totalDocs
+                           }
+                         >
+                           <Image
+                             src={"/icons/forwardbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="forwardbutton"
+                           />
+                         </Button>
+                       </div>
+                      }
             </TabsContent>
           </Tabs>
         </div>

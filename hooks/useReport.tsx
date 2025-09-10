@@ -2,6 +2,7 @@ import {
   updateAdmin,
   updateCreator,
   updateCreatorReport,
+  updatePaginationReport,
   updateReports,
 } from "@/redux/slices/reportslice";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -16,6 +17,7 @@ const useReport = () => {
   const { creatorData } = useSelector((state: RootState) => state.report);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const [reportPage, setReportPage] = useState(1);
 
   const [reportLoading, setReportLoading] = useState(false);
 
@@ -25,14 +27,29 @@ const useReport = () => {
       const response = await axios.post(
         `${base_url}/report/get-all-creators-for-report`,
         {
-          page: 1,
-          perPage: 10,
+          page: reportPage,
+          perPage: 20,
           searchString: searchString,
         }
       );
+      
       dispatch(updateCreatorReport(response?.data?.response?.docs));
+       dispatch(
+          updatePaginationReport({
+                      hasNextPage: response.data.response.hasNextPage,
+                      hasPrevPage: response.data.response.hasPrevPage,
+                      limit: response.data.response.limit,
+                      nextPage: response.data.response.nextPage,
+                      offset: response.data.response.offset,
+                      page: response.data.response.page,
+                      pagingCounter: response.data.response.pagingCounter,
+                      prevPage: response.data.response.prevPage,
+                      totalDocs: response.data.response.totalDocs,
+                      totalPages: response.data.response.totalPages,
+                    })
+                  );
     } catch (error: any) {
-      alert(error.message);
+      // (error.message);
     } finally {
       setReportLoading(false);
     }
@@ -58,7 +75,7 @@ const useReport = () => {
       );
       dispatch(updateAdmin(response?.data?.response));
     } catch (error: any) {
-      alert(error.message);
+      // (error.message);
     } finally {
       setReportLoading(false);
     }
@@ -84,7 +101,7 @@ const useReport = () => {
       });
       dispatch(updateCreator(response?.data?.response));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
@@ -111,7 +128,7 @@ const useReport = () => {
       });
       dispatch(updateReports(response?.data?.response?.docs));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
@@ -131,7 +148,7 @@ const useReport = () => {
       });
       fetchCreatorReport("");
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
@@ -151,7 +168,7 @@ const useReport = () => {
         creator_id: creatorData?.creator_id,
       });
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setReportLoading(false);
     }
@@ -164,7 +181,9 @@ const useReport = () => {
     getCreator,
     getReports,
     createReport,
-    reportLoading, // Expose the loading state
+    reportLoading, 
+    reportPage,
+    setReportPage
   };
 };
 

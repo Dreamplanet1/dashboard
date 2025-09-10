@@ -39,10 +39,7 @@ export function UserTable<TData, TValue>({
   bottom,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [pagination, setPagination] = useState({
-    pageSize: 8,
-    pageIndex: 0,
-  });
+  
   const table = useReactTable({
     data,
     columns,
@@ -50,24 +47,19 @@ export function UserTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    onPaginationChange: setPagination,
     state: {
       columnFilters,
-      pagination,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 20, 
+      },
     },
   });
 
   const totalItems = table?.getFilteredRowModel()?.rows?.length || 0;
 
-  const startIndex =
-    table.getState().pagination.pageIndex *
-      table.getState().pagination.pageSize +
-    1;
-  const endIndex = Math.min(
-    startIndex + table.getState().pagination.pageSize - 1,
-    totalItems
-  );
-
+  
   return (
     <div className="flex flex-col space-y-3 mt-[24px]">
       {top && (
@@ -172,39 +164,7 @@ export function UserTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-start space-x-2 px-4 py-4">
-        <div>
-          <p className="text-[14px]">
-            {startIndex} - {endIndex} of {totalItems}
-          </p>
-        </div>
-        <Button
-          className="p-0 bg-transparent hover:bg-transparent"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <Image
-            src={"/icons/backbutton.svg"}
-            height={20}
-            width={20}
-            alt="backbutton"
-          />
-        </Button>
-        <Button
-          className="p-0 bg-transparent hover:bg-transparent"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          <Image
-            src={"/icons/forwardbutton.svg"}
-            height={20}
-            width={20}
-            alt="forwardbutton"
-          />
-        </Button>
-      </div>
+     
     </div>
   );
 }

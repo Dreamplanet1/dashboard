@@ -1,6 +1,7 @@
 import {
   updateBroadcastAll,
   updateBroadcastEdit,
+  updatePaginationBroadcast,
 } from "@/redux/slices/broadcastslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
@@ -15,7 +16,7 @@ const useBroadcast = () => {
   const broadcast = useSelector((state: RootState) => state.broadcast);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
+  const [broadcastPage, setBroadcastPage] = useState(1);
   const [allLoading, setAllLoading] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
@@ -26,10 +27,27 @@ const useBroadcast = () => {
     try {
       const response = await axios.post(`${base_url}/broadcast/get-all`, {
         searchString: searchTerm || "",
+        page: broadcastPage,
+        perPage: 20,
       });
+      
       dispatch(updateBroadcastAll(response?.data?.response?.docs));
+      dispatch(
+              updatePaginationBroadcast({
+                hasNextPage: response.data.response.hasNextPage,
+                hasPrevPage: response.data.response.hasPrevPage,
+                limit: response.data.response.limit,
+                nextPage: response.data.response.nextPage,
+                offset: response.data.response.offset,
+                page: response.data.response.page,
+                pagingCounter: response.data.response.pagingCounter,
+                prevPage: response.data.response.prevPage,
+                totalDocs: response.data.response.totalDocs,
+                totalPages: response.data.response.totalPages,
+              })
+            );
     } catch (error) {
-      console.error(error);
+      (error);
     } finally {
       setAllLoading(false);
     }
@@ -67,7 +85,6 @@ const useBroadcast = () => {
         title: "Broadcast Created Successfully",
       })
     } catch (error) {
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Something went wrong",
@@ -98,7 +115,6 @@ const useBroadcast = () => {
         title: "Broadcast Updated Successfully",
       })
     } catch (error) {
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Something went wrong",
@@ -111,7 +127,6 @@ const useBroadcast = () => {
   const deleteBroadcast = async (id: number) => {
     setDeleteLoading(true);
     try {
-      console.log('working');
       
      const response = await axios.post(`${base_url}/feeds/delete`, { feedId: id });
      toast({
@@ -120,7 +135,6 @@ const useBroadcast = () => {
     })      
      await fetchBroadcasts(); // Refresh the list after deletion
     } catch (error) {
-      console.error(error);
       toast({
         variant: "destructive",
         title: "Something went wrong",
@@ -139,6 +153,8 @@ const useBroadcast = () => {
     createLoading,
     updateLoading,
     deleteLoading,
+    broadcastPage,
+    setBroadcastPage
   };
 };
 

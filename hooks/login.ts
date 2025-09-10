@@ -13,6 +13,8 @@ import { updateUser } from "@/redux/slices/adminslice";
   const useLogin = () => {
     const base_url = process.env.NEXT_PUBLIC_BASE_URL;
     const broadcast = useSelector((state: RootState) => state.broadcast);
+      const {id} = useSelector((state: RootState) => state.admin.loggedInUser);
+  
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
   
@@ -26,6 +28,7 @@ import { updateUser } from "@/redux/slices/adminslice";
           "email": email,
           "password": password
       });
+      
       dispatch(updateUser(response?.data?.response?.admin));
       router.push('/broadcast')      
       } catch (error: any) {
@@ -34,7 +37,6 @@ import { updateUser } from "@/redux/slices/adminslice";
           title: "Uh oh! Something went wrong.",
           description: error.response?.data?.message || 'An unexpected error occurred.', 
         })
-        console.error(error);
        
       } finally {
         setLoading(false);
@@ -45,11 +47,13 @@ import { updateUser } from "@/redux/slices/adminslice";
       setLoading(true);
       try {
         const response = await axios.post(`${base_url}/admin-settings/change-admin-password`, {
-          "email": oldPassword,
-          "password": newPassword,
+          "admin_id": id,
+          "oldPassword": oldPassword,
+          "newPassword": newPassword,
       });
       setisOpen(true);
       } catch (error: any) {
+        
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",

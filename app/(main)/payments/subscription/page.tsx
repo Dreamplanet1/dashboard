@@ -34,15 +34,26 @@ const SubscriptionFee = () => {
     getSubscriptionCreator,
     getSubscriptionFan,
     getSubscriptionInvestor,
-    paymentLoading
+    paymentLoading, 
+    updateSubscription
   } = usePayment();
+  const [subData, setSubData] = useState<any>({});
+ 
+  const [newPrice, setNewPrice] = useState<any>(subData.price);
+  const [newExpiry, setNewExpiry] = useState<any>('');
   const { subscriptioncreator, subscriptionfan, subscriptioninvestor } =
     useSelector((state: RootState) => state.payment);
   const [isOpen, setisOpen] = useState(false);
-  const closeDialog = () => setisOpen(false);
+  const closeDialog = () => {setisOpen(false)
+    setSubData('');
+    setNewExpiry('')
+  };
   useEffect(() => {
     getSubscriptionCreator();
   }, []);
+  useEffect(() => {
+    setNewPrice(subData.price)
+  }, [isOpen])
 
   return (
     <div className="flex flex-col space-y-[24px]">
@@ -115,7 +126,9 @@ const SubscriptionFee = () => {
                 <div>
                   <button
                     onClick={() => {
+                      setSubData(creator);
                       setisOpen(true);
+
                     }}
                     className="bg-[#F75803] mt-4 w-[209px] rounded-md py-2 text-sm text-white  active:scale-95 transition-all"
                   >
@@ -144,7 +157,9 @@ const SubscriptionFee = () => {
                 <div>
                   <button
                     onClick={() => {
+                      setSubData(creator);
                       setisOpen(true);
+
                     }}
                     className="bg-[#F75803] mt-4 w-[209px] rounded-md py-2 text-sm text-white  active:scale-95 transition-all"
                   >
@@ -176,6 +191,7 @@ const SubscriptionFee = () => {
                 <div>
                   <button
                     onClick={() => {
+                      setSubData(creator);
                       setisOpen(true);
                     }}
                     className="bg-[#F75803] mt-4 w-[209px] rounded-md py-2 text-sm text-white  active:scale-95 transition-all"
@@ -209,13 +225,22 @@ const SubscriptionFee = () => {
             <div className="space-y-2">
               <Label htmlFor="name">New Price</Label>
               <Input
+              type="string"
+              value={newPrice}
+              onChange={(e) => {
+                setNewPrice(e.target.value);
+              }}
                 className="focus-visible:ring-0 focus-visible:ring-offset-0 border-[#C8C8C8]"
                 id="name"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="period">Period</Label>
-              <Select>
+              <Select 
+              onValueChange={(value) => {
+                setNewExpiry(value); 
+              }}
+              >
                 <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#C8C8C8]">
                   <SelectValue placeholder="Select Period" />
                 </SelectTrigger>
@@ -230,12 +255,32 @@ const SubscriptionFee = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button
+            {newPrice && newExpiry ? <Button
               className="w-full bg-[#F75803] hover:bg-[#F75803] text-white active:scale-95 transition-all"
-              type="submit"
+              onClick={async() => {
+                setisOpen(false);
+                await updateSubscription(subData.user_type, newPrice, subData.name, newExpiry, subData.type);
+                setNewExpiry('');
+                if(subData.user_type === 'creator'){
+                  await getSubscriptionCreator();
+                }else if (subData.user_type === 'fan'){
+                  await getSubscriptionFan()
+                }else{
+                  await getSubscriptionInvestor();
+                }
+              }}
+              type="button"
             >
               Update Price
-            </Button>
+            </Button> : 
+            <Button
+            className="btnColoredInactive w-full"
+            type="button"
+          >
+            Update Price
+          </Button>
+            }
+            
           </DialogFooter>
         </DialogContent>
       </Dialog>

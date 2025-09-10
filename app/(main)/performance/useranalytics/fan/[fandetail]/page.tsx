@@ -55,7 +55,7 @@ const FanDetails = () => {
             </div>
           </div>
         </div>
-        <div>
+        {/* <div>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -82,7 +82,7 @@ const FanDetails = () => {
               />
             </PopoverContent>
           </Popover>
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center space-x-[138px]">
         <div className="space-y-2">

@@ -10,8 +10,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import useGetUsers from "@/hooks/useGetUsers";
 import FadeLoader from "react-spinners/FadeLoader";
+import MediaCarousel from "@/components/MediaCarousel";
 const Posts = () => {
-  const { updateUserPosts, userLoading } = useGetUsers();
+  const { updateUserPosts, userLoading, deletePost } = useGetUsers();
   const [isOpen, setisOpen] = useState(false);
   const closeDialog = () => setisOpen(false);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
@@ -20,6 +21,7 @@ const Posts = () => {
     setisDeleteOpen(false);
     setPostdetail({});
   };
+  const [deleteId, setDeleteId] = useState(0);
   const [isRestoreOpen, setisRestoreOpen] = useState(false);
   const closeRestoreDialog = () => setisRestoreOpen(false);
   const options = ["All Post", "Forum", "Feed"];
@@ -224,37 +226,24 @@ const Posts = () => {
                   className="relative border rounded-md transition-all "
                 >
                   <div className="relative w-full h-[201px]">
-                    {post?.feed?.media_url?.length > 0 ? (
-                      <>
-                        <Image
-                          src={post?.feed?.media_url[0]}
-                          layout="fill"
-                          objectFit="cover"
-                          alt="userpost"
-                        />
-                        {/* <video width="320" height="201" controls>
-                        <source src={post.feed.media_url[0]} />
-                        Error Message
-                      </video> */}
-                      </>
-                    ) : (
-                      <div className="w-full bg-black flex items-center justify-center h-full">
-                        <Avatar className="w-[72px] h-[72px]">
-                          <AvatarImage
-                            className="object-cover "
-                            src={userProfile.image}
-                            alt="@shadcn"
-                          />
-                          <AvatarFallback>
-                            {/* {userProfile?.fullName
-                              ? userProfile.fullName[0]
-                              : "CN"} */}
-                            <p>CN</p>
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                    )}
-                  </div>
+  {post?.feed?.media_url?.length > 0 ? (
+    <MediaCarousel mediaUrls={post.feed.media_url} />
+  ) : (
+    <div className="w-full bg-black flex items-center justify-center h-full">
+      <Avatar className="w-[72px] h-[72px]">
+        <AvatarImage
+          className="object-cover"
+          src={userProfile.image}
+          alt="@shadcn"
+        />
+        <AvatarFallback>
+          {userProfile?.fullName ? userProfile.fullName[0] : "CN"}
+        </AvatarFallback>
+      </Avatar>
+    </div>
+  )}
+</div>
+
                   <p className="text-[14px] my-2 text-[#5B5B5B] px-4">
                     {post?.feed?.text_content}
                     <span
@@ -295,6 +284,7 @@ const Posts = () => {
                   <div
                     onClick={() => {
                       setisOpen(false);
+                      setDeleteId(post?.feed?.id)
                       setisDeleteOpen(true);
                     }}
                     className="cursor-pointer absolute right-0 top-2 z-20"
@@ -317,7 +307,7 @@ const Posts = () => {
       )}
 
       <Dialog open={isOpen} onOpenChange={closeDialog}>
-        <DialogContent className="sm:max-w-[375px] sm:rounded-sm p-0 pb-4 ">
+        <DialogContent className="sm:max-w-[417px] sm:rounded-sm p-0 pb-4 ">
           <div className="flex px-4 pb-0 pt-6 items-center justify-between">
             <div className="flex items-center space-x-1">
               <Avatar>
@@ -347,6 +337,7 @@ const Posts = () => {
               <div
                 onClick={() => {
                   setisOpen(false);
+                  setDeleteId(postdetail?.feed?.id);
                   setisDeleteOpen(true);
                 }}
                 className="cursor-pointer"
@@ -362,41 +353,30 @@ const Posts = () => {
             </div>
           </div>
           <div className=" rounded-md transition-all ">
-            <div className="relative w-full h-[170px]">
-              {postdetail?.feed?.media_url?.length > 0 ? (
-                <>
-                  <Image
-                    src={postdetail?.feed?.media_url[0]}
-                    layout="fill"
-                    objectFit="cover"
-                    alt="userpost"
-                  />
-                  {/* <video width="320" height="201" controls>
-                        <source src={postdetail.feed.media_url[0]} />
-                        Error Message
-                      </video> */}
-                </>
-              ) : (
-                <div className="w-full bg-black flex items-center justify-center h-full">
-                  <Avatar className="w-[72px] h-[72px]">
-                    <AvatarImage
-                      className="object-cover "
-                      src={userProfile.image}
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>
-                      {" "}
-                      {userProfile?.fullName ? userProfile.fullName[0] : "CN"}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-              )}
-            </div>
+          <div className="relative w-full h-[170px]">
+  {postdetail?.feed?.media_url?.length > 0 ? (
+   <MediaCarousel mediaUrls={postdetail?.feed?.media_url} />
+  ) : (
+    <div className="w-full bg-black flex items-center justify-center h-full">
+      <Avatar className="w-[72px] h-[72px] bg-white z-20">
+        <AvatarImage
+          className="object-cover"
+          src={userProfile.image}
+          alt="@shadcn"
+        />
+        <AvatarFallback>
+          {userProfile?.fullName ? userProfile.fullName[0] : "CN"}
+        </AvatarFallback>
+      </Avatar>
+    </div>
+  )}
+</div>
+
             <div className="px-6">
               <p className="text-[14px] my-2 py-2 text-[#5B5B5B]  border-b">
                 {postdetail?.feed?.text_content}
                 <span className="text-[#F75803]">
-                  #BeyonceVibes #HelloCover
+                 
                 </span>
               </p>
             </div>
@@ -445,9 +425,9 @@ const Posts = () => {
               width={69.68}
               alt="trashIcon"
             />
-            <p className="text-[20px] font-medium">Delete Foul Post?</p>
+            <p className="text-[20px] font-medium">Delete Post?</p>
             <p className="text-[14px] text-center text-[#808080]">
-              Are you sure you want to delete this Foul Post? This action is
+              Are you sure you want to delete this Post? This action is
               irreversible.
             </p>
           </div>
@@ -455,12 +435,23 @@ const Posts = () => {
           <DialogFooter>
             <div className="flex w-full justify-center items-center space-x-2">
               <Button
+              onClick={() => {
+                setisDeleteOpen(false);
+              }}
                 className="w-full shadow-md text-[14px] text-black bg-transparent hover:bg-transparent transition-all hover:scale-105 active:scale-95 border"
                 type="submit"
               >
                 Cancel
               </Button>
               <Button
+              onClick={async() => {
+                setisDeleteOpen(false);
+                if (selected === "All Post") {
+                  await deletePost(deleteId, 'all');
+                } else {
+                  await deletePost(deleteId, selected.toLowerCase());
+                  }
+              }}
                 className="w-full shadow-md text-[14px] text-white bg-[#C83532] hover:bg-[#C83532] transition-all hover:scale-105 active:scale-95"
                 type="submit"
               >

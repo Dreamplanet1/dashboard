@@ -89,11 +89,34 @@ const Campaign = () => {
     campaignLoading,
     getProcessingCampaigns,
     campaignLoadingSheet,
-    activateCampaign
+    activateCampaign, activePage, setActivePage, mostPerformedPage, setMostPerformedPage, processingPage, setProcessingPage, completedPage, setCompletedPage, stoppedPage, setStoppedPage
   } = useCampaign();
   useEffect(() => {
     getActiveCampaigns();
+    getStoppedCampaigns();
+    getCompletedCampaigns();
+    getMostPerformedCampaigns();
+    getProcessingCampaigns();
   }, []);
+  useEffect(() => {
+    getActiveCampaigns(); 
+  }, [activePage]);
+
+  useEffect(() => {
+    getMostPerformedCampaigns(); 
+  }, [mostPerformedPage]);
+
+  useEffect(() => {
+    getProcessingCampaigns(); 
+  }, [processingPage]);
+
+  useEffect(() => {
+    getCompletedCampaigns(); 
+  }, [completedPage]);
+
+  useEffect(() => {
+    getStoppedCampaigns(); 
+  }, [stoppedPage]);
   const {
     campaignActive,
     campaignCompleted,
@@ -102,6 +125,7 @@ const Campaign = () => {
     campaignProcessing,
     groupedCampaigns,
     donations,
+    paginationActive, paginationOther
   } = useSelector((state: RootState) => state.campaign);
 
   const openSheet = () => setIsSheetOpen(true);
@@ -434,7 +458,7 @@ const Campaign = () => {
                 }}
                 value="active"
               >
-                Active ({campaignActive?.length})
+                Active 
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0  py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -443,7 +467,7 @@ const Campaign = () => {
                 }}
                 value="processing"
               >
-                Processing ({campaignProcessing?.length})
+                Processing 
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -452,7 +476,7 @@ const Campaign = () => {
                 }}
                 value="stopped"
               >
-                Stopped ({campaignStopped?.length})
+                Stopped 
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
@@ -461,14 +485,14 @@ const Campaign = () => {
                 }}
                 value="performed"
               >
-                Most Performed ({campaignMostPerformed?.length})
+                Most Performed 
               </TabsTrigger>
               <TabsTrigger
                 className="rounded-none font-normal my-0 text-[#A4A4A4]  px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 onClick={() => getCompletedCampaigns()}
                 value="completed"
               >
-                Completed ({campaignCompleted?.length})
+                Completed 
               </TabsTrigger>
             </TabsList>
             <TabsContent value="active">
@@ -477,6 +501,52 @@ const Campaign = () => {
                 data={campaignActive}
                 columns={columns}
               />
+               {paginationActive?.totalDocs !== 0 && 
+                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                         <div>
+                         <p className="text-[14px]">
+                        {(paginationActive?.page - 1) * paginationActive?.limit + 1} -{" "}
+                        {Math.min(paginationActive?.page * paginationActive?.limit, paginationActive?.totalDocs)} of {paginationActive?.totalDocs}
+                        </p>
+                         </div>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationActive?.hasPrevPage) {
+                               setActivePage((prevPage) => prevPage - 1); 
+                             }
+                           }}
+                           disabled={paginationActive?.page <= 1}
+                         >
+                           <Image
+                             src={"/icons/backbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="backbutton"
+                           />
+                         </Button>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationActive?.hasNextPage) {
+                               setActivePage((prevPage) => prevPage + 1); 
+                             }
+                           }}
+                           disabled={paginationActive?.page * paginationActive?.limit >=
+                            paginationActive?.totalDocs
+                           }
+                         >
+                           <Image
+                             src={"/icons/forwardbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="forwardbutton"
+                           />
+                         </Button>
+                       </div>
+                      }
             </TabsContent>
             <TabsContent value="processing">
               <UserTable
@@ -484,6 +554,52 @@ const Campaign = () => {
                 data={campaignProcessing}
                 columns={columns}
               />
+               {paginationOther?.totalDocs !== 0 && 
+                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                         <div>
+                         <p className="text-[14px]">
+                        {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+                        {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
+                        </p>
+                         </div>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasPrevPage) {
+                               setProcessingPage((prevPage) => prevPage - 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page <= 1}
+                         >
+                           <Image
+                             src={"/icons/backbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="backbutton"
+                           />
+                         </Button>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasNextPage) {
+                               setProcessingPage((prevPage) => prevPage + 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page * paginationOther?.limit >=
+                            paginationOther?.totalDocs
+                           }
+                         >
+                           <Image
+                             src={"/icons/forwardbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="forwardbutton"
+                           />
+                         </Button>
+                       </div>
+                      }
             </TabsContent>
             <TabsContent value="stopped">
               <UserTable
@@ -491,6 +607,52 @@ const Campaign = () => {
                 data={campaignStopped}
                 columns={stoppedColumns}
               />
+                {paginationOther?.totalDocs !== 0 && 
+                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                         <div>
+                         <p className="text-[14px]">
+                        {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+                        {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
+                        </p>
+                         </div>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasPrevPage) {
+                               setStoppedPage((prevPage) => prevPage - 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page <= 1}
+                         >
+                           <Image
+                             src={"/icons/backbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="backbutton"
+                           />
+                         </Button>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasNextPage) {
+                               setStoppedPage((prevPage) => prevPage + 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page * paginationOther?.limit >=
+                            paginationOther?.totalDocs
+                           }
+                         >
+                           <Image
+                             src={"/icons/forwardbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="forwardbutton"
+                           />
+                         </Button>
+                       </div>
+                      }
             </TabsContent>
             <TabsContent value="performed">
               <UserTable
@@ -498,6 +660,52 @@ const Campaign = () => {
                 data={campaignMostPerformed}
                 columns={columns}
               />
+                {paginationOther?.totalDocs !== 0 && 
+                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                         <div>
+                         <p className="text-[14px]">
+                        {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+                        {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
+                        </p>
+                         </div>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasPrevPage) {
+                               setMostPerformedPage((prevPage) => prevPage - 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page <= 1}
+                         >
+                           <Image
+                             src={"/icons/backbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="backbutton"
+                           />
+                         </Button>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasNextPage) {
+                               setMostPerformedPage((prevPage) => prevPage + 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page * paginationOther?.limit >=
+                            paginationOther?.totalDocs
+                           }
+                         >
+                           <Image
+                             src={"/icons/forwardbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="forwardbutton"
+                           />
+                         </Button>
+                       </div>
+                      }
             </TabsContent>
             <TabsContent value="completed">
               <UserTable
@@ -505,6 +713,52 @@ const Campaign = () => {
                 data={campaignCompleted}
                 columns={columns}
               />
+                {paginationOther?.totalDocs !== 0 && 
+                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                         <div>
+                         <p className="text-[14px]">
+                        {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+                        {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
+                        </p>
+                         </div>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasPrevPage) {
+                               setCompletedPage((prevPage) => prevPage - 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page <= 1}
+                         >
+                           <Image
+                             src={"/icons/backbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="backbutton"
+                           />
+                         </Button>
+                         <Button
+                           className="p-0 bg-transparent hover:bg-transparent"
+                           size="sm"
+                           onClick={() => {
+                             if (paginationOther?.hasNextPage) {
+                               setCompletedPage((prevPage) => prevPage + 1); 
+                             }
+                           }}
+                           disabled={paginationOther?.page * paginationOther?.limit >=
+                            paginationOther?.totalDocs
+                           }
+                         >
+                           <Image
+                             src={"/icons/forwardbutton.svg"}
+                             height={20}
+                             width={20}
+                             alt="forwardbutton"
+                           />
+                         </Button>
+                       </div>
+                      }
             </TabsContent>
           </Tabs>
         </div>

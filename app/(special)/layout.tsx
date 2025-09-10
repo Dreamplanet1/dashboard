@@ -21,8 +21,7 @@ export default function RootLayout({
     }
   }, [user, router]);
   return (
-    <html lang="en">
-      <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
+      <div className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
         <div className="px-10">
           <Navbar />
         </div>
@@ -30,7 +29,6 @@ export default function RootLayout({
         <div className=" bg-gray-100 min-h-[90vh]">{children}</div>
         <Toaster />
 
-      </body>
-    </html>
+      </div>
   );
 }

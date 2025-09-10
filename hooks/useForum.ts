@@ -1,4 +1,4 @@
-import { updateAllForums, updateForumMembers } from "@/redux/slices/forumslice";
+import { updateAllForums, updateForumMembers, updatePaginationForum } from "@/redux/slices/forumslice";
 import { AppDispatch } from "@/redux/store";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -12,20 +12,21 @@ const useForum = () => {
 
   const [forumLoading, setForumLoading] = useState(false);
   const [forumSheetLoading, setForumSheetLoading] = useState(false);
+   const [forumPage, setForumPage] = useState(1);
 
   const fetchAllForums = async (searchTerm?: string) => {
     setForumLoading(true);
     
     try {
       const response = await axios.post(`${base_url}/forum/get/all`, {
-        page: 1,
+        page: forumPage,
         perPage: 10,
         searchString: searchTerm || "",
       });
       
       dispatch(updateAllForums(response?.data?.response?.docs));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setForumLoading(false);
     }
@@ -40,39 +41,51 @@ const useForum = () => {
   );
 
   const getAllForums = async(searchTerm?: string) => {
-    // Trigger the debounced function
-    // console.log(searchTerm);
     
-    // debouncedFetchAllForums(searchTerm);
     setForumLoading(true);
     
     try {
       const response = await axios.post(`${base_url}/forum/get/all`, {
-        page: 1,
-        perPage: 10,
+        page: forumPage,
+        perPage: 20,
         searchString: searchTerm || "",
       });
-      
+
       dispatch(updateAllForums(response?.data?.response?.docs));
+         dispatch(
+                updatePaginationForum({
+                            hasNextPage: response.data.response.hasNextPage,
+                            hasPrevPage: response.data.response.hasPrevPage,
+                            limit: response.data.response.limit,
+                            nextPage: response.data.response.nextPage,
+                            offset: response.data.response.offset,
+                            page: response.data.response.page,
+                            pagingCounter: response.data.response.pagingCounter,
+                            prevPage: response.data.response.prevPage,
+                            totalDocs: response.data.response.totalDocs,
+                            totalPages: response.data.response.totalPages,
+                          })
+                        );
     } catch (error: any) {
-      alert(error.message);
     } finally {
       setForumLoading(false);
     }
   };
 
-  const getForumMembers = async (forumId: number, searchString: string) => {
+  const getForumMembers = async (forumId: number, searchTerm?: string) => {
     setForumSheetLoading(true);
+    
     try {
       const response = await axios.post(`${base_url}/forum/get/members`, {
         forumId,
         page: 1,
-        perPage: 30,
-        searchString,
+        perPage: 500,
+        searchString: searchTerm,
       });
+      
       dispatch(updateForumMembers(response?.data?.response?.docs[0]?.users));
     } catch (error: any) {
-      alert(error.message);
+      // alert(error.message);
     } finally {
       setForumSheetLoading(false);
     }
@@ -102,7 +115,9 @@ const useForum = () => {
     getForumMembers,
     deleteForumMember,
     forumLoading,
-    forumSheetLoading
+    forumSheetLoading,
+    forumPage,
+    setForumPage
   };
 };
 

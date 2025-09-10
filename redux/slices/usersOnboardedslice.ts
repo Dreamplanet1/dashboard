@@ -1,6 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the interface for a single user object
+interface PaginationProps {
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number | null;
+  offset: number;
+  page: number;
+  pagingCounter: number;
+  prevPage: number | null;
+  totalDocs: number;
+  totalPages: number;
+}
+
+
 interface userProps {
   content_creator_type: string | null;
   content_to_view: [] | null;
@@ -29,13 +43,42 @@ interface userProps {
 
 // Initial state with an array of userProps and top-level status and user_type
 const initialState = {
-  usersAll: [] as userProps[], // Array of users
+  usersAll: [] as userProps[], 
   usersInvestor: [] as userProps[],
   usersFan: [] as userProps[],
   usersCreator: [] as userProps[],
   userPost: [] as any,
   userProfile: {} as any,
+  allCount: 0 as number,
+  investorCount: 0 as number,
+  creatorCount: 0 as number,
+  fanCount: 0 as number,
+  pagination: {
+    hasNextPage: false as boolean,
+    hasPrevPage: false as boolean,
+    limit: 0 as number,
+    nextPage: null as number | null,
+    offset: 0 as number,
+    page: 1 as number,
+    pagingCounter: 0 as number,
+    prevPage: null as number | null,
+    totalDocs: 0 as number,
+    totalPages: 0 as number,
+  },
+  paginationOther: {
+    hasNextPage: false as boolean,
+    hasPrevPage: false as boolean,
+    limit: 0 as number,
+    nextPage: null as number | null,
+    offset: 0 as number,
+    page: 1 as number,
+    pagingCounter: 0 as number,
+    prevPage: null as number | null,
+    totalDocs: 0 as number,
+    totalPages: 0 as number,
+  },
 };
+
 
 // Redux slice
 export const usersOnboardedSlice = createSlice({
@@ -84,6 +127,24 @@ export const usersOnboardedSlice = createSlice({
     updateUserProfile: (state, action: PayloadAction<any>) => {
       state.userProfile = action.payload;
     },
+    updatePaginationUsers: (state, action: PayloadAction<PaginationProps>) => {
+      state.pagination = { ...state.pagination, ...action.payload };
+    },
+    updatePaginationOtherUsers: (state, action: PayloadAction<PaginationProps>) => {
+      state.paginationOther = { ...state.pagination, ...action.payload };
+    },
+    updateAllCount: (state, action: PayloadAction<number>) => {
+     state.allCount = action.payload;
+    },
+    updateCreatorCount: (state, action: PayloadAction<number>) => {
+      state.creatorCount = action.payload;
+     },
+     updateFanCount: (state, action: PayloadAction<number>) => {
+      state.fanCount = action.payload;
+     },
+     updateInvestorCount: (state, action: PayloadAction<number>) => {
+      state.investorCount = action.payload;
+     },
   },
 });
 
@@ -95,6 +156,8 @@ export const {
   updateUsersCreator,
   updatePost,
   updateUserProfile,
+  updatePaginationUsers,
+  updateAllCount, updateCreatorCount, updateFanCount, updateInvestorCount, updatePaginationOtherUsers
 } = usersOnboardedSlice.actions;
 
 // Export the reducer

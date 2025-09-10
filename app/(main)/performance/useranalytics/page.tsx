@@ -6,20 +6,28 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import usePerformance from "@/hooks/usePerformance";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateActiveUser } from "@/redux/slices/performanceslice";
 import { useRouter } from "next/navigation";
 import FadeLoader from "react-spinners/FadeLoader";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const UserAnalytics = () => {
   
-  const { getAllPerformanceCreator, getAllPerformanceFan, getAllPerformanceInvestor, getCreatorPerformance, getFanInvestorPerformance, performanceLoading } = usePerformance();
+  const { getAllPerformanceCreator, getAllPerformanceFan, getAllPerformanceInvestor, getCreatorPerformance, getFanInvestorPerformance, performanceLoading, setCreatorPage, creatorPage, fanPage, investorPage, setFanPage, setInvestorPage } = usePerformance();
   const { allPerformanceCreator, allPerformanceFan, allPerformanceInvestor, stats } = useSelector((state: RootState) => state.performance);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-   
+  const { pagination, paginationCreator } = useSelector(
+    (state: RootState) => state.performance
+  );
+  const [searchCreator, setSearchCreator] = useState('')
+  const [searchFan, setSearchFan] = useState('')
+  const [searchInvestor, setSearchInvestor] = useState('')
+
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "full_name",
@@ -186,8 +194,44 @@ const UserAnalytics = () => {
   ];
   
   useEffect(() => {
-  getAllPerformanceCreator();
-  }, [])
+  getAllPerformanceCreator(searchCreator);
+  }, []);
+
+  useEffect(() => {
+     setCreatorPage(1);
+    getAllPerformanceCreator(searchCreator);
+
+  }, [searchCreator]);
+
+  useEffect(() => {
+    setInvestorPage(1);
+   getAllPerformanceInvestor(searchInvestor);
+
+ }, [searchInvestor]);
+
+ useEffect(() => {
+  setFanPage(1);
+ getAllPerformanceFan(searchFan);
+
+}, [searchFan]);
+
+  useEffect(() => {
+    
+    getAllPerformanceInvestor(searchInvestor);
+  
+}, [investorPage]);
+useEffect(() => {
+    
+  getAllPerformanceFan(searchFan);
+
+}, [fanPage]);
+
+useEffect(() => {
+    
+  getAllPerformanceCreator(searchCreator);
+
+}, [creatorPage]);
+
   return (
     <div className="flex flex-col space-y-7">
       {performanceLoading && (
@@ -264,26 +308,205 @@ const UserAnalytics = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="creators">
+          <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md shadow-sm mt-[20px]">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Here"
+                      value={searchCreator}
+                      onChange={(e) => setSearchCreator(e.target.value)}
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div>
             <UserTable
              
               data={allPerformanceCreator}
               columns={columns}
             />
+            {paginationCreator?.totalDocs !== 0 && 
+                     <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                     <div>
+                     <p className="text-[14px]">
+                    {(paginationCreator?.page - 1) * paginationCreator?.limit + 1} -{" "}
+                    {Math.min(paginationCreator?.page * paginationCreator?.limit, paginationCreator?.totalDocs)} of {paginationCreator?.totalDocs}
+                    </p>
+                     </div>
+                     <Button
+                       className="p-0 bg-transparent hover:bg-transparent"
+                       size="sm"
+                       onClick={() => {
+                         if (paginationCreator?.hasPrevPage) {
+                           setCreatorPage((prevPage) => prevPage - 1); 
+                         }
+                       }}
+                       disabled={paginationCreator?.page <= 1}
+                     >
+                       <Image
+                         src={"/icons/backbutton.svg"}
+                         height={20}
+                         width={20}
+                         alt="backbutton"
+                       />
+                     </Button>
+                     <Button
+                       className="p-0 bg-transparent hover:bg-transparent"
+                       size="sm"
+                       onClick={() => {
+                         if (paginationCreator?.hasNextPage) {
+                           setCreatorPage((prevPage) => prevPage + 1); 
+                         }
+                       }}
+                       disabled={paginationCreator?.page * paginationCreator?.limit >=
+                        paginationCreator?.totalDocs
+                       }
+                     >
+                       <Image
+                         src={"/icons/forwardbutton.svg"}
+                         height={20}
+                         width={20}
+                         alt="forwardbutton"
+                       />
+                     </Button>
+                   </div>
+                  }
           </TabsContent>
           <TabsContent value="fans">
+          <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md shadow-sm mt-[20px]">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Here"
+                      value={searchFan}
+                      onChange={(e) => setSearchFan(e.target.value)}
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div>
             <UserTable
              
               data={allPerformanceFan}
               columns={columnsFan}
             />
+               {pagination?.totalDocs !== 0 && 
+                        <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                        <div>
+                        <p className="text-[14px]">
+                       {(pagination?.page - 1) * pagination?.limit + 1} -{" "}
+                       {Math.min(pagination?.page * pagination?.limit, pagination?.totalDocs)} of {pagination?.totalDocs}
+                       </p>
+                        </div>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (pagination?.hasPrevPage) {
+                              setFanPage((prevPage) => prevPage - 1); 
+                            }
+                          }}
+                          disabled={pagination?.page <= 1}
+                        >
+                          <Image
+                            src={"/icons/backbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="backbutton"
+                          />
+                        </Button>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (pagination?.hasNextPage) {
+                              setFanPage((prevPage) => prevPage + 1); 
+                            }
+                          }}
+                          disabled={pagination?.page * pagination?.limit >=
+                            pagination?.totalDocs
+                          }
+                        >
+                          <Image
+                            src={"/icons/forwardbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="forwardbutton"
+                          />
+                        </Button>
+                      </div>
+                     }
           </TabsContent>
           <TabsContent value="investors">
+          <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md shadow-sm mt-[20px]">
+                    <Image
+                      src={"/DASHBOARDASSETS/ICONS/SEARCH.svg"}
+                      width={20}
+                      height={19.88}
+                      alt="searchIcon"
+                    />
+                    <Input
+                      placeholder="Search Here"
+                      value={searchInvestor}
+                      onChange={(e) => setSearchInvestor(e.target.value)}
+                      className="max-w-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 border-0 placeholder:text-[#C8C8C8]"
+                    />
+                  </div>
             <UserTable
              
               data={allPerformanceInvestor}
               columns={columnsFan}
             />
-            Investor
+               {pagination?.totalDocs !== 0 && 
+                        <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                        <div>
+                        <p className="text-[14px]">
+                       {(pagination?.page - 1) * pagination?.limit + 1} -{" "}
+                       {Math.min(pagination?.page * pagination?.limit, pagination?.totalDocs)} of {pagination?.totalDocs}
+                       </p>
+                        </div>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (pagination?.hasPrevPage) {
+                              setInvestorPage((prevPage) => prevPage - 1); 
+                            }
+                          }}
+                          disabled={pagination?.page <= 1}
+                        >
+                          <Image
+                            src={"/icons/backbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="backbutton"
+                          />
+                        </Button>
+                        <Button
+                          className="p-0 bg-transparent hover:bg-transparent"
+                          size="sm"
+                          onClick={() => {
+                            if (pagination?.hasNextPage) {
+                              setInvestorPage((prevPage) => prevPage + 1); 
+                            }
+                          }}
+                          disabled={pagination?.page * pagination?.limit >=
+                            pagination?.totalDocs
+                          }
+                        >
+                          <Image
+                            src={"/icons/forwardbutton.svg"}
+                            height={20}
+                            width={20}
+                            alt="forwardbutton"
+                          />
+                        </Button>
+                      </div>
+                     }
           </TabsContent>
         </Tabs>
       </div>

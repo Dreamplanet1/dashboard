@@ -49,6 +49,7 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import FadeLoader from "react-spinners/FadeLoader";
+import { countries, dateOptions } from "@/utils/interface";
 
 const Members = () => {
   const {
@@ -59,11 +60,14 @@ const Members = () => {
     updateStatus,
     getUserPosts,
     userLoading,
-    sheetLoading
+    sheetLoading, allPage, setAllPage, creatorPage, setCreatorPage, fanPage, setFanPage, investorPage, setInvestorPage
   } = useGetUsers();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const { usersAll, usersCreator, usersFan, usersInvestor } = useSelector(
+  const { usersAll, usersCreator, usersFan, usersInvestor, fanCount, creatorCount, investorCount, allCount } = useSelector(
+    (state: RootState) => state.usersOnboarded
+  );
+  const { pagination, paginationOther} = useSelector(
     (state: RootState) => state.usersOnboarded
   );
   const [searchTermAll, setSearchTermAll] = useState("");
@@ -71,20 +75,50 @@ const Members = () => {
   const [searchTermFan, setSearchTermFan] = useState("");
   const [searchTermInvestor, setSearchTermInvestor] = useState("");
 
-  const filteredUsersAll = usersAll?.filter(
-    (user) =>
-      user.full_name?.toLowerCase().includes(searchTermAll.toLowerCase()) ||
-      user.username?.toLowerCase().includes(searchTermAll.toLowerCase())
-  );
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [countryStatus, setCountryStatus] = useState<string>("All");
+  const [countryInvestorStatus, setCountryInvestorStatus] = useState<string>("All");
+  const [countryCreatorStatus, setCountryCreatorStatus] = useState<string>("All");
+  const [countryFanStatus, setCountryFanStatus] = useState<string>("All");
   const [selectedStatusCreator, setSelectedStatusCreator] =
     useState<string>("all");
   const [selectedStatusFan, setSelectedStatusFan] = useState<string>("all");
   const [profileData, setprofileData] = useState<any>({});
   const [date, setDate] = useState<Date>();
-
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedStatusInvestor, setSelectedStatusInvestor] =
     useState<string>("all");
+  const [selectedDate, setSelectedDate] = useState<any>("All Date");
+  const [selectedInvestorDate, setSelectedInvestorDate] = useState<any>("All Date");
+  const [selectedCreatorDate, setSelectedCreatorDate] = useState<any>("All Date");
+  const [selectedFanDate, setSelectedFanDate] = useState<any>("All Date");
+
+
+  const handleDateChange = (value: any) => {
+    setSelectedDate(value);
+  };
+  const handleCreatorDateChange = (value: any) => {
+    setSelectedCreatorDate(value);
+  };
+  const handleFanDateChange = (value: any) => {
+    setSelectedFanDate(value);
+  };
+  const handleInvestorDateChange = (value: any) => {
+    setSelectedInvestorDate(value);
+  };
+
+  const handleCountryChange = (value: string) => {
+      setCountryStatus(value);
+  }; 
+  const handleCreatorCountryChange = (value: string) => {
+    setCountryCreatorStatus(value);
+};  
+const handleFanCountryChange = (value: string) => {
+  setCountryFanStatus(value);
+}; 
+const handleInvestorCountryChange = (value: string) => {
+  setCountryInvestorStatus(value);
+}; 
 
   const handleStatusChange = (value: string) => {
     setSelectedStatus(value);
@@ -99,55 +133,81 @@ const Members = () => {
     setSelectedStatusInvestor(value);
   };
   const hasMounted = useRef(false);
+ 
   useEffect(() => {
     if (hasMounted.current) {
-      const status = selectedStatus === "all" ? null : selectedStatus;
-      getUsersAll(status);
-    }
-  }, [selectedStatus]);
-
-  useEffect(() => {
-    const status = selectedStatus === "all" ? null : selectedStatus;
-    getUsersAll(status, searchTermAll)
-  }, [searchTermAll]);
-
-  useEffect(() => {
-    if (hasMounted.current) {
+      setCreatorPage(1);
       const status =
-        selectedStatusCreator === "all" ? null : selectedStatusCreator;        
-      getUsersCreator(status);
+        selectedStatusCreator === "all" ? null : selectedStatusCreator;   
+        const country = countryCreatorStatus === "All" ? null : countryCreatorStatus;
+        const date = selectedCreatorDate === 'All Date' ? null : selectedCreatorDate;     
+      getUsersCreator(status, searchTermCreator, country, date);
     }
-  }, [selectedStatusCreator]);
+  }, [selectedStatusCreator, searchTermCreator, countryCreatorStatus, selectedCreatorDate]);
 
   useEffect(() => {
     const status = selectedStatusCreator === "all" ? null : selectedStatusCreator;
-    getUsersCreator(status, searchTermCreator)
-  }, [searchTermCreator]);
+    const country = countryCreatorStatus === "All" ? null : countryCreatorStatus  
+    const date = selectedCreatorDate === 'All Date' ? null : selectedCreatorDate;     
+    getUsersCreator(status, searchTermCreator, country, date);
+  }, [creatorPage]);
 
   useEffect(() => {
     if (hasMounted.current) {
+      setFanPage(1);
       const status = selectedStatusFan === "all" ? null : selectedStatusFan;
-      getUsersFan(status);
+      const country = countryFanStatus === "All" ? null : countryFanStatus 
+      const date = selectedFanDate === 'All Date' ? null : selectedFanDate;      
+      getUsersFan(status, searchTermFan, country, date);
     }
-  }, [selectedStatusFan]);
+  }, [selectedStatusFan, searchTermFan, countryFanStatus, selectedFanDate]);
 
   useEffect(() => {
     const status = selectedStatusFan === "all" ? null : selectedStatusFan;
-    getUsersFan(status, searchTermFan)
-  }, [searchTermFan]);
+    const country = countryFanStatus === "All" ? null : countryFanStatus
+    const date = selectedFanDate === 'All Date' ? null : selectedFanDate;
+    getUsersFan(status, searchTermFan, country, date)
+  }, [fanPage]);
 
   useEffect(() => {
     if (hasMounted.current) {
+      setInvestorPage(1);
       const status =
         selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
-      getUsersInvestor(status);
+        const country = countryInvestorStatus === "All" ? null : countryInvestorStatus 
+        const date = selectedInvestorDate === 'All Date' ? null : selectedInvestorDate;      
+      getUsersInvestor(status, searchTermInvestor, country, date);
     }
-  }, [selectedStatusInvestor]);
+  }, [selectedStatusInvestor, searchTermInvestor, countryInvestorStatus, selectedInvestorDate ]);
+  
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status =
+      selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
+      const country = countryInvestorStatus === "All" ? null : countryInvestorStatus 
+      const date = selectedInvestorDate === 'All Date' ? null : selectedInvestorDate;      
+      getUsersInvestor(status, searchTermInvestor, country, date);
+    }
+  }, [investorPage]);
 
   useEffect(() => {
-    const status = selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
-    getUsersInvestor(status, searchTermInvestor)
-  }, [searchTermInvestor]);
+    if (hasMounted.current) {
+      setAllPage(1);
+      const status = selectedStatus === "all" ? null : selectedStatus;
+      const country = countryStatus === "All" ? null : countryStatus
+      const date = selectedDate === 'All Date' ? null : selectedDate;
+      getUsersAll(status, searchTermAll, country, date);
+    }
+  }, [countryStatus, selectedStatus, searchTermAll, selectedDate]);
+  
+  useEffect(() => {
+    if (hasMounted.current) {
+      const status = selectedStatus === "all" ? null : selectedStatus;
+      const country = countryStatus === "All" ? null : countryStatus
+      const date = selectedDate === 'All Date' ? null : selectedDate;
+      getUsersAll(status, searchTermAll, country, date);
+    }
+  }, [allPage]);
 
   useEffect(() => {
     getUsersAll(null);
@@ -175,7 +235,30 @@ const Members = () => {
 
   const openSheet = () => setIsSheetOpen(true);
   const closeSheet = async() => {setIsSheetOpen(false);
-    await getUsersAll(null);
+    // await getUsersAll(null);
+    if(statusFilter === 'all') {
+      const status = selectedStatus === "all" ? null : selectedStatus;
+      const country = countryStatus === "All" ? null : countryStatus
+      const date = selectedDate === 'All Date' ? null : selectedDate;
+      getUsersAll(status, searchTermAll, country, date);
+    }else if (statusFilter === 'investor') {
+      const status =
+        selectedStatusInvestor === "all" ? null : selectedStatusInvestor;
+        const country = countryInvestorStatus === "All" ? null : countryInvestorStatus
+        const date = selectedInvestorDate === 'All Date' ? null : selectedInvestorDate;
+      getUsersInvestor(status, searchTermInvestor, country, date);
+    } else if (statusFilter === 'creator') {
+      const status =
+        selectedStatusCreator === "all" ? null : selectedStatusCreator;   
+        const country = countryCreatorStatus === "All" ? null : countryCreatorStatus  
+        const date = selectedCreatorDate === 'All Date' ? null : selectedCreatorDate;   
+      getUsersCreator(status, searchTermCreator, country, date);
+    } else {
+      const status = selectedStatusFan === "all" ? null : selectedStatusFan;
+      const country = countryFanStatus === "All" ? null : countryFanStatus
+      const date = selectedFanDate === 'All Date' ? null : selectedFanDate;
+      getUsersFan(status, searchTermFan, country, date);
+    }
 
   };
 
@@ -307,7 +390,7 @@ const Members = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={openSheet}
+                // onClick={openSheet}
               >
                 <span>
                   <Image
@@ -349,52 +432,61 @@ const Members = () => {
               className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               onClick={() => {
                 getUsersAll(null);
+                setStatusFilter('all')
               }}
               value="all"
             >
-              All ({usersAll?.length})
+              All ({allCount})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               onClick={() => {
                 getUsersInvestor(null);
+                setStatusFilter('investor')
               }}
               value="investor"
             >
-              Investor ({usersInvestor?.length})
+              Investor ({investorCount})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               onClick={() => {
                 getUsersCreator(null);
+                setStatusFilter('creator')
               }}
               value="creator"
             >
-              Creator ({usersCreator?.length})
+              Creator ({creatorCount})
             </TabsTrigger>
             <TabsTrigger
               className="rounded-none my-0 font-normal text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
               onClick={() => {
                 getUsersFan(null);
+                setStatusFilter('fan')
               }}
               value="fan"
             >
-              Fan ({usersFan?.length})
+              Fan ({fanCount})
             </TabsTrigger>
           </TabsList>
           <TabsContent value="all">
            
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
-                    <Select>
+                    <Select
+                     onValueChange={handleCountryChange}
+                     value={countryStatus}
+                    >
                       <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
-                        <SelectValue placeholder="All Country" />
+                        <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {/* <SelectItem value="all">All Country</SelectItem>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem> */}
+                          {countries.map((country) => (
+            
+                          <SelectItem value={country.name}>{country.name}</SelectItem> 
+                          ))}
+                         
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -413,7 +505,7 @@ const Members = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <Popover>
+                    {/* <Popover>
                       <PopoverTrigger asChild>
                         <div className="flex justify-center space-x-[12px] items-center min-w-[96px] w-max border border-[#E4E4E4] rounded-md shadow-sm">
                           <Button
@@ -447,7 +539,21 @@ const Members = () => {
                           initialFocus
                         />
                       </PopoverContent>
-                    </Popover>
+                    </Popover> */}
+                    <Select onValueChange={handleDateChange} value={selectedDate}>
+      <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+        <SelectValue placeholder="Select Date" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {dateOptions.map((option) => (
+            <SelectItem key={option.name} value={option.value ?? 'null'}>
+              {option.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
                   </div>
                   <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md shadow-sm">
                     <Image
@@ -470,22 +576,72 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
+                 <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(pagination?.page - 1) * pagination?.limit + 1} -{" "}
+          {Math.min(pagination?.page * pagination?.limit, pagination?.totalDocs)} of {pagination?.totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (pagination?.hasPrevPage) {
+              setAllPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={pagination?.page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (pagination?.hasNextPage) {
+              setAllPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={pagination?.page * pagination?.limit >=
+            pagination?.totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
               
+
             
           </TabsContent>
           <TabsContent value="investor">
            
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
-                    <Select>
-                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
-                        <SelectValue placeholder="All Country" />
+                  <Select
+                     onValueChange={handleInvestorCountryChange}
+                     value={countryInvestorStatus}
+                    >
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+                        <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {/* <SelectItem value="all">All Country</SelectItem>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem> */}
+                          {countries.map((country) => (
+            
+                          <SelectItem value={country.name}>{country.name}</SelectItem> 
+                          ))}
+                         
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -504,6 +660,20 @@ const Members = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    <Select onValueChange={handleInvestorCountryChange} value={selectedInvestorDate}>
+      <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+        <SelectValue placeholder="Select Date" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {dateOptions.map((option) => (
+            <SelectItem key={option.name} value={option.value ?? 'null'}>
+              {option.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
                   </div>
                   <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
                     <Image
@@ -526,6 +696,50 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
+                  <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+          {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (paginationOther?.hasPrevPage) {
+              setInvestorPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={paginationOther?.page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (paginationOther?.hasNextPage) {
+              setInvestorPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={paginationOther?.page * paginationOther?.limit >=
+            paginationOther?.totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
               
            
           </TabsContent>
@@ -533,15 +747,20 @@ const Members = () => {
            
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
-                    <Select>
-                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
-                        <SelectValue placeholder="All Country" />
+                  <Select
+                     onValueChange={handleCreatorCountryChange}
+                     value={countryCreatorStatus}
+                    >
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+                        <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {/* <SelectItem value="all">All Country</SelectItem>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem> */}
+                          {countries.map((country) => (
+            
+                          <SelectItem value={country.name}>{country.name}</SelectItem> 
+                          ))}
+                         
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -560,6 +779,20 @@ const Members = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    <Select onValueChange={handleCreatorDateChange} value={selectedCreatorDate}>
+      <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+        <SelectValue placeholder="Select Date" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {dateOptions.map((option) => (
+            <SelectItem key={option.name} value={option.value ?? 'null'}>
+              {option.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
                   </div>
                   <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
                     <Image
@@ -582,21 +815,69 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
-            
+                 <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+          {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (paginationOther?.hasPrevPage) {
+              setCreatorPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={paginationOther?.page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (paginationOther?.hasNextPage) {
+              setCreatorPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={paginationOther?.page * paginationOther?.limit >=
+            paginationOther?.totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
           </TabsContent>
           <TabsContent value="fan">
            
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-[16px]">
-                    <Select>
-                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4]">
-                        <SelectValue placeholder="All Country" />
+                  <Select
+                     onValueChange={handleFanCountryChange}
+                     value={countryFanStatus}
+                    >
+                      <SelectTrigger className="w-[128px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+                        <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {/* <SelectItem value="all">All Country</SelectItem>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem> */}
+                          {countries.map((country) => (
+            
+                          <SelectItem value={country.name}>{country.name}</SelectItem> 
+                          ))}
+                         
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -615,6 +896,21 @@ const Members = () => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+
+                    <Select onValueChange={handleFanDateChange} value={selectedFanDate}>
+      <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 focus:ring-transparent border-[#E4E4E4] shadow-sm">
+        <SelectValue placeholder="Select Date" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {dateOptions.map((option) => (
+            <SelectItem key={option.name} value={option.value ?? 'null'}>
+              {option.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
                   </div>
                   <div className="flex w-[350px] items-center border border-[#E4E4E4] px-2 rounded-md ">
                     <Image
@@ -637,6 +933,50 @@ const Members = () => {
                   columns={columns}
                   placeholder="Search username, full name..."
                 />
+                  <div className="flex items-center justify-start space-x-2 px-4 py-4">
+        <div>
+          <p className="text-[14px]">
+          {(paginationOther?.page - 1) * paginationOther?.limit + 1} -{" "}
+          {Math.min(paginationOther?.page * paginationOther?.limit, paginationOther?.totalDocs)} of {paginationOther?.totalDocs}
+          </p>
+        </div>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (paginationOther?.hasPrevPage) {
+              setFanPage((prevPage) => prevPage - 1); 
+            }
+          }}
+          disabled={paginationOther?.page <= 1}
+        >
+          <Image
+            src={"/icons/backbutton.svg"}
+            height={20}
+            width={20}
+            alt="backbutton"
+          />
+        </Button>
+        <Button
+          className="p-0 bg-transparent hover:bg-transparent"
+          size="sm"
+          onClick={() => {
+            if (paginationOther?.hasNextPage) {
+              setFanPage((prevPage) => prevPage + 1); 
+            }
+          }}
+          disabled={paginationOther?.page * paginationOther?.limit >=
+            paginationOther?.totalDocs
+          }
+        >
+          <Image
+            src={"/icons/forwardbutton.svg"}
+            height={20}
+            width={20}
+            alt="forwardbutton"
+          />
+        </Button>
+      </div>
              
           </TabsContent>
         </Tabs>
@@ -663,7 +1003,7 @@ const Members = () => {
                 alt="cancelIcon"
                 className="cursor-pointer transition-all active:scale-95 "
                 onClick={() => {
-                  setIsSheetOpen(false);
+                  closeSheet()
                 }}
                 width={26}
                 height={26}
@@ -672,14 +1012,15 @@ const Members = () => {
           </SheetHeader>
           <div className="flex flex-col">
             <div className="flex items-center space-x-[12px] mt-[40px] mb-[28px]">
-              <Avatar>
-                <AvatarImage
-                  className="object-contain"
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+            <Avatar>
+              <AvatarImage
+                className="object-cover"
+                src={profileData?.image}
+                alt="@shadcn"
+              />
+              <AvatarFallback className="bg-gray-200 text-black">
+              {profileData?.name?.[0] || ""}              </AvatarFallback>
+            </Avatar>
               <div>
                 <p className="text-[20px] font-medium text-[#111810]">
                   {profileData?.full_name}
@@ -750,7 +1091,7 @@ const Members = () => {
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Interested Creators</p>
-                <p className="">interested creators</p>
+                <p className="">___</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Active Camapaigns</p>
@@ -762,7 +1103,7 @@ const Members = () => {
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">No Of Investor</p>
-                <p className="">investor</p>
+                <p className="">___</p>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <p className=" text-[#A4A4A4]">Verification</p>
@@ -782,7 +1123,6 @@ const Members = () => {
 
                     setprofileData(data);
                   } catch (error) {
-                    console.error("Error updating status:", error);
                   }
                 }}
                 className="w-full bg-[#C83532] text-white hover:bg-[#C83532] transition-all active:scale-95"
@@ -796,7 +1136,6 @@ const Members = () => {
                     const data = await updateStatus(profileData?.id, "active");
                     setprofileData(data);
                   } catch (error) {
-                    console.error("Error updating status:", error);
                   }
                 }}
                 className="w-full bg-[#2BAC47] text-white hover:bg-[#2BAC47] transition-all active:scale-95"

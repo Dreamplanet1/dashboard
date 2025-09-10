@@ -19,7 +19,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   }, [user, router]);
 
   return (
-    <body className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
+    <div className={`${AeonikFont.className} ${RecoletaFont.variable}`}>
       <div className="px-4 min-h-screen flex flex-col">
         <Navbar />
         <div className="flex flex-grow">
@@ -33,7 +33,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
       <Toaster />
 
-    </body>
+    </div>
   );
 };
 

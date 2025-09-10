@@ -38,7 +38,10 @@ import FadeLoader from "react-spinners/FadeLoader";
 const ForumAnalytics = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const {allForums, forumMembers} = useSelector((state: RootState) => state.forum);
-  const {getAllForums, getForumMembers, deleteForumMember, forumLoading, forumSheetLoading} = useForum();
+  const {getAllForums, getForumMembers, deleteForumMember, forumLoading, forumSheetLoading, forumPage, setForumPage} = useForum();
+  const {hasNextPage, hasPrevPage, limit, page, totalDocs} = useSelector(
+    (state: RootState) => state.forum.pagination
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [searchForum, setSearchForum] = useState('');
   const [forumId, setForumId] = useState(0);
@@ -63,12 +66,22 @@ const ForumAnalytics = () => {
   };
   
   useEffect(() => {
+    setForumPage(1);
    getAllForums(searchForum)
   },[searchForum])
 
   useEffect(() => {
+    setForumPage(1);
+    getAllForums()
+   },[])
+
+  useEffect(() => {
+    getAllForums(searchForum)
+   },[forumPage])
+
+  useEffect(() => {
     getForumMembers(forumId, searchTerm);
-  },[searchTerm, setSearchTerm])
+  },[searchTerm])
 
   const columns: ColumnDef<any>[] = [
     {
@@ -202,9 +215,9 @@ const ForumAnalytics = () => {
   )}
       <div>
         <h2 className="text-2xl"> Forum Analytics</h2>
-        <p className="text-sm text-[#A8A8A8]">
+        {/* <p className="text-sm text-[#A8A8A8]">
           Lorem ipsum dolor sit amet consectetur.
-        </p>
+        </p> */}
       </div>
       {/* <div className="flex items-center space-x-[50px] w-full">
         <div className="space-y-2">
@@ -270,6 +283,52 @@ const ForumAnalytics = () => {
           data={allForums}
           columns={columns}
         />
+         {totalDocs !== 0 && 
+                   <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                   <div>
+                   <p className="text-[14px]">
+                  {(page - 1) * limit + 1} -{" "}
+                  {Math.min(page * limit, totalDocs)} of {totalDocs}
+                  </p>
+                   </div>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasPrevPage) {
+                         setForumPage((prevPage) => prevPage - 1); 
+                       }
+                     }}
+                     disabled={page <= 1}
+                   >
+                     <Image
+                       src={"/icons/backbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="backbutton"
+                     />
+                   </Button>
+                   <Button
+                     className="p-0 bg-transparent hover:bg-transparent"
+                     size="sm"
+                     onClick={() => {
+                       if (hasNextPage) {
+                         setForumPage((prevPage) => prevPage + 1); 
+                       }
+                     }}
+                     disabled={page * limit >=
+                     totalDocs
+                     }
+                   >
+                     <Image
+                       src={"/icons/forwardbutton.svg"}
+                       height={20}
+                       width={20}
+                       alt="forwardbutton"
+                     />
+                   </Button>
+                 </div>
+                }
       </div>
 
       <Sheet open={isSheetOpen} onOpenChange={closeSheet}>
@@ -335,8 +394,10 @@ const ForumAnalytics = () => {
                       <p className="text-[#A4A4A4]">@{member.username}</p>
                     </div>
                   </div>
-                  <button onClick={() => {
-                    deleteForumMember(forumId, member?.id)
+                  <button onClick={async() => {
+                    await deleteForumMember(forumId, member?.id);
+                    setSearchTerm('');
+                    await getForumMembers(forumId);
                   }} className="text-[#C83532]">Delete</button>
                 </div>
               ))}
