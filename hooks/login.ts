@@ -37,7 +37,9 @@ const useLogin = () => {
       // If user has "full_access" → give them EVERY permission
       const permissions = rawFeatures.includes("full_access")
         ? Object.values(NAV_PERMISSIONS)
-        : rawFeatures.map((f) => NAV_PERMISSIONS[f]).filter(Boolean);
+        :rawFeatures
+  .map((f: string) => NAV_PERMISSIONS[f as keyof typeof NAV_PERMISSIONS])
+  .filter(Boolean);
 
       if (permissions.length === 0) {
         permissions.push("/");
