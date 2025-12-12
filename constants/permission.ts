@@ -1,0 +1,18 @@
+// constants/navPermissions.ts
+
+export const NAV_PERMISSIONS: Record<string, string> = {
+    full_access: "full_access",
+  Broadcast: "Broadcast",
+  Users: "Members",
+  Challenge: "Challenge",
+  Campaign: "Campaign",
+  Payments: "Payments",
+  Performance: "Performance",
+  Report: "Report",
+  "Code Generator": "Code Generator",
+  "Admin Setting": "Admin Setting",
+  Investments: "Investments",
+  Forum: "Forum",
+  "Change Password": "Change Password",
+  "Access Control": "Access Control",
+};

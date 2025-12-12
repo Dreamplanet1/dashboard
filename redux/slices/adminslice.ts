@@ -2,8 +2,26 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the interface for a single user object
 
-const initialState = {
-  loggedInUser: {} as any,
+interface AdminUser {
+  id?: number;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  role?: {
+    name: string;
+    features: string[]; // e.g. ["Broadcast", "Challenge", "Payments"]
+  };
+  permissions?: string[]; // ← we add this flattened array
+  [key: string]: any;
+}
+
+interface AdminState  {
+  loggedInUser: AdminUser;
+}
+
+
+const initialState : AdminState = {
+  loggedInUser: {},
 };
 
 // Redux slice

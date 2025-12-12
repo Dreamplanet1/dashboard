@@ -27,6 +27,8 @@ import useAdminsetting from "@/hooks/useAdminsetting";
 import FadeLoader from "react-spinners/FadeLoader";
 import { useRouter } from "next/navigation";
 import { countries } from "@/assets/country";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const features = [
   "Broadcast",
@@ -60,6 +62,8 @@ const AddMemberForm = () => {
   const [email, setEmail] = useState<string> ('');
   const [linkMail, setLinkMail] = useState<string> ('');
   const { createAdmin, adminLoading, sendLink } = useAdminsetting();
+  const [selectedRole, setSelectedRole] = useState<string> ('');
+  const { adminRoles } = useSelector((state: RootState) => state.adminsetting);
 
 
   return (
@@ -77,12 +81,13 @@ const AddMemberForm = () => {
     <div>
     <form
       onSubmit={async(e) => { e.preventDefault();
-        await createAdmin(firstName, lastName, selectedCountry,phoneNumber, email);
+        await createAdmin(firstName, lastName, selectedCountry,phoneNumber, email, Number(selectedRole));
         setSelectedCountry('');
         setFirstName('');
         setLastName('');
         setEmail('');
         setPhoneNumber('')
+        setSelectedRole('')
        }}
       className="mx-auto max-w-[500px]"
     >
@@ -100,8 +105,8 @@ const AddMemberForm = () => {
       <div className="w-full py-4 px-7  border-b flex items-center justify-between">
         <h2 className="text-[20px] font-normal">Add Admin</h2>
         <div className="space-x-2">
-        <Button type="button" onClick={() => setisOpen(true)} className="btnPlain">Send link</Button>
-         {selectedCountry && firstName && lastName && phoneNumber && email ?           <Button type="submit" className="btnColored">Add Admin</Button>
+        {/* <Button type="button" onClick={() => setisOpen(true)} className="btnPlain">Send link</Button> */}
+         {selectedCountry && firstName && lastName && phoneNumber && email && selectedRole ?           <Button type="submit" className="btnColored">Add Admin</Button>
 :           <Button disabled className="btnColoredInactive">Add Admin</Button>
  
  }
@@ -189,7 +194,7 @@ const AddMemberForm = () => {
               className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
           </div>
-          <div className="grid w-full  items-center gap-[8px]">
+          <div className="grid w-full items-center gap-[8px]">
             <Label
               className="font-medium text-[14px] text-[#10002E]"
               htmlFor="email"
@@ -197,7 +202,7 @@ const AddMemberForm = () => {
               Email
             </Label>
             <Input
-              type="text"
+              type="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -206,14 +211,34 @@ const AddMemberForm = () => {
               className="focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-[14px] placeholder:text-[#C8C8C8] border-[#C8C8C8] rounded-[8px]"
             />
           </div>
+
         
+              <div className="grid w-full items-center gap-[8px]">
+                <Label className="font-medium text-[14px] text-[#10002E]" htmlFor="role">
+                  Role
+                </Label>
+                <Select value={selectedRole} onValueChange={setSelectedRole}>
+                  <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0 border-[#C8C8C8]">
+                    <SelectValue placeholder="Select Role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {adminRoles.map((role) => (
+                        <SelectItem key={role.id} value={role.id.toString()}>
+                          {role.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
       </div>
       </div>
       
     </form>
     </div>
     
-        <Dialog open={isOpen} onOpenChange={closeOpenDialog}>
+        {/* <Dialog open={isOpen} onOpenChange={closeOpenDialog}>
            
             <DialogContent className="sm:max-w-md px-0">
             <DialogHeader className="pb-[18.5px] border-b">
@@ -274,7 +299,7 @@ const AddMemberForm = () => {
                
               </DialogFooter>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
     </>
     
   );

@@ -12,17 +12,36 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "@/redux/slices/adminslice";
+import { RootState } from "@/redux/store";
+import { NAV_PERMISSIONS } from "@/constants/permission";
 
 const Sidebar = () => {
   const path = usePathname();
   const dispatch = useDispatch();
 
+  const permissions = useSelector((state: RootState) => 
+    state.admin.loggedInUser.permissions || []
+  );
+
+  const hasPermission = (featureName: string) => {
+    const required = NAV_PERMISSIONS[featureName];
+    return permissions.includes(required);
+  };
+
+  const visibleLinks = NavLinks.filter((item: any) => {
+    // Always allow logout & change password
+    if (item.name === "Change Password") return true;
+    
+    return hasPermission(item.name);
+  });
+
   return (
     <div className="flex flex-col items-center justify-between space-y-10 ">
       <div className="flex flex-col w-full grow  space-y-[12px]">
-        {NavLinks.map((item: any) => {
+
+       {visibleLinks.map((item: any) => {
           const isActive =
             (path.includes(`${item.href}`) && item.href !== "/") ||
             (item.href === "/" && path === "/");

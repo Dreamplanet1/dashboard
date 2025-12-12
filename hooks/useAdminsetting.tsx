@@ -106,7 +106,7 @@ const useAdminsetting = () => {
     }
   };
 
-  const createAdmin = async (firstName: string, lastName: string, country: string, phoneNumber: string, email: string) => {
+  const createAdmin = async (firstName: string, lastName: string, country: string, phoneNumber: string, email: string, roleId?: number) => {
     setadminLoading(true);
     try {
       await axios.post(`${base_url}/admin-settings/create-admin`, {
@@ -116,6 +116,7 @@ const useAdminsetting = () => {
         phone_number: phoneNumber,
         email,
         status: "pending",
+        role_id: roleId,
       });
       toast({
         variant: "default",

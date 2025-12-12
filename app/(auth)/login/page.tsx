@@ -69,6 +69,7 @@ const Login = () => {
        {
         email && password ?  <button
         onClick={async() => {
+          console.log("signin")
          await login(email, password);
           setEmail('');
           setPassword('');

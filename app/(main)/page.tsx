@@ -4,7 +4,7 @@ import React from "react";
 
 const page = () => {
   const router = useRouter();
-  router.push("/broadcast");
+  router.push("/changepassword");
   return <div></div>;
 };
 

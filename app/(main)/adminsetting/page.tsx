@@ -59,23 +59,40 @@ const features = [
   "Admin Setting",
   "Investments",
   "Forum",
-  "Change Password"
+  "Change Password",
 ];
 
 const AdminSetting = () => {
-    const router = useRouter();
-    const { pagination, paginationPending } = useSelector(
-      (state: RootState) => state.adminsetting
-    );
-    const {  getAdminAccepted, getAdminPending, createAdminRole, updateAdminStatus, deleteAdmin, updateAdminRole, adminLoading, pendingPage, setPendingPage, acceptedPage, setAcceptedPage } = useAdminsetting();
-    const { adminRoles, pendingAdmin, acceptedAdmin } = useSelector((state: RootState) => state.adminsetting);
+  const router = useRouter();
+  const { pagination, paginationPending } = useSelector(
+    (state: RootState) => state.adminsetting
+  );
+  const {
+    getAdminAccepted,
+    getAdminPending,
+    createAdminRole,
+    updateAdminStatus,
+    deleteAdmin,
+    updateAdminRole,
+    adminLoading,
+    pendingPage,
+    setPendingPage,
+    acceptedPage,
+    setAcceptedPage,
+  } = useAdminsetting();
+  const { adminRoles, pendingAdmin, acceptedAdmin } = useSelector(
+    (state: RootState) => state.adminsetting
+  );
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [selectedRole, setSelectedRole] = useState<string>("");
   const [adminId, setAdminId] = useState<number>(0);
-  const [selectedMoveRole, setSelectedMoveRole] = useState<{ id: number; name: string } | null>(null);
+  const [selectedMoveRole, setSelectedMoveRole] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,13 +109,11 @@ const AdminSetting = () => {
   }, [isMoveDialogOpen]);
   useEffect(() => {
     getAdminPending();
-  }, [pendingPage])
+  }, [pendingPage]);
 
   useEffect(() => {
-      getAdminAccepted();
-  
+    getAdminAccepted();
   }, [acceptedPage]);
-
 
   useEffect(() => {
     const hideChevronsInTrigger = () => {
@@ -149,18 +164,14 @@ const AdminSetting = () => {
   const closeMoveDialog = () => {
     setSelectedMoveRole(null);
     setIsMoveDialogOpen(false);
+  };
 
-  }
-
-  
   const handleRoleChange = (roleId: number) => {
-    const selected = adminRoles.find(role => role.id === roleId);
+    const selected = adminRoles.find((role) => role.id === roleId);
     if (selected) {
       setSelectedMoveRole({ id: selected.id, name: selected.name });
     }
   };
-
-
 
   const columns: ColumnDef<any>[] = [
     {
@@ -168,22 +179,17 @@ const AdminSetting = () => {
       header: "Admin Name",
       cell: ({ row }) => {
         const profile = row.original;
-        return(
-            <div className="flex items-center space-x-1">
+        return (
+          <div className="flex items-center space-x-1">
             <Avatar>
-              <AvatarImage
-                className="object-cover"
-                src=""
-                alt="@shadcn"
-              />
+              <AvatarImage className="object-cover" src="" alt="@shadcn" />
               <AvatarFallback>{profile.first_name[0]}</AvatarFallback>
             </Avatar>
             <div>
               <p>{row.getValue("first_name")}</p>
             </div>
           </div>
-        )
-       
+        );
       },
     },
     {
@@ -204,24 +210,24 @@ const AdminSetting = () => {
       ),
     },
     {
-        accessorKey: "createdAt",
-        header: "Date Joined",
-        cell: ({ row }) => {
-          const createdAt = row.getValue("createdAt") as string; // Cast to string
-          const formattedDate = new Date(createdAt).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          });
-  
-          return <p className="text-[14px] text-[#373737]">{formattedDate}</p>;
-        },
+      accessorKey: "createdAt",
+      header: "Date Joined",
+      cell: ({ row }) => {
+        const createdAt = row.getValue("createdAt") as string; // Cast to string
+        const formattedDate = new Date(createdAt).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+
+        return <p className="text-[14px] text-[#373737]">{formattedDate}</p>;
       },
+    },
     {
       accessorKey: "options",
       header: "",
-      cell: ({row}) => {
-        const profile = row.original
+      cell: ({ row }) => {
+        const profile = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -230,9 +236,7 @@ const AdminSetting = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="space-y-2">
-              <DropdownMenuItem
-                className="flex items-center space-x-2"
-              >
+              <DropdownMenuItem className="flex items-center space-x-2">
                 <span>
                   <Image
                     src={"/icons/more.svg"}
@@ -246,8 +250,8 @@ const AdminSetting = () => {
               <DropdownMenuItem
                 className="flex items-center space-x-2"
                 onClick={() => {
-                  setAdminId(profile?.id)
-                  setIsMoveDialogOpen(true)
+                  setAdminId(profile?.id);
+                  setIsMoveDialogOpen(true);
                 }}
               >
                 <span>
@@ -262,9 +266,9 @@ const AdminSetting = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={async() => {
+                onClick={async () => {
                   await deleteAdmin(profile?.id);
-                  await getAdminAccepted()
+                  await getAdminAccepted();
                 }}
               >
                 <span>
@@ -290,22 +294,17 @@ const AdminSetting = () => {
       header: "Admin Name",
       cell: ({ row }) => {
         const profile = row.original;
-        return(
-            <div className="flex items-center space-x-1">
+        return (
+          <div className="flex items-center space-x-1">
             <Avatar>
-              <AvatarImage
-                className="object-cover"
-                src=""
-                alt="@shadcn"
-              />
+              <AvatarImage className="object-cover" src="" alt="@shadcn" />
               <AvatarFallback>{profile.first_name[0]}</AvatarFallback>
             </Avatar>
             <div>
               <p>{row.getValue("first_name")}</p>
             </div>
           </div>
-        )
-       
+        );
       },
     },
     {
@@ -326,23 +325,23 @@ const AdminSetting = () => {
       ),
     },
     {
-        accessorKey: "createdAt",
-        header: "Date Joined",
-        cell: ({ row }) => {
-          const createdAt = row.getValue("createdAt") as string; // Cast to string
-          const formattedDate = new Date(createdAt).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          });
-  
-          return <p className="text-[14px] text-[#373737]">{formattedDate}</p>;
-        },
+      accessorKey: "createdAt",
+      header: "Date Joined",
+      cell: ({ row }) => {
+        const createdAt = row.getValue("createdAt") as string; // Cast to string
+        const formattedDate = new Date(createdAt).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+
+        return <p className="text-[14px] text-[#373737]">{formattedDate}</p>;
       },
+    },
     {
       accessorKey: "options",
       header: "",
-      cell: ({row}) => {
+      cell: ({ row }) => {
         const profile = row.original;
         return (
           <DropdownMenu>
@@ -365,9 +364,9 @@ const AdminSetting = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex items-center space-x-2"
-                onClick={async() => {
-                   await updateAdminStatus(profile.id);
-                   await getAdminPending()
+                onClick={async () => {
+                  await updateAdminStatus(profile.id);
+                  await getAdminPending();
                 }}
               >
                 <span>
@@ -380,10 +379,13 @@ const AdminSetting = () => {
                 </span>
                 <p>Move to accepted</p>
               </DropdownMenuItem>
-              <DropdownMenuItem  onClick={async() => {
+              <DropdownMenuItem
+                onClick={async () => {
                   await deleteAdmin(profile?.id);
-                  await getAdminPending()
-                }} className="flex items-center space-x-2">
+                  await getAdminPending();
+                }}
+                className="flex items-center space-x-2"
+              >
                 <span>
                   <Image
                     src={"/icons/delete.svg"}
@@ -403,14 +405,14 @@ const AdminSetting = () => {
 
   return (
     <div className="grid grid-cols-8 space-x-4">
-       {adminLoading && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
-        <FadeLoader color="#7E2D02" />
-        <p className="text-[#111810] text-[20px]">Processing...</p>
-      </div>
-    </div> 
-  )}
+      {adminLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+            <FadeLoader color="#7E2D02" />
+            <p className="text-[#111810] text-[20px]">Processing...</p>
+          </div>
+        </div>
+      )}
       <section className="col-span-6 flex flex-col space-y-7">
         <div className="flex items-center justify-between">
           <div>
@@ -420,21 +422,24 @@ const AdminSetting = () => {
             </p>
           </div>
           <div className="flex items-center space-x-[8px]">
-          <Button onClick={() => {
-            router.push('/addAdmin')
-          }} className="btnColored">
-            <PlusIcon size={20} />
-            Add Admin
-          </Button>
-          <Button onClick={() => {
-            setIsDialogOpen(true)
-          }} className="btnPlain">
-            
-            Create Role
-          </Button>
-
+            <Button
+              onClick={() => {
+                router.push("/addAdmin");
+              }}
+              className="btnColored"
+            >
+              <PlusIcon size={20} />
+              Add Admin
+            </Button>
+            <Button
+              onClick={() => {
+                setIsDialogOpen(true);
+              }}
+              className="btnPlain"
+            >
+              Create Role
+            </Button>
           </div>
-        
         </div>
         <div>
           <Tabs defaultValue="accepted">
@@ -443,7 +448,7 @@ const AdminSetting = () => {
                 className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="accepted"
                 onClick={() => {
-                    getAdminAccepted();
+                  getAdminAccepted();
                 }}
               >
                 Accepted Request
@@ -452,63 +457,65 @@ const AdminSetting = () => {
                 className="rounded-none font-normal my-0 text-[#A4A4A4] px-0 py-2 data-[state=active]:border-b-[#F75803] data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium data-[state=active]:bg-transparent"
                 value="pending"
                 onClick={() => {
-                    getAdminPending();
+                  getAdminPending();
                 }}
               >
                 Pending Request
               </TabsTrigger>
             </TabsList>
             <TabsContent value="accepted">
-              <UserTable
-                data={acceptedAdmin}
-                columns={columns}
-              />
-              {pagination?.totalDocs !== 0 && 
-                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
-                         <div>
-                         <p className="text-[14px]">
-                        {(pagination?.page - 1) * pagination?.limit + 1} -{" "}
-                        {Math.min(pagination?.page * pagination?.limit, pagination?.totalDocs)} of {pagination?.totalDocs}
-                        </p>
-                         </div>
-                         <Button
-                           className="p-0 bg-transparent hover:bg-transparent"
-                           size="sm"
-                           onClick={() => {
-                             if (pagination?.hasPrevPage) {
-                               setAcceptedPage((prevPage) => prevPage - 1); 
-                             }
-                           }}
-                           disabled={pagination?.page <= 1}
-                         >
-                           <Image
-                             src={"/icons/backbutton.svg"}
-                             height={20}
-                             width={20}
-                             alt="backbutton"
-                           />
-                         </Button>
-                         <Button
-                           className="p-0 bg-transparent hover:bg-transparent"
-                           size="sm"
-                           onClick={() => {
-                             if (pagination?.hasNextPage) {
-                               setAcceptedPage((prevPage) => prevPage + 1); 
-                             }
-                           }}
-                           disabled={pagination?.page * pagination?.limit >=
-                           pagination?.totalDocs
-                           }
-                         >
-                           <Image
-                             src={"/icons/forwardbutton.svg"}
-                             height={20}
-                             width={20}
-                             alt="forwardbutton"
-                           />
-                         </Button>
-                       </div>
+              <UserTable data={acceptedAdmin} columns={columns} />
+              {pagination?.totalDocs !== 0 && (
+                <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                  <div>
+                    <p className="text-[14px]">
+                      {(pagination?.page - 1) * pagination?.limit + 1} -{" "}
+                      {Math.min(
+                        pagination?.page * pagination?.limit,
+                        pagination?.totalDocs
+                      )}{" "}
+                      of {pagination?.totalDocs}
+                    </p>
+                  </div>
+                  <Button
+                    className="p-0 bg-transparent hover:bg-transparent"
+                    size="sm"
+                    onClick={() => {
+                      if (pagination?.hasPrevPage) {
+                        setAcceptedPage((prevPage) => prevPage - 1);
                       }
+                    }}
+                    disabled={pagination?.page <= 1}
+                  >
+                    <Image
+                      src={"/icons/backbutton.svg"}
+                      height={20}
+                      width={20}
+                      alt="backbutton"
+                    />
+                  </Button>
+                  <Button
+                    className="p-0 bg-transparent hover:bg-transparent"
+                    size="sm"
+                    onClick={() => {
+                      if (pagination?.hasNextPage) {
+                        setAcceptedPage((prevPage) => prevPage + 1);
+                      }
+                    }}
+                    disabled={
+                      pagination?.page * pagination?.limit >=
+                      pagination?.totalDocs
+                    }
+                  >
+                    <Image
+                      src={"/icons/forwardbutton.svg"}
+                      height={20}
+                      width={20}
+                      alt="forwardbutton"
+                    />
+                  </Button>
+                </div>
+              )}
             </TabsContent>
             <TabsContent value="pending">
               <UserTable
@@ -516,52 +523,60 @@ const AdminSetting = () => {
                 data={pendingAdmin}
                 columns={moveColumns}
               />
-              {paginationPending?.totalDocs !== 0 && 
-                         <div className="flex items-center justify-start space-x-2 px-4 py-4">
-                         <div>
-                         <p className="text-[14px]">
-                        {(paginationPending?.page - 1) * paginationPending?.limit + 1} -{" "}
-                        {Math.min(paginationPending?.page * paginationPending?.limit, paginationPending?.totalDocs)} of {paginationPending?.totalDocs}
-                        </p>
-                         </div>
-                         <Button
-                           className="p-0 bg-transparent hover:bg-transparent"
-                           size="sm"
-                           onClick={() => {
-                             if (paginationPending?.hasPrevPage) {
-                               setPendingPage((prevPage) => prevPage - 1); 
-                             }
-                           }}
-                           disabled={paginationPending?.page <= 1}
-                         >
-                           <Image
-                             src={"/icons/backbutton.svg"}
-                             height={20}
-                             width={20}
-                             alt="backbutton"
-                           />
-                         </Button>
-                         <Button
-                           className="p-0 bg-transparent hover:bg-transparent"
-                           size="sm"
-                           onClick={() => {
-                             if (paginationPending?.hasNextPage) {
-                               setPendingPage((prevPage) => prevPage + 1); 
-                             }
-                           }}
-                           disabled={paginationPending?.page * paginationPending?.limit >=
-                          paginationPending?.totalDocs
-                           }
-                         >
-                           <Image
-                             src={"/icons/forwardbutton.svg"}
-                             height={20}
-                             width={20}
-                             alt="forwardbutton"
-                           />
-                         </Button>
-                       </div>
+              {paginationPending?.totalDocs !== 0 && (
+                <div className="flex items-center justify-start space-x-2 px-4 py-4">
+                  <div>
+                    <p className="text-[14px]">
+                      {(paginationPending?.page - 1) *
+                        paginationPending?.limit +
+                        1}{" "}
+                      -{" "}
+                      {Math.min(
+                        paginationPending?.page * paginationPending?.limit,
+                        paginationPending?.totalDocs
+                      )}{" "}
+                      of {paginationPending?.totalDocs}
+                    </p>
+                  </div>
+                  <Button
+                    className="p-0 bg-transparent hover:bg-transparent"
+                    size="sm"
+                    onClick={() => {
+                      if (paginationPending?.hasPrevPage) {
+                        setPendingPage((prevPage) => prevPage - 1);
                       }
+                    }}
+                    disabled={paginationPending?.page <= 1}
+                  >
+                    <Image
+                      src={"/icons/backbutton.svg"}
+                      height={20}
+                      width={20}
+                      alt="backbutton"
+                    />
+                  </Button>
+                  <Button
+                    className="p-0 bg-transparent hover:bg-transparent"
+                    size="sm"
+                    onClick={() => {
+                      if (paginationPending?.hasNextPage) {
+                        setPendingPage((prevPage) => prevPage + 1);
+                      }
+                    }}
+                    disabled={
+                      paginationPending?.page * paginationPending?.limit >=
+                      paginationPending?.totalDocs
+                    }
+                  >
+                    <Image
+                      src={"/icons/forwardbutton.svg"}
+                      height={20}
+                      width={20}
+                      alt="forwardbutton"
+                    />
+                  </Button>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>
@@ -569,55 +584,53 @@ const AdminSetting = () => {
       <section className="col-span-2 border">
         <h2 className="p-[20px] pb-[12px] border-b font-medium">
           Admin Roles{" "}
-          <span className="text-[#808080] font-Recoleta font-medium">({adminRoles?.length})</span>
+          <span className="text-[#808080] font-Recoleta font-medium">
+            ({adminRoles?.length})
+          </span>
         </h2>
         <Accordion type="single" collapsible>
-        {adminRoles.map((role: any) => (
- <AccordionItem className="px-[20px] pb-[16px]" value={role?.id}>
- <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-   <p className="text-[#373737] font-normal ">
-        {role?.name}
-     <span className="font-Recoleta font-medium text-[#F75803]">
-       {" "}
-       ({role?.features?.length})
-     </span>
-   </p>
-   <Image
-     src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
-     alt="right arrow"
-     width={16}
-     height={16}
-   />
- </AccordionTrigger>
- <AccordionContent className="pt-[16px] space-y-[18px]">
-   {role?.features?.map((feature: any) => (
- <p className="text-[#7E2D02] text-[14px] flex items-center">
- <span>
-   <Image
-     src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
-     width={13.01}
-     height={12.51}
-     alt="profile Icon"
-     className="mr-[8px]"
-   />
- </span>
- {feature}
-</p>
-   ))}
-  
-  
- </AccordionContent>
-</AccordionItem>
-        ))}
-         
-       
+          {adminRoles.map((role: any) => (
+            <AccordionItem className="px-[20px] pb-[16px]" value={role?.id}>
+              <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
+                <p className="text-[#373737] font-normal ">
+                  {role?.name}
+                  <span className="font-Recoleta font-medium text-[#F75803]">
+                    {" "}
+                    ({role?.features?.length})
+                  </span>
+                </p>
+                <Image
+                  src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
+                  alt="right arrow"
+                  width={16}
+                  height={16}
+                />
+              </AccordionTrigger>
+              <AccordionContent className="pt-[16px] space-y-[18px]">
+                {role?.features?.map((feature: any) => (
+                  <p className="text-[#7E2D02] text-[14px] flex items-center">
+                    <span>
+                      <Image
+                        src={"/DASHBOARDASSETS/ICONS/PROFILE.svg"}
+                        width={13.01}
+                        height={12.51}
+                        alt="profile Icon"
+                        className="mr-[8px]"
+                      />
+                    </span>
+                    {feature}
+                  </p>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </section>
 
       {/* Dialog for "More Info" */}
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
         <DialogContent className="sm:max-w-[432px]  max-h-[80vh] overflow-y-scroll scrollbar-hide ">
-            <DialogDescription className="hidden"></DialogDescription>
+          <DialogDescription className="hidden"></DialogDescription>
           <DialogHeader>
             <DialogTitle className="font-medium">Create Role</DialogTitle>
           </DialogHeader>
@@ -638,9 +651,14 @@ const AdminSetting = () => {
                   </SelectGroup>
                 </SelectContent>
               </Select> */}
-              <Input placeholder="Select Role" value={selectedRole} onChange={(e) => {
-                setSelectedRole(e.target.value)
-              }} className="focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-0 p-[12px] placeholder:text-[#111810] rounded-[8px] border-[#C8C8C8]"/>
+              <Input
+                placeholder="Select Role"
+                value={selectedRole}
+                onChange={(e) => {
+                  setSelectedRole(e.target.value);
+                }}
+                className="focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-0 p-[12px] placeholder:text-[#111810] rounded-[8px] border-[#C8C8C8]"
+              />
             </div>
             <div className="flex flex-col space-y-2">
               <Label htmlFor="features" className="font-medium">
@@ -726,36 +744,31 @@ const AdminSetting = () => {
             </div>
           </div>
           <DialogFooter>
-            {selectedRole && selectedFeatures.length > 0 ? <>
+            {selectedRole && selectedFeatures.length > 0 ? (
+              <>
                 <Button
-              className="bg-transparent hover:bg-transparent transition hover:scale-105 active:scale-95 text-black border"
-              onClick={closeDialog}
-            >
-              Cancel
-            </Button>
-            <Button 
-            onClick={ async() => {
-              await createAdminRole(selectedRole, selectedFeatures);
-              await getAdminAccepted();
-                closeDialog();
-
-            }}
-            className="bg-[#F75803] hover:bg-[#F75803] transition hover:scale-105 active:scale-95">
-              Update
-            </Button>
-            </> :
-            <>
-            <Button
-          className="btnPlainInactive"
-        >
-          Cancel
-        </Button>
-        <Button className="btnColoredInactive">
-          Update
-        </Button>
-        </>
-            }
-           
+                  className="bg-transparent hover:bg-transparent transition hover:scale-105 active:scale-95 text-black border"
+                  onClick={closeDialog}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={async () => {
+                    await createAdminRole(selectedRole, selectedFeatures);
+                    await getAdminAccepted();
+                    closeDialog();
+                  }}
+                  className="bg-[#F75803] hover:bg-[#F75803] transition hover:scale-105 active:scale-95"
+                >
+                  Update
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button className="btnPlainInactive">Cancel</Button>
+                <Button className="btnColoredInactive">Update</Button>
+              </>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -785,22 +798,23 @@ const AdminSetting = () => {
                 Role
               </Label>
 
-              <Select onValueChange={(value) => handleRoleChange(Number(value))}>
-        <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0">
-          <SelectValue placeholder="Select Role" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {adminRoles.map((role) => (
-              <SelectItem key={role.id} value={role.id.toString()}>
-                {role.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+              <Select
+                onValueChange={(value) => handleRoleChange(Number(value))}
+              >
+                <SelectTrigger className="w-full focus:ring-0 focus:ring-offset-0">
+                  <SelectValue placeholder="Select Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {adminRoles.map((role) => (
+                      <SelectItem key={role.id} value={role.id.toString()}>
+                        {role.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
-           
           </div>
           <DialogFooter className="px-[16px]">
             <Button
@@ -809,15 +823,25 @@ const AdminSetting = () => {
             >
               Cancel
             </Button>
-           {selectedMoveRole !== null ?  <Button onClick={async() => {
-                          closeMoveDialog()
-              await updateAdminRole(adminId, selectedMoveRole.id, selectedMoveRole.name)
-            }} className="bg-[#F75803] hover:bg-[#F75803] transition hover:scale-105 active:scale-95">
-              Move
-            </Button>:  <Button disabled={true} className="bgColoredInactive">
-              Move
-            </Button>}
-           
+            {selectedMoveRole !== null ? (
+              <Button
+                onClick={async () => {
+                  closeMoveDialog();
+                  await updateAdminRole(
+                    adminId,
+                    selectedMoveRole.id,
+                    selectedMoveRole.name
+                  );
+                }}
+                className="bg-[#F75803] hover:bg-[#F75803] transition hover:scale-105 active:scale-95"
+              >
+                Move
+              </Button>
+            ) : (
+              <Button disabled={true} className="bgColoredInactive">
+                Move
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
