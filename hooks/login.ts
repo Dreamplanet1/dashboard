@@ -34,12 +34,14 @@ const useLogin = () => {
       const adminData = response?.data?.response?.admin;
       const rawFeatures = response.data.response.role?.features || [];
 
-      // If user has "full_access" → give them EVERY permission
+      // If user has "full_access" → give them EVERY permission available
       const permissions = rawFeatures.includes("full_access")
         ? Object.values(NAV_PERMISSIONS)
-        :rawFeatures
-  .map((f: string) => NAV_PERMISSIONS[f as keyof typeof NAV_PERMISSIONS])
-  .filter(Boolean);
+        : rawFeatures
+            .map(
+              (f: string) => NAV_PERMISSIONS[f as keyof typeof NAV_PERMISSIONS]
+            )
+            .filter(Boolean);
 
       if (permissions.length === 0) {
         permissions.push("/");
