@@ -1,4 +1,10 @@
-import { updateacceptedAdmin, updatePaginationAdminSetting, updatePaginationPendingAdminSetting, updatependingAdmin, updateRoles } from "@/redux/slices/adminsettingslice";
+import {
+  updateacceptedAdmin,
+  updatePaginationAdminSetting,
+  updatePaginationPendingAdminSetting,
+  updatependingAdmin,
+  updateRoles,
+} from "@/redux/slices/adminsettingslice";
 import { AppDispatch, RootState } from "@/redux/store";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -23,25 +29,25 @@ const useAdminsetting = () => {
         {
           page: acceptedPage,
           perPage: 20,
-          status: "accepted", 
+          status: "accepted",
         }
       );
-      
+
       dispatch(updateacceptedAdmin(response?.data?.response?.admin?.docs));
       dispatch(
-                updatePaginationAdminSetting({
-                            hasNextPage: response.data.response.admin.hasNextPage,
-                            hasPrevPage: response.data.response.admin.hasPrevPage,
-                            limit: response.data.response.admin.limit,
-                            nextPage: response.data.response.admin.nextPage,
-                            offset: response.data.response.admin.offset,
-                            page: response.data.response.admin.page,
-                            pagingCounter: response.data.response.admin.pagingCounter,
-                            prevPage: response.data.response.admin.prevPage,
-                            totalDocs: response.data.response.admin.totalDocs,
-                            totalPages: response.data.response.admin.totalPages,
-                          })
-                        );
+        updatePaginationAdminSetting({
+          hasNextPage: response.data.response.admin.hasNextPage,
+          hasPrevPage: response.data.response.admin.hasPrevPage,
+          limit: response.data.response.admin.limit,
+          nextPage: response.data.response.admin.nextPage,
+          offset: response.data.response.admin.offset,
+          page: response.data.response.admin.page,
+          pagingCounter: response.data.response.admin.pagingCounter,
+          prevPage: response.data.response.admin.prevPage,
+          totalDocs: response.data.response.admin.totalDocs,
+          totalPages: response.data.response.admin.totalPages,
+        })
+      );
       dispatch(updateRoles(response?.data?.response?.roles));
     } catch (error: any) {
       // alert(error?.message);
@@ -58,25 +64,25 @@ const useAdminsetting = () => {
         {
           page: pendingPage,
           perPage: 20,
-          status: "pending", 
+          status: "pending",
         }
       );
-      
+
       dispatch(updatependingAdmin(response?.data?.response?.admin?.docs));
       dispatch(
         updatePaginationPendingAdminSetting({
-                    hasNextPage: response.data.response.admin.hasNextPage,
-                    hasPrevPage: response.data.response.admin.hasPrevPage,
-                    limit: response.data.response.admin.limit,
-                    nextPage: response.data.response.admin.nextPage,
-                    offset: response.data.response.admin.offset,
-                    page: response.data.response.admin.page,
-                    pagingCounter: response.data.response.admin.pagingCounter,
-                    prevPage: response.data.response.admin.prevPage,
-                    totalDocs: response.data.response.admin.totalDocs,
-                    totalPages: response.data.response.admin.totalPages,
-                  })
-                );
+          hasNextPage: response.data.response.admin.hasNextPage,
+          hasPrevPage: response.data.response.admin.hasPrevPage,
+          limit: response.data.response.admin.limit,
+          nextPage: response.data.response.admin.nextPage,
+          offset: response.data.response.admin.offset,
+          page: response.data.response.admin.page,
+          pagingCounter: response.data.response.admin.pagingCounter,
+          prevPage: response.data.response.admin.prevPage,
+          totalDocs: response.data.response.admin.totalDocs,
+          totalPages: response.data.response.admin.totalPages,
+        })
+      );
       dispatch(updateRoles(response?.data?.response?.roles));
     } catch (error: any) {
       // alert(error?.message);
@@ -95,18 +101,25 @@ const useAdminsetting = () => {
       toast({
         variant: "default",
         description: "Role Created successfully",
-      })
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
         description: "Something went wrong",
-      })
+      });
     } finally {
       setadminLoading(false);
     }
   };
 
-  const createAdmin = async (firstName: string, lastName: string, country: string, phoneNumber: string, email: string, roleId?: number) => {
+  const createAdmin = async (
+    firstName: string,
+    lastName: string,
+    country: string,
+    phoneNumber: string,
+    email: string,
+    roleId?: number
+  ) => {
     setadminLoading(true);
     try {
       await axios.post(`${base_url}/admin-settings/create-admin`, {
@@ -121,13 +134,12 @@ const useAdminsetting = () => {
       toast({
         variant: "default",
         description: "Admin Created successfully",
-      })
+      });
     } catch (error: any) {
-      
       toast({
         variant: "destructive",
-        description: error.response.data.message ||"Couldn't create Admin",
-      })
+        description: error.response.data.message || "Couldn't create Admin",
+      });
     } finally {
       setadminLoading(false);
     }
@@ -143,12 +155,12 @@ const useAdminsetting = () => {
       toast({
         variant: "default",
         description: "Admin Updated successfully",
-      })
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
         description: "Status Update Failed",
-      })
+      });
     } finally {
       setadminLoading(false);
     }
@@ -167,7 +179,11 @@ const useAdminsetting = () => {
     }
   };
 
-  const updateAdminRole = async (id: number, roleId: number, roleName: string) => {
+  const updateAdminRole = async (
+    id: number,
+    roleId: number,
+    roleName: string
+  ) => {
     setadminLoading(true);
     try {
       await axios.post(`${base_url}/admin-settings/update-admin-role`, {
@@ -178,13 +194,13 @@ const useAdminsetting = () => {
       toast({
         variant: "default",
         description: "Admin Role Updated successfully",
-      })
+      });
       await getAdminAccepted();
     } catch (error: any) {
       toast({
         variant: "destructive",
         description: "Admin Role Update Failed",
-      })
+      });
     } finally {
       setadminLoading(false);
     }
@@ -194,23 +210,76 @@ const useAdminsetting = () => {
     setadminLoading(true);
     try {
       await axios.post(`${base_url}/admin-settings/send-link`, {
-      "email": email,
-      "link": "www.dreamplanet.org"
+        email: email,
+        link: "www.dreamplanet.org",
       });
       toast({
         variant: "default",
         description: "Link Sent Successfully",
-      })
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: error.response?.data?.message || 'An unexpected error occurred.', 
-      })
+        description:
+          error.response?.data?.message || "An unexpected error occurred.",
+      });
     } finally {
       setadminLoading(false);
     }
   };
+
+const updateRole = async (
+  id: number,
+  name: string,
+  features: string[]
+) => {
+  setadminLoading(true);
+  try {
+    await axios.post(`${base_url}/admin-settings/update-role`, {
+      id,
+      name,
+      features,
+    });
+
+    toast({
+      variant: "default",
+      description: "Role updated successfully",
+    });
+
+    await getAdminAccepted(); // refresh roles
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      description: error.response?.data?.message || "Failed to update role",
+    });
+  } finally {
+    setadminLoading(false);
+  }
+};
+
+
+const deleteRole = async (id: number) => {
+  setadminLoading(true);
+  try {
+    await axios.post(`${base_url}/admin-settings/delete-role`, { id });
+
+    toast({
+      variant: "default",
+      description: "Role deleted successfully",
+    });
+
+    await getAdminAccepted(); // refresh roles
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      description: "Failed to delete role",
+    });
+  } finally {
+    setadminLoading(false);
+  }
+};
+
 
   return {
     getAdminAccepted,
@@ -220,9 +289,14 @@ const useAdminsetting = () => {
     updateAdminStatus,
     deleteAdmin,
     updateAdminRole,
+     updateRole,
+  deleteRole,
     sendLink,
-    adminLoading, 
-    pendingPage, setPendingPage, acceptedPage, setAcceptedPage
+    adminLoading,
+    pendingPage,
+    setPendingPage,
+    acceptedPage,
+    setAcceptedPage,
   };
 };
 

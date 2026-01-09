@@ -48,10 +48,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import FadeLoader from "react-spinners/FadeLoader";
+import { updateRoles } from "@/redux/slices/adminsettingslice";
 
 const features = [
   "Broadcast",
-  "Members",
+  "Users",
   "Challenge",
   "Payments",
   "Performance",
@@ -74,6 +75,8 @@ const AdminSetting = () => {
     updateAdminStatus,
     deleteAdmin,
     updateAdminRole,
+    updateRole,
+    deleteRole,
     adminLoading,
     pendingPage,
     setPendingPage,
@@ -90,6 +93,14 @@ const AdminSetting = () => {
   const [selectedRole, setSelectedRole] = useState<string>("");
   const [adminId, setAdminId] = useState<number>(0);
   const [selectedMoveRole, setSelectedMoveRole] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+
+  const [editingRole, setEditingRole] = useState<any>(null); // Role being edited
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [roleToDelete, setRoleToDelete] = useState<{
     id: number;
     name: string;
   } | null>(null);
@@ -403,11 +414,52 @@ const AdminSetting = () => {
     },
   ];
 
+  const handleEditRole = (role: any) => {
+    setEditingRole(role);
+    setSelectedRole(role.name);
+    setSelectedFeatures(role.features || []);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteRole = (roleId: number, roleName: string) => {
+    setRoleToDelete({ id: roleId, name: roleName });
+    setIsDeleteDialogOpen(true);
+  };
+
+const confirmDelete = async () => {
+  if (!roleToDelete) return;
+
+  const roleId = roleToDelete.id;
+
+  // Close modal immediately
+  setIsDeleteDialogOpen(false);
+  setRoleToDelete(null);
+
+  // Let UI update before loader appears
+  await new Promise((res) => setTimeout(res, 50));
+
+  await deleteRole(roleId);
+
+  await getAdminAccepted(); // or refresh roles if you have getAdminRoles()
+};
+
+
+  const cancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+    setRoleToDelete(null);
+  };
+
+const handleUpdateRole = async () => {
+  if (!editingRole || !selectedRole || selectedFeatures.length === 0) return;
+  await updateRole(editingRole.id, selectedRole, selectedFeatures);
+};
+
+
   return (
     <div className="grid grid-cols-8 space-x-4">
       {adminLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px]">
+          <div className="bg-white flex flex-col items-center justify-center w-[432px] h-[160px] rounded-lg shadow-lg space-y-[8px] z-50">
             <FadeLoader color="#7E2D02" />
             <p className="text-[#111810] text-[20px]">Processing...</p>
           </div>
@@ -592,19 +644,50 @@ const AdminSetting = () => {
           {adminRoles.map((role: any) => (
             <AccordionItem className="px-[20px] pb-[16px]" value={role?.id}>
               <AccordionTrigger className=" accordion-trigger hover:no-underline  pt-[32px] pb-0">
-                <p className="text-[#373737] font-normal ">
-                  {role?.name}
-                  <span className="font-Recoleta font-medium text-[#F75803]">
-                    {" "}
-                    ({role?.features?.length})
-                  </span>
-                </p>
-                <Image
-                  src={"/DASHBOARDASSETS/ICONS/RIGHT ARROW.svg"}
-                  alt="right arrow"
-                  width={16}
-                  height={16}
-                />
+                <div className="flex items-center justify-between w-full">
+                  <p className="text-[#373737] font-normal ">
+                    {role?.name}
+                    <span className="font-Recoleta font-medium text-[#F75803]">
+                      {" "}
+                      ({role?.features?.length})
+                    </span>
+                  </p>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <EllipsisVertical className="h-4 w-4 text-[#808080]" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem
+                        className="flex items-center space-x-2 cursor-pointer"
+                        onClick={() => handleEditRole(role)}
+                      >
+                        <Image
+                          src="/icons/editicon.svg"
+                          alt="Edit"
+                          width={16}
+                          height={16}
+                        />
+                        <span>Edit Role</span>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        className="flex items-center space-x-2 text-red-600 focus:text-red-600 cursor-pointer"
+                        onClick={() => handleDeleteRole(role.id, role.name)}
+                      >
+                        <Image
+                          src="/icons/deleteiconred.svg"
+                          alt="Delete"
+                          width={16}
+                          height={16}
+                        />
+                        <span>Delete Role</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </AccordionTrigger>
               <AccordionContent className="pt-[16px] space-y-[18px]">
                 {role?.features?.map((feature: any) => (
@@ -628,11 +711,24 @@ const AdminSetting = () => {
       </section>
 
       {/* Dialog for "More Info" */}
-      <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
+      <Dialog
+        open={isDialogOpen || isEditDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            closeDialog();
+            setIsEditDialogOpen(false);
+            setEditingRole(null);
+            setSelectedRole("");
+            setSelectedFeatures([]);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[432px]  max-h-[80vh] overflow-y-scroll scrollbar-hide ">
           <DialogDescription className="hidden"></DialogDescription>
           <DialogHeader>
-            <DialogTitle className="font-medium">Create Role</DialogTitle>
+            <DialogTitle className="font-medium">
+              {editingRole ? "Edit Role" : "Create Role"}
+            </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="flex flex-col space-y-2">
@@ -748,19 +844,38 @@ const AdminSetting = () => {
               <>
                 <Button
                   className="bg-transparent hover:bg-transparent transition hover:scale-105 active:scale-95 text-black border"
-                  onClick={closeDialog}
+                  onClick={() => {
+                    closeDialog();
+                    setIsEditDialogOpen(false);
+                    setEditingRole(null);
+                  }}
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={async () => {
-                    await createAdminRole(selectedRole, selectedFeatures);
-                    await getAdminAccepted();
+                    // Close modal immediately
                     closeDialog();
+                    setIsEditDialogOpen(false);
+                    setEditingRole(null);
+
+                    await new Promise((res) => setTimeout(res, 50));
+
+                    if (editingRole) {
+                      await updateRole(
+                        editingRole.id,
+                        selectedRole,
+                        selectedFeatures
+                      );
+                    } else {
+                      await createAdminRole(selectedRole, selectedFeatures);
+                    }
+
+                    await getAdminAccepted();
                   }}
                   className="bg-[#F75803] hover:bg-[#F75803] transition hover:scale-105 active:scale-95"
                 >
-                  Update
+                  {editingRole ? "Update Role" : "Create Role"}
                 </Button>
               </>
             ) : (
@@ -842,6 +957,40 @@ const AdminSetting = () => {
                 Move
               </Button>
             )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[432px]">
+          <DialogHeader>
+            <DialogTitle className="font-medium text-lg">
+              Are you sure you want to delete this role?
+            </DialogTitle>
+            <DialogDescription className="text-[#373737] pt-2">
+              Role: <span className="font-medium">"{roleToDelete?.name}"</span>
+              <br />
+              <br />
+              This action cannot be undone. Any admins assigned to this role
+              will lose access to its features.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="mt-6">
+            <Button
+              variant="outline"
+              onClick={cancelDelete}
+              className="border hover:bg-gray-50"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Delete Role
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
